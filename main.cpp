@@ -55,10 +55,24 @@ int main(int argc, char **argv) {
     for (unsigned i = 0; i < nb_files; ++i) {
         Mat sudoku = imread(files[i], CV_LOAD_IMAGE_GRAYSCALE);
         Mat preprocessed = preprocess(sudoku.clone());
+        std::vector<cv::Point> approx;
+
         findContours(preprocessed, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
         for (int i = 0; i < contours.size(); i++) {
-            drawContours(sudoku, contours, i, color, 2, 8);
+
+            // Approximate contour with accuracy proportional
+            // to the contour perimeter
+            cv::approxPolyDP(cv::Mat(contours[i]), approx, cv::arcLength(cv::Mat(contours[i]), true)*0.02, true);
+
+            // Skip small or non-convex objects
+            if (std::fabs(cv::contourArea(contours[i])) < 100 || !cv::isContourConvex(approx))
+                continue;
+
+            std::vector<vector<Point> > approx_contour(1, approx);
+            drawContours(sudoku, approx_contour, 0, color, 2, 8);
+
+
         }
         //        vector< vector<Point> > biggestContour = findBigestContour(preprocessed);
 
