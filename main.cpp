@@ -38,13 +38,13 @@ vector<vector<Point> > findBigestApprox(Mat input) {
 
         // Approximate contour with accuracy proportional
         // to the contour perimeter
-        approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.1, true);
+        approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true) * 0.1, true);
 
         // Skip small or non-convex objects
         if (std::fabs(contourArea(contours[i])) < 1200 || !isContourConvex(approx))
             continue;
 
-        if (approx.size() == 4){
+        if (approx.size() == 4) {
             double a = contourArea(contours[i]);
             if (a > largest_area) {
                 largest_area = a;
@@ -58,6 +58,42 @@ vector<vector<Point> > findBigestApprox(Mat input) {
     return biggestApproxContainer;
 }
 
+/*
+ * to help debug
+ * */
+void drawAllContour(Mat input, Mat output) {
+    vector<vector<Point> > contours;
+    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+
+    for (int i = 0; i < contours.size(); i++) {
+        drawContours(output, contours, i, white, 2, 8);
+    }
+}
+
+/*
+ * to help debug
+ * */
+void drawAllApprox(Mat input, Mat output) {
+    vector<vector<Point> > contours;
+    std::vector<cv::Point> approx;
+
+    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+
+    for (int i = 0; i < contours.size(); i++) {
+
+        // Approximate contour with accuracy proportional
+        // to the contour perimeter
+        cv::approxPolyDP(cv::Mat(contours[i]), approx, cv::arcLength(cv::Mat(contours[i]), true) * 0.1, true);
+
+        // Skip small or non-convex objects
+        if (std::fabs(cv::contourArea(contours[i])) < 100 || !cv::isContourConvex(approx))
+            continue;
+
+        std::vector<vector<Point> > approx_contour(1, approx);
+        drawContours(output, approx_contour, 0, white, 2, 8);
+    }
+}
+
 int main(int argc, char **argv) {
     const char *files[] = {"puzzles/sudoku.jpg", "puzzles/sudoku1.jpg", "puzzles/sudoku2.jpg", "puzzles/sudoku3.jpg"};
 
@@ -69,10 +105,13 @@ int main(int argc, char **argv) {
         Mat preprocessed = preprocess(sudoku.clone());
         vector<vector<Point> > biggestApprox = findBigestApprox(preprocessed);
 
+        //  drawAllContour(preprocessed, sudoku);
+        //  drawAllApprox(preprocessed, sudoku);
         drawMarker(sudoku, biggestApprox[0].at(0), white);
         drawMarker(sudoku, biggestApprox[0].at(1), white);
         drawMarker(sudoku, biggestApprox[0].at(2), white);
         drawMarker(sudoku, biggestApprox[0].at(3), white);
+
 
         namedWindow("Display Image", WINDOW_AUTOSIZE);
         imshow("Display Image", sudoku);
