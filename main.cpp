@@ -4,6 +4,8 @@
 using namespace cv;
 using namespace std;
 
+Scalar white(255, 255, 255);
+
 /*
  * preprocess
  *
@@ -23,60 +25,51 @@ Mat preprocess(Mat input) {
  * Find the biggest contour in the image
  * note that it returns vector< vector<Point> > because it is more convenient to use drawContours after
  * */
-vector<vector<Point> > findBigestContour(Mat input) {
+vector<vector<Point> > findBigestApprox(Mat input) {
 
     int largest_area = 0;
-    int largest_contour_index = 0;
-    vector<Point> contour;
     vector<vector<Point> > contours;
+    vector<cv::Point> approx;
+    vector<cv::Point> biggestApprox;
 
     findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
     for (int i = 0; i < contours.size(); i++) {
-        contour = contours[i];
-        double a = contourArea(contour);
-        if (a > largest_area) {
-            largest_area = a;
-            largest_contour_index = i;
+
+        // Approximate contour with accuracy proportional
+        // to the contour perimeter
+        cv::approxPolyDP(cv::Mat(contours[i]), approx, cv::arcLength(cv::Mat(contours[i]), true)*0.1, true);
+
+        // Skip small or non-convex objects
+        if (std::fabs(cv::contourArea(contours[i])) < 1200 || !cv::isContourConvex(approx))
+            continue;
+
+        if (approx.size() == 4)
+        {
+            double a = contourArea(contours[i]);
+            if (a > largest_area) {
+                largest_area = a;
+                biggestApprox = approx;
+            }
         }
+
     }
-    contour = contours[largest_contour_index];
-    cout << contour << endl;
-    std::vector<vector<Point> > biggest(1, contour);
-    return biggest;
+
+    vector<vector<Point> > biggestApproxContainer(1, biggestApprox);
+    return biggestApproxContainer;
 }
 
 int main(int argc, char **argv) {
     const char *files[] = {"puzzles/sudoku.jpg", "puzzles/sudoku1.jpg", "puzzles/sudoku2.jpg", "puzzles/sudoku3.jpg"};
-    vector<vector<Point> > contours;
-    Scalar color(255, 255, 255);
 
     unsigned nb_files = sizeof(files) / sizeof(const char *);
     for (unsigned i = 0; i < nb_files; ++i) {
         Mat sudoku = imread(files[i], CV_LOAD_IMAGE_GRAYSCALE);
         Mat preprocessed = preprocess(sudoku.clone());
-        std::vector<cv::Point> approx;
 
-        findContours(preprocessed, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+        vector<vector<Point> > biggestApprox = findBigestApprox(preprocessed);
 
-        for (int i = 0; i < contours.size(); i++) {
-
-            // Approximate contour with accuracy proportional
-            // to the contour perimeter
-            cv::approxPolyDP(cv::Mat(contours[i]), approx, cv::arcLength(cv::Mat(contours[i]), true)*0.02, true);
-
-            // Skip small or non-convex objects
-            if (std::fabs(cv::contourArea(contours[i])) < 100 || !cv::isContourConvex(approx))
-                continue;
-
-            std::vector<vector<Point> > approx_contour(1, approx);
-            drawContours(sudoku, approx_contour, 0, color, 2, 8);
-
-
-        }
-        //        vector< vector<Point> > biggestContour = findBigestContour(preprocessed);
-
-
+        drawContours(sudoku, biggestApprox, 0, white, 2, 8);
         namedWindow("Display Image", WINDOW_AUTOSIZE);
         imshow("Display Image", sudoku);
         waitKey(0);
