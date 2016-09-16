@@ -38,14 +38,13 @@ vector<vector<Point> > findBigestApprox(Mat input) {
 
         // Approximate contour with accuracy proportional
         // to the contour perimeter
-        cv::approxPolyDP(cv::Mat(contours[i]), approx, cv::arcLength(cv::Mat(contours[i]), true)*0.1, true);
+        approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.1, true);
 
         // Skip small or non-convex objects
-        if (std::fabs(cv::contourArea(contours[i])) < 1200 || !cv::isContourConvex(approx))
+        if (std::fabs(contourArea(contours[i])) < 1200 || !isContourConvex(approx))
             continue;
 
-        if (approx.size() == 4)
-        {
+        if (approx.size() == 4){
             double a = contourArea(contours[i]);
             if (a > largest_area) {
                 largest_area = a;
@@ -65,11 +64,16 @@ int main(int argc, char **argv) {
     unsigned nb_files = sizeof(files) / sizeof(const char *);
     for (unsigned i = 0; i < nb_files; ++i) {
         Mat sudoku = imread(files[i], CV_LOAD_IMAGE_GRAYSCALE);
-        Mat preprocessed = preprocess(sudoku.clone());
 
+
+        Mat preprocessed = preprocess(sudoku.clone());
         vector<vector<Point> > biggestApprox = findBigestApprox(preprocessed);
 
-        drawContours(sudoku, biggestApprox, 0, white, 2, 8);
+        drawMarker(sudoku, biggestApprox[0].at(0), white);
+        drawMarker(sudoku, biggestApprox[0].at(1), white);
+        drawMarker(sudoku, biggestApprox[0].at(2), white);
+        drawMarker(sudoku, biggestApprox[0].at(3), white);
+
         namedWindow("Display Image", WINDOW_AUTOSIZE);
         imshow("Display Image", sudoku);
         waitKey(0);

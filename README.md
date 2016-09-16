@@ -38,3 +38,7 @@ int main() {
 ```
 typedef unsigned char             BYTE;
 ```
+- found the 4 vertices/corner/points of the puzzle which is the biggest area on the pictures
+ - findContour
+ - approxPolyDP
+ - approx.at(0)
