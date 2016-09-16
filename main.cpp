@@ -5,6 +5,9 @@ using namespace cv;
 using namespace std;
 
 Scalar white(255, 255, 255);
+Scalar green(0, 235, 0);
+Scalar red(255, 0, 0);
+Scalar blue(0, 0, 255);
 
 /*
  * preprocess
@@ -25,7 +28,7 @@ Mat preprocess(Mat input) {
  * Find the biggest contour in the image
  * note that it returns vector< vector<Point> > because it is more convenient to use drawContours after
  * */
-vector<vector<Point> > findBigestApprox(Mat input) {
+vector<Point> findBigestApprox(Mat input) {
 
     int largest_area = 0;
     vector<vector<Point> > contours;
@@ -54,8 +57,7 @@ vector<vector<Point> > findBigestApprox(Mat input) {
 
     }
 
-    vector<vector<Point> > biggestApproxContainer(1, biggestApprox);
-    return biggestApproxContainer;
+    return biggestApprox;
 }
 
 /*
@@ -94,27 +96,67 @@ void drawAllApprox(Mat input, Mat output) {
     }
 }
 
+/*
+ * to help debug
+ * */
+void drawMarkers(Mat input, vector < Point > biggestApprox) {
+    drawMarker(input, biggestApprox.at(0), white);
+    drawMarker(input, biggestApprox.at(1), white);
+    drawMarker(input, biggestApprox.at(2), white);
+    drawMarker(input, biggestApprox.at(3), white);
+}
+
+Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
+    Mat outerBox = Mat(input.size(), CV_8UC1);
+    cv::Point2f src_p[4];
+    cv::Point2f dst_p[4];
+
+    float w = (float) input.cols;
+    float h = (float) input.rows;
+    float hw = w / 2.0f;
+    float hh = h / 2.0f;
+
+    // from points
+    src_p[0] = cv::Point2f(biggestApprox.at(1));
+    src_p[1] = cv::Point2f(biggestApprox.at(0));
+    src_p[2] = cv::Point2f(biggestApprox.at(3));
+    src_p[3] = cv::Point2f(biggestApprox.at(2));
+
+    // to points
+    dst_p[0] = cv::Point2f(0.0f, 0.0f);
+    dst_p[1] = cv::Point2f(w, 0.0f);
+    dst_p[2] = cv::Point2f(w, h);
+    dst_p[3] = cv::Point2f(0.0f, h);
+//
+    cv::Mat dst_img;
+
+    // create perspective transform matrix
+    cv::Mat trans_mat33 = cv::getPerspectiveTransform(src_p, dst_p); //CV_64F->double
+
+    // perspective transform operation using transform matrix
+    warpPerspective(input, outerBox, trans_mat33, input.size(), cv::INTER_LINEAR);
+    return outerBox;
+}
+
 int main(int argc, char **argv) {
     const char *files[] = {"puzzles/sudoku.jpg", "puzzles/sudoku1.jpg", "puzzles/sudoku2.jpg", "puzzles/sudoku3.jpg"};
 
     unsigned nb_files = sizeof(files) / sizeof(const char *);
     for (unsigned i = 0; i < nb_files; ++i) {
         Mat sudoku = imread(files[i], CV_LOAD_IMAGE_GRAYSCALE);
+        Mat original = imread(files[i]);
 
 
         Mat preprocessed = preprocess(sudoku.clone());
-        vector<vector<Point> > biggestApprox = findBigestApprox(preprocessed);
-
-        //  drawAllContour(preprocessed, sudoku);
-        //  drawAllApprox(preprocessed, sudoku);
-        drawMarker(sudoku, biggestApprox[0].at(0), white);
-        drawMarker(sudoku, biggestApprox[0].at(1), white);
-        drawMarker(sudoku, biggestApprox[0].at(2), white);
-        drawMarker(sudoku, biggestApprox[0].at(3), white);
+        vector<Point> biggestApprox = findBigestApprox(preprocessed);
+//        drawAllContour(preprocessed, sudoku);
+//        drawAllApprox(preprocessed, sudoku);
+//        drawMarkers(sudoku, biggestApprox);
+        Mat extractedPuzzle = extractPuzzle(sudoku, biggestApprox);
 
 
         namedWindow("Display Image", WINDOW_AUTOSIZE);
-        imshow("Display Image", sudoku);
+        imshow("Display Image", extractedPuzzle);
         waitKey(0);
     }
 

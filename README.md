@@ -23,7 +23,7 @@ To avoid std:: we can use `namespace std`
 #include <iostream>
 
 using namespace std;
-
+;
 int main() {
   cout << "HelloWorld !" << endl;
   return 0;
@@ -42,3 +42,19 @@ typedef unsigned char             BYTE;
  - findContour
  - approxPolyDP
  - approx.at(0)
+
+- to create the transformation matrix with getPerspectiveTransform start with
+ ```
+
+	src_p[0] = cv::Point2f(0.0f, 0.0f);
+	src_p[1] = cv::Point2f(   w, 0.0f);
+	src_p[2] = cv::Point2f(   w,    h);
+	src_p[3] = cv::Point2f(0.0f,    h);
+
+	// to points
+	dst_p[0] = cv::Point2f(  hw, 0.0f);
+	dst_p[1] = cv::Point2f(   w,   hh);
+	dst_p[2] = cv::Point2f(  hw,    h);
+	dst_p[3] = cv::Point2f(0.0f,   hh);
+ ```
+ which rotate the coordinates then move the destination coordinates one by one
