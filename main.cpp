@@ -159,11 +159,16 @@ int main(int argc, char **argv) {
         int cw = w / 9;
         int ch = h / 9;
 
-        for (int j = 0; j < 10; j++) {
-            for (int i = 0; i < 10; i++) {
-                drawMarker(extractedPuzzle, Point(j * ch, i * cw), white);
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < 9; j++) {
+//                drawMarker(extractedPuzzle, Point(j * ch, i * cw), white);
+                Rect rect = Rect(j * ch, i * cw, ch, cw);
+                rectangle(extractedPuzzle, rect, white);
+
             }
         }
+
+        drawMarker(extractedPuzzle, Point(5 * ch, 1 * cw), white);
 
         namedWindow("Display Image", WINDOW_AUTOSIZE);
         imshow("Display Image", extractedPuzzle);
