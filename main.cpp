@@ -154,6 +154,16 @@ int main(int argc, char **argv) {
 //        drawMarkers(sudoku, biggestApprox);
         Mat extractedPuzzle = extractPuzzle(sudoku, biggestApprox);
 
+        int h = extractedPuzzle.cols;
+        int w = extractedPuzzle.rows;
+        int cw = w / 9;
+        int ch = h / 9;
+
+        for (int j = 0; j < 10; j++) {
+            for (int i = 0; i < 10; i++) {
+                drawMarker(extractedPuzzle, Point(j * ch, i * cw), white);
+            }
+        }
 
         namedWindow("Display Image", WINDOW_AUTOSIZE);
         imshow("Display Image", extractedPuzzle);
