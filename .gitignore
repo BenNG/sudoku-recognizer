@@ -2,3 +2,4 @@ CMakeFiles
 puzzles
 mnist
 .idea/
+build/

@@ -139,7 +139,7 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
 }
 
 int main(int argc, char **argv) {
-    const char *files[] = {"puzzles/sudoku.jpg", "puzzles/sudoku1.jpg", "puzzles/sudoku2.jpg", "puzzles/sudoku3.jpg"};
+    const char *files[] = {"../puzzles/sudoku.jpg", "../puzzles/sudoku1.jpg", "../puzzles/sudoku2.jpg", "../puzzles/sudoku3.jpg"};
 
     unsigned nb_files = sizeof(files) / sizeof(const char *);
     for (unsigned i = 0; i < nb_files; ++i) {
