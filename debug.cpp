@@ -59,3 +59,9 @@ Mat drawGrid(Mat input) {
     }
     return output;
 }
+
+void showImage(Mat img){
+    namedWindow("Display Image", WINDOW_AUTOSIZE);
+    imshow("Display Image", img);
+    waitKey(0);
+}

@@ -26,6 +26,8 @@ Mat preprocess(Mat input) {
 }
 
 /*
+ * findBigestApprox
+ *
  * Find the biggest contour in the image
  * note that it returns vector< vector<Point> > because it is more convenient to use drawContours after
  * */
@@ -39,11 +41,8 @@ vector<Point> findBigestApprox(Mat input) {
     findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
     for (int i = 0; i < contours.size(); i++) {
-
-        // Approximate contour with accuracy proportional
-        // to the contour perimeter
+        // Approximate contour with accuracy proportional to the contour perimeter
         approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true) * 0.1, true);
-
         // Skip small or non-convex objects
         if (std::fabs(contourArea(contours[i])) < 1200 || !isContourConvex(approx))
             continue;
@@ -55,16 +54,8 @@ vector<Point> findBigestApprox(Mat input) {
                 biggestApprox = approx;
             }
         }
-
     }
-
     return biggestApprox;
-}
-
-void showImage(Mat img){
-    namedWindow("Display Image", WINDOW_AUTOSIZE);
-    imshow("Display Image", img);
-    waitKey(0);
 }
 
 Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
@@ -99,6 +90,25 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
     return outerBox;
 }
 
+Mat getCell(Mat sudoku, int numCell) {
+    Mat output = sudoku.clone();
+    int h = sudoku.cols;
+    int w = sudoku.rows;
+    int cw = w / 9;
+    int ch = h / 9;
+
+    Rect rect = Rect((numCell % 9) * ch, (numCell / 9) * cw, ch, cw);
+    return output(rect);
+
+//    for (int i = 0; i < 9; i++) {
+//        for (int j = 0; j < 9; j++) {
+//            //  drawMarker(input, Point(j * ch, i * cw), white);
+//            Rect rect = Rect(j * ch, i * cw, ch, cw);
+//            rectangle(output, rect, white);
+//        }
+//    }
+}
+
 int main(int argc, char **argv) {
     const char *files[] = {
             "../puzzles/sudoku.jpg",
@@ -109,19 +119,20 @@ int main(int argc, char **argv) {
 
     unsigned nb_files = sizeof(files) / sizeof(const char *);
     for (unsigned i = 0; i < nb_files; ++i) {
-        Mat sudoku = imread(files[i], CV_LOAD_IMAGE_GRAYSCALE);
-        Mat original = imread(files[i]);
-
-        Mat preprocessed = preprocess(sudoku.clone());
+        Mat raw = imread(files[i], CV_LOAD_IMAGE_GRAYSCALE);
+        Mat preprocessed = preprocess(raw.clone());
+//         drawAllContour(preprocessed, raw);
+//         drawAllApprox(preprocessed, raw);
         vector<Point> biggestApprox = findBigestApprox(preprocessed);
-//         drawAllContour(preprocessed, sudoku);
-//         drawAllApprox(preprocessed, sudoku);
-//         drawMarkers(sudoku, biggestApprox);
-        Mat extractedPuzzle = extractPuzzle(sudoku, biggestApprox);
+//         drawMarkers(raw, biggestApprox);
 
-        Mat gridedPuzzle = drawGrid(extractedPuzzle);
+        Mat sudoku = extractPuzzle(raw, biggestApprox);
 
-        showImage(gridedPuzzle);
+//        Mat gridedPuzzle = drawGrid(sudoku);
+
+        Mat cell = getCell(sudoku, 80);
+
+        showImage(cell);
     }
 
     return 0;
