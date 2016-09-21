@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
+#include "debug.h"
 
 using namespace cv;
 using namespace std;
@@ -99,7 +100,7 @@ void drawAllApprox(Mat input, Mat output) {
 /*
  * to help debug
  * */
-void drawMarkers(Mat input, vector < Point > biggestApprox) {
+void drawMarkers(Mat input, vector<Point> biggestApprox) {
     drawMarker(input, biggestApprox.at(0), white);
     drawMarker(input, biggestApprox.at(1), white);
     drawMarker(input, biggestApprox.at(2), white);
@@ -139,13 +140,17 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
 }
 
 int main(int argc, char **argv) {
-    const char *files[] = {"../puzzles/sudoku.jpg", "../puzzles/sudoku1.jpg", "../puzzles/sudoku2.jpg", "../puzzles/sudoku3.jpg"};
+    const char *files[] = {
+            "../puzzles/sudoku.jpg",
+            "../puzzles/sudoku1.jpg",
+            "../puzzles/sudoku2.jpg",
+            "../puzzles/sudoku3.jpg",
+    };
 
     unsigned nb_files = sizeof(files) / sizeof(const char *);
     for (unsigned i = 0; i < nb_files; ++i) {
         Mat sudoku = imread(files[i], CV_LOAD_IMAGE_GRAYSCALE);
         Mat original = imread(files[i]);
-
 
         Mat preprocessed = preprocess(sudoku.clone());
         vector<Point> biggestApprox = findBigestApprox(preprocessed);
@@ -172,6 +177,7 @@ int main(int argc, char **argv) {
 
         namedWindow("Display Image", WINDOW_AUTOSIZE);
         imshow("Display Image", extractedPuzzle);
+        sayHello();
         waitKey(0);
     }
 
