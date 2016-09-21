@@ -61,50 +61,10 @@ vector<Point> findBigestApprox(Mat input) {
     return biggestApprox;
 }
 
-/*
- * to help debug
- * */
-void drawAllContour(Mat input, Mat output) {
-    vector<vector<Point> > contours;
-    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-
-    for (int i = 0; i < contours.size(); i++) {
-        drawContours(output, contours, i, white, 2, 8);
-    }
-}
-
-/*
- * to help debug
- * */
-void drawAllApprox(Mat input, Mat output) {
-    vector<vector<Point> > contours;
-    std::vector<cv::Point> approx;
-
-    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-
-    for (int i = 0; i < contours.size(); i++) {
-
-        // Approximate contour with accuracy proportional
-        // to the contour perimeter
-        cv::approxPolyDP(cv::Mat(contours[i]), approx, cv::arcLength(cv::Mat(contours[i]), true) * 0.1, true);
-
-        // Skip small or non-convex objects
-        if (std::fabs(cv::contourArea(contours[i])) < 100 || !cv::isContourConvex(approx))
-            continue;
-
-        std::vector<vector<Point> > approx_contour(1, approx);
-        drawContours(output, approx_contour, 0, white, 2, 8);
-    }
-}
-
-/*
- * to help debug
- * */
-void drawMarkers(Mat input, vector<Point> biggestApprox) {
-    drawMarker(input, biggestApprox.at(0), white);
-    drawMarker(input, biggestApprox.at(1), white);
-    drawMarker(input, biggestApprox.at(2), white);
-    drawMarker(input, biggestApprox.at(3), white);
+void showImage(Mat img){
+    namedWindow("Display Image", WINDOW_AUTOSIZE);
+    imshow("Display Image", img);
+    waitKey(0);
 }
 
 Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
@@ -154,31 +114,14 @@ int main(int argc, char **argv) {
 
         Mat preprocessed = preprocess(sudoku.clone());
         vector<Point> biggestApprox = findBigestApprox(preprocessed);
-//        drawAllContour(preprocessed, sudoku);
-//        drawAllApprox(preprocessed, sudoku);
-//        drawMarkers(sudoku, biggestApprox);
+//         drawAllContour(preprocessed, sudoku);
+//         drawAllApprox(preprocessed, sudoku);
+//         drawMarkers(sudoku, biggestApprox);
         Mat extractedPuzzle = extractPuzzle(sudoku, biggestApprox);
 
-        int h = extractedPuzzle.cols;
-        int w = extractedPuzzle.rows;
-        int cw = w / 9;
-        int ch = h / 9;
+        Mat gridedPuzzle = drawGrid(extractedPuzzle);
 
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-//                drawMarker(extractedPuzzle, Point(j * ch, i * cw), white);
-                Rect rect = Rect(j * ch, i * cw, ch, cw);
-                rectangle(extractedPuzzle, rect, white);
-
-            }
-        }
-
-        drawMarker(extractedPuzzle, Point(5 * ch, 1 * cw), white);
-
-        namedWindow("Display Image", WINDOW_AUTOSIZE);
-        imshow("Display Image", extractedPuzzle);
-        sayHello();
-        waitKey(0);
+        showImage(gridedPuzzle);
     }
 
     return 0;
