@@ -1,60 +1,22 @@
-#C++
+# sudoku-recognizer
 
-## seems like [cmake](http://docs.opencv.org/trunk/db/df5/tutorial_linux_gcc_cmake.html) is interesting
+## Requirement
 
-## compile and link
+[This](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) will help you to install OpenCV and OpenCV_contrib
+
+[OpenCV 3.1.0](http://opencv.org/downloads.html) I recommend using the official website instead of the github repo
+
+[opencv_contrib](https://github.com/opencv/opencv_contrib/releases/tag/3.1.0)
+
+[CMake](https://cmake.org/)
+
+
+## Build the project
+
+At the root of the project:
 ```
-g++ main.cpp -o main
+mkdir build
+cd build
+cmake ..
+make && ./DisplayImage
 ```
-
-## HelloWorld
-
-```c++
-#include <iostream>
-
-int main() {
-  std::cout << "HelloWorld !" << std::endl;
-  return 0;
-}
-```
-
-To avoid std:: we can use `namespace std`
-```
-#include <iostream>
-
-using namespace std;
-;
-int main() {
-  cout << "HelloWorld !" << endl;
-  return 0;
-}
-```
-
--  il est temps d'entrer dans le vif du sujet et de demander à l'ordinateur de nous prêter un de ses tiroirs
-
-## tips
-- Here is an introduction to [cmake](http://derekmolloy.ie/hello-world-introductions-to-cmake/)
-- There is a BYTE type on windows to use it on linux use:
-```
-typedef unsigned char             BYTE;
-```
-- found the 4 vertices/corner/points of the puzzle which is the biggest area on the pictures
- - findContour
- - approxPolyDP
- - approx.at(0)
-
-- to create the transformation matrix with getPerspectiveTransform start with
- ```
-
-	src_p[0] = cv::Point2f(0.0f, 0.0f);
-	src_p[1] = cv::Point2f(   w, 0.0f);
-	src_p[2] = cv::Point2f(   w,    h);
-	src_p[3] = cv::Point2f(0.0f,    h);
-
-	// to points
-	dst_p[0] = cv::Point2f(  hw, 0.0f);
-	dst_p[1] = cv::Point2f(   w,   hh);
-	dst_p[2] = cv::Point2f(  hw,    h);
-	dst_p[3] = cv::Point2f(0.0f,   hh);
- ```
- which rotate the coordinates then move the destination coordinates one by one
