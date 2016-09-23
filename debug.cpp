@@ -1,13 +1,18 @@
 #include "debug.h"
 
-void drawAllContour(Mat input, Mat output) {
+Mat drawAllContour(Mat input) {
+    Mat output = Mat::zeros(input.rows, input.cols, input.type());
     Scalar white(255, 255, 255);
     vector < vector< Point > > contours;
     findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
+    cout << "contours : " << contours.size() << endl;
+
     for (int i = 0; i < contours.size(); i++) {
         drawContours(output, contours, i, white, 2, 8);
     }
+
+    return output;
 }
 
 void drawAllApprox(Mat input, Mat output) {

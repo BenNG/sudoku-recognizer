@@ -10,6 +10,12 @@ Scalar green(0, 235, 0);
 Scalar red(255, 0, 0);
 Scalar blue(0, 0, 255);
 
+Scalar randomColor( RNG& rng )
+{
+    int icolor = (unsigned) rng;
+    return Scalar( icolor&255, (icolor>>8)&255, (icolor>>16)&255 );
+}
+
 /*
  * preprocess
  *
@@ -92,22 +98,138 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
 
 Mat getCell(Mat sudoku, int numCell) {
     Mat output = sudoku.clone();
-    int h = sudoku.cols;
-    int w = sudoku.rows;
-    int cw = w / 9;
-    int ch = h / 9;
+    int y = sudoku.cols;
+    int x = sudoku.rows;
+    int cx = x / 9;
+    int cy = y / 9;
 
-    Rect rect = Rect((numCell % 9) * ch, (numCell / 9) * cw, ch, cw);
+    cout << "cell size is :" << cx <<  " * " << cy << " = " << cx*cy << endl;
+
+    Rect rect = Rect((numCell % 9) * cy, (numCell / 9) * cx, cy, cx);
     return output(rect);
-
-//    for (int i = 0; i < 9; i++) {
-//        for (int j = 0; j < 9; j++) {
-//            //  drawMarker(input, Point(j * ch, i * cw), white);
-//            Rect rect = Rect(j * ch, i * cw, ch, cw);
-//            rectangle(output, rect, white);
-//        }
-//    }
 }
+
+
+Mat removeLight(Mat img, Mat pattern, int method)
+{
+    Mat aux;
+// if method is normalization
+    if(method==1)
+    {
+// Require change our image to 32 float for division
+        Mat img32, pattern32;
+        img.convertTo(img32, CV_32F);
+        pattern.convertTo(pattern32, CV_32F);
+// Divide the image by the pattern
+        aux= 1-(img32/pattern32);
+        // Scale it to convert to 8bit format
+        aux=aux*255;
+// Convert 8 bits format
+        aux.convertTo(aux, CV_8U);
+    }else{
+        aux= pattern-img;
+    }
+    return aux;
+}
+
+Mat calculateLightPattern(Mat img)
+{
+    Mat pattern;
+// Basic and effective way to calculate the light pattern from one image
+            blur(img, pattern, Size(img.cols/3,img.cols/3));
+//    showImage(pattern);
+    return pattern;
+}
+
+void ConnectedComponents(Mat img)
+{
+// Use connected components to divide our possibles parts of images
+    Mat labels;
+    int num_objects= connectedComponents(img, labels);
+// Check the number of objects detected
+    if(num_objects < 2 ){
+        cout << "No objects detected" << endl;
+        return;
+    }else{
+        cout << "Number of objects detected: " << num_objects - 1 << endl;
+    }
+    // Create output image coloring the objects
+    Mat output= Mat::zeros(img.rows,img.cols, CV_8UC3);
+    RNG rng( 0xFFFFFFFF );
+    for(int i=1; i<num_objects; i++){
+        Mat mask= labels==i;
+        output.setTo(randomColor(rng), mask);
+    }
+    imshow("Result", output);
+}
+
+
+void FindContoursBasic(Mat img)
+{
+    vector<vector<Point> > contours;
+    findContours(img, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+    Mat output= Mat::zeros(img.rows,img.cols, CV_8UC3);
+// Check the number of objects detected
+    if(contours.size() == 0 ){
+        cout << "No objects detected" << endl;
+        return;
+    }else{
+        cout << "Number of objects detected: " << contours.size() << endl;
+    }
+    RNG rng( 0xFFFFFFFF );
+    for(int i=0; i<contours.size(); i++){
+        drawContours(img, contours, i, randomColor(rng));
+    }
+
+    imshow("Result", img);
+    waitKey(0);
+}
+
+
+void ConnectedComponentsStats(Mat cell)
+{
+
+    int cell_height = cell.rows;
+    int cell_width = cell.cols;
+
+    // setting parameters for long lines filtering
+    float percent = 0.23;
+    float width_threshold = cell_width - cell_width * percent;
+    float height_threshold = cell_height - cell_height * percent;
+
+
+    // Use connected components with stats
+    Mat labels, stats, centroids;
+    int num_objects= connectedComponentsWithStats(cell, labels, stats, centroids);
+    // Check the number of objects detected
+    if(num_objects < 2 ){
+        cout << "No objects detected" << endl;
+        return;
+    }else{
+        cout << "Number of objects detected: " << num_objects - 1 << endl;
+    }
+
+    // Create output image coloring the objects and show area
+    Mat output= Mat::zeros(cell.rows,cell.cols, CV_8UC3);
+    RNG rng( 0xFFFFFFFF );
+    for(int i=1; i<num_objects; i++){
+        int area = stats.at<int>(i, CC_STAT_AREA);
+        int width = stats.at<int>(i, CC_STAT_WIDTH);
+        int height = stats.at<int>(i, CC_STAT_HEIGHT);
+
+        // filtering
+        int boundingArea = width * height;
+        if(width > width_threshold ) continue;
+        if(height > height_threshold) continue;
+        if(boundingArea < 220 || boundingArea > 900) continue;
+        if(area < 110) continue; // area of the connected object
+
+        Mat mask= labels==i;
+        output.setTo(randomColor(rng), mask);
+        showImage(output);
+    }
+}
+
 
 int main(int argc, char **argv) {
     const char *files[] = {
@@ -121,18 +243,21 @@ int main(int argc, char **argv) {
     for (unsigned i = 0; i < nb_files; ++i) {
         Mat raw = imread(files[i], CV_LOAD_IMAGE_GRAYSCALE);
         Mat preprocessed = preprocess(raw.clone());
-//         drawAllContour(preprocessed, raw);
-//         drawAllApprox(preprocessed, raw);
         vector<Point> biggestApprox = findBigestApprox(preprocessed);
-//         drawMarkers(raw, biggestApprox);
 
         Mat sudoku = extractPuzzle(raw, biggestApprox);
 
-//        Mat gridedPuzzle = drawGrid(sudoku);
+        for(unsigned i = 0; i < 81 ; i++ ){
+            Mat cell = getCell(sudoku, i), cell_no_noise, cell_no_light, final_cell, out;
 
-        Mat cell = getCell(sudoku, 80);
-
-        showImage(cell);
+            // remove noise
+            medianBlur(cell, cell_no_noise, 1);
+            // remove background/light
+            cell_no_light = removeLight(cell_no_noise, calculateLightPattern(cell),2);
+            // binarize image
+            adaptiveThreshold(cell_no_light, final_cell, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
+            ConnectedComponentsStats(final_cell);
+        }
     }
 
     return 0;

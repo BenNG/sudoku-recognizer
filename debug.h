@@ -3,7 +3,7 @@
 using namespace cv;
 using namespace std;
 
-void drawAllContour(Mat input, Mat output);
+Mat drawAllContour(Mat input);
 void drawAllApprox(Mat input, Mat output);
 void drawMarkers(Mat input, vector<Point> biggestApprox);
 Mat drawGrid(Mat input);

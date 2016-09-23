@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 project( DisplayImage )
 
-find_package( OpenCV REQUIRED )
+find_package( OpenCV 3.1.0 REQUIRED core text)
 include_directories( ${OpenCV_INCLUDE_DIRS})
+MESSAGE("OpenCV version : ${OpenCV_VERSION}")
 
 add_library(Debug debug.cpp debug.h)
 
