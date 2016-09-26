@@ -1,6 +1,17 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
+#include <tesseract/baseapi.h>
 #include "debug.h"
+#include <fstream>
+
+#include "opencv2/imgproc.hpp"
+#include "opencv2/text.hpp"
+#include "opencv2/highgui.hpp"
+using namespace cv::text;
+
+
+
+
 
 using namespace cv;
 using namespace std;
@@ -186,7 +197,7 @@ void FindContoursBasic(Mat img)
 }
 
 
-void ConnectedComponentsStats(Mat cell)
+void extractDataCell(Mat cell)
 {
 
     int cell_height = cell.rows;
@@ -196,7 +207,6 @@ void ConnectedComponentsStats(Mat cell)
     float percent = 0.23;
     float width_threshold = cell_width - cell_width * percent;
     float height_threshold = cell_height - cell_height * percent;
-
 
     // Use connected components with stats
     Mat labels, stats, centroids;
@@ -216,17 +226,24 @@ void ConnectedComponentsStats(Mat cell)
         int area = stats.at<int>(i, CC_STAT_AREA);
         int width = stats.at<int>(i, CC_STAT_WIDTH);
         int height = stats.at<int>(i, CC_STAT_HEIGHT);
+        int left = stats.at<int>(i, CC_STAT_LEFT);
+        int top = stats.at<int>(i, CC_STAT_TOP);
 
         // filtering
         int boundingArea = width * height;
-        if(width > width_threshold ) continue;
-        if(height > height_threshold) continue;
+        if(width > width_threshold ) continue; // horizontal line
+        if(height > height_threshold) continue; // vetical line
         if(boundingArea < 220 || boundingArea > 900) continue;
         if(area < 110) continue; // area of the connected object
 
-        Mat mask= labels==i;
-        output.setTo(randomColor(rng), mask);
-        showImage(output);
+        // should be the number here
+        Rect rect(left, top, width, height);
+//        Mat mask= labels==i;
+//        output.setTo(randomColor(rng), mask);
+        imwrite("rere.jpg", cell(rect));
+        showImage(cell(rect));
+
+
     }
 }
 
@@ -256,7 +273,11 @@ int main(int argc, char **argv) {
             cell_no_light = removeLight(cell_no_noise, calculateLightPattern(cell),2);
             // binarize image
             adaptiveThreshold(cell_no_light, final_cell, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
-            ConnectedComponentsStats(final_cell);
+
+            extractDataCell(final_cell);
+
+            tesseract::TessBaseAPI ocr;
+
         }
     }
 

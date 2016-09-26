@@ -11,6 +11,22 @@
 [CMake](https://cmake.org/)
 
 
+## adding tesseract
+```
+- clone the repo
+- mkdir build
+cmake ..
+
+- built sudoku project
+Tesseract_DIR=/keep/Repo/tesseract/build cmake ..
+in CMakeLists.txt add:
+
+find_package( Tesseract REQUIRED ) # 3.05 is currently the latest version of the git repository.
+include_directories(${Tesseract_INCLUDE_DIRS})
+MESSAGE("Tesseract version : ${Tesseract_VERSION}") # to test
+target_link_libraries( ${PROJECT_NAME} ${Tesseract_LIBRARIES})
+```
+
 ## Build the project
 
 At the root of the project:
