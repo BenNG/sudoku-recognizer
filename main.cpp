@@ -7,6 +7,10 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/text.hpp"
 #include "opencv2/highgui.hpp"
+
+#include <sstream>
+#include <string>
+
 using namespace cv::text;
 
 
@@ -21,10 +25,9 @@ Scalar green(0, 235, 0);
 Scalar red(255, 0, 0);
 Scalar blue(0, 0, 255);
 
-Scalar randomColor( RNG& rng )
-{
+Scalar randomColor(RNG &rng) {
     int icolor = (unsigned) rng;
-    return Scalar( icolor&255, (icolor>>8)&255, (icolor>>16)&255 );
+    return Scalar(icolor & 255, (icolor >> 8) & 255, (icolor >> 16) & 255);
 }
 
 /*
@@ -114,91 +117,42 @@ Mat getCell(Mat sudoku, int numCell) {
     int cx = x / 9;
     int cy = y / 9;
 
-    cout << "cell size is :" << cx <<  " * " << cy << " = " << cx*cy << endl;
+//    cout << "cell size is :" << cx << " * " << cy << " = " << cx * cy << endl;
 
     Rect rect = Rect((numCell % 9) * cy, (numCell / 9) * cx, cy, cx);
     return output(rect);
 }
 
 
-Mat removeLight(Mat img, Mat pattern, int method)
-{
+Mat removeLight(Mat img, Mat pattern, int method) {
     Mat aux;
 // if method is normalization
-    if(method==1)
-    {
+    if (method == 1) {
 // Require change our image to 32 float for division
         Mat img32, pattern32;
         img.convertTo(img32, CV_32F);
         pattern.convertTo(pattern32, CV_32F);
 // Divide the image by the pattern
-        aux= 1-(img32/pattern32);
+        aux = 1 - (img32 / pattern32);
         // Scale it to convert to 8bit format
-        aux=aux*255;
+        aux = aux * 255;
 // Convert 8 bits format
         aux.convertTo(aux, CV_8U);
-    }else{
-        aux= pattern-img;
+    } else {
+        aux = pattern - img;
     }
     return aux;
 }
 
-Mat calculateLightPattern(Mat img)
-{
+Mat calculateLightPattern(Mat img) {
     Mat pattern;
 // Basic and effective way to calculate the light pattern from one image
-            blur(img, pattern, Size(img.cols/3,img.cols/3));
+    blur(img, pattern, Size(img.cols / 3, img.cols / 3));
 //    showImage(pattern);
     return pattern;
 }
 
-void ConnectedComponents(Mat img)
-{
-// Use connected components to divide our possibles parts of images
-    Mat labels;
-    int num_objects= connectedComponents(img, labels);
-// Check the number of objects detected
-    if(num_objects < 2 ){
-        cout << "No objects detected" << endl;
-        return;
-    }else{
-        cout << "Number of objects detected: " << num_objects - 1 << endl;
-    }
-    // Create output image coloring the objects
-    Mat output= Mat::zeros(img.rows,img.cols, CV_8UC3);
-    RNG rng( 0xFFFFFFFF );
-    for(int i=1; i<num_objects; i++){
-        Mat mask= labels==i;
-        output.setTo(randomColor(rng), mask);
-    }
-    imshow("Result", output);
-}
-
-
-void FindContoursBasic(Mat img)
-{
-    vector<vector<Point> > contours;
-    findContours(img, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-    Mat output= Mat::zeros(img.rows,img.cols, CV_8UC3);
-// Check the number of objects detected
-    if(contours.size() == 0 ){
-        cout << "No objects detected" << endl;
-        return;
-    }else{
-        cout << "Number of objects detected: " << contours.size() << endl;
-    }
-    RNG rng( 0xFFFFFFFF );
-    for(int i=0; i<contours.size(); i++){
-        drawContours(img, contours, i, randomColor(rng));
-    }
-
-    imshow("Result", img);
-    waitKey(0);
-}
-
-
-void extractDataCell(Mat cell)
-{
+Mat extractRoiFromCell(Mat cell) {
 
     int cell_height = cell.rows;
     int cell_width = cell.cols;
@@ -210,19 +164,20 @@ void extractDataCell(Mat cell)
 
     // Use connected components with stats
     Mat labels, stats, centroids;
-    int num_objects= connectedComponentsWithStats(cell, labels, stats, centroids);
+    int num_objects = connectedComponentsWithStats(cell, labels, stats, centroids);
     // Check the number of objects detected
-    if(num_objects < 2 ){
-        cout << "No objects detected" << endl;
-        return;
-    }else{
-        cout << "Number of objects detected: " << num_objects - 1 << endl;
+    Mat output;
+
+    if (num_objects < 2) {
+//        cout << "No objects detected" << endl;
+        return output;
+    } else {
+//        cout << "Number of objects detected: " << num_objects - 1 << endl;
     }
 
     // Create output image coloring the objects and show area
-    Mat output= Mat::zeros(cell.rows,cell.cols, CV_8UC3);
-    RNG rng( 0xFFFFFFFF );
-    for(int i=1; i<num_objects; i++){
+    RNG rng(0xFFFFFFFF);
+    for (int i = 1; i < num_objects; i++) {
         int area = stats.at<int>(i, CC_STAT_AREA);
         int width = stats.at<int>(i, CC_STAT_WIDTH);
         int height = stats.at<int>(i, CC_STAT_HEIGHT);
@@ -231,54 +186,98 @@ void extractDataCell(Mat cell)
 
         // filtering
         int boundingArea = width * height;
-        if(width > width_threshold ) continue; // horizontal line
-        if(height > height_threshold) continue; // vetical line
-        if(boundingArea < 220 || boundingArea > 900) continue;
-        if(area < 110) continue; // area of the connected object
+        if (width > width_threshold) continue; // horizontal line
+        if (height > height_threshold) continue; // vetical line
+        if (boundingArea < 220 || boundingArea > 900) continue;
+        if (area < 110) continue; // area of the connected object
 
         // should be the number here
         Rect rect(left, top, width, height);
 //        Mat mask= labels==i;
 //        output.setTo(randomColor(rng), mask);
-        imwrite("rere.jpg", cell(rect));
-        showImage(cell(rect));
-
+        return cell(rect);
 
     }
+    return output;
+
 }
 
+char *identifyText(Mat input, char *language = "eng") {
+    tesseract::TessBaseAPI ocr;
+    ocr.Init("./tessdata", language, tesseract::OEM_TESSERACT_ONLY);
+    ocr.SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
+    ocr.SetImage(input.data, input.cols, input.rows, 1,
+                 input.step);
+    ocr.SetVariable("tessedit_char_whitelist", "0123456789");
+
+    char *text = ocr.GetUTF8Text();
+//    cout << "Text:" << endl;
+//    cout << text << endl;
+//    cout << "Confidence: " << ocr.MeanTextConf() << endl << endl;
+// Get the text
+
+    return text;
+}
 
 int main(int argc, char **argv) {
     const char *files[] = {
-            "../puzzles/sudoku.jpg",
-            "../puzzles/sudoku1.jpg",
-            "../puzzles/sudoku2.jpg",
-            "../puzzles/sudoku3.jpg",
+            "../puzzles/s0.jpg",
+//            "../puzzles/s1.jpg",
+//            "../puzzles/s2.jpg",
+//            "../puzzles/s3.jpg",
     };
 
     unsigned nb_files = sizeof(files) / sizeof(const char *);
-    for (unsigned i = 0; i < nb_files; ++i) {
-        Mat raw = imread(files[i], CV_LOAD_IMAGE_GRAYSCALE);
+    for (unsigned j = 0; j < nb_files; ++j) {
+        Mat raw = imread(files[j], CV_LOAD_IMAGE_GRAYSCALE);
         Mat preprocessed = preprocess(raw.clone());
         vector<Point> biggestApprox = findBigestApprox(preprocessed);
 
         Mat sudoku = extractPuzzle(raw, biggestApprox);
-
-        for(unsigned i = 0; i < 81 ; i++ ){
+        std::ofstream outfile;
+        std::stringstream ss;
+        for (unsigned i = 0; i < 81; i++) {
             Mat cell = getCell(sudoku, i), cell_no_noise, cell_no_light, final_cell, out;
 
             // remove noise
             medianBlur(cell, cell_no_noise, 1);
             // remove background/light
-            cell_no_light = removeLight(cell_no_noise, calculateLightPattern(cell),2);
+            cell_no_light = removeLight(cell_no_noise, calculateLightPattern(cell), 2);
             // binarize image
             adaptiveThreshold(cell_no_light, final_cell, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
 
-            extractDataCell(final_cell);
+            Mat roi = extractRoiFromCell(final_cell);
 
-            tesseract::TessBaseAPI ocr;
+            if (roi.empty()) {
+//                cout << "s" << j << "-" << i << " : " "0" << endl;
+                ss << "0";
+//                outfile << endl;
+            } else {
+//                std::stringstream ss;
+//                ss << "./data/s" << j << "-" << i << ".jpg";
+//                std::string filename = ss.str();
+
+                //imwrite(filename, roi);
+
+//                cout << identifyText(roi) << endl;
+                string s = identifyText(roi);
+                ss << s;
+//                outfile << s;
+//                outfile << endl;
+
+
+            }
+
 
         }
+                        std::string result = ss.str();
+
+
+        result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
+        cout << result << endl;
+
+//        outfile.close();
+
     }
 
     return 0;
