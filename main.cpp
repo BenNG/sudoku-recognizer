@@ -176,7 +176,6 @@ Mat extractRoiFromCell(Mat cell) {
     }
 
     // Create output image coloring the objects and show area
-    RNG rng(0xFFFFFFFF);
     for (int i = 1; i < num_objects; i++) {
         int area = stats.at<int>(i, CC_STAT_AREA);
         int width = stats.at<int>(i, CC_STAT_WIDTH);
@@ -219,13 +218,38 @@ char *identifyText(Mat input, char *language = "eng") {
     return text;
 }
 
+void prepareTraining(Mat input, int fileNumber, int cellNumber) {
+
+    string number = identifyText(input);
+
+    std::stringstream trimmer;
+    trimmer << number;
+    number.clear();
+    trimmer >> number;
+
+    cout << "number is:" << number << endl;
+
+    std::stringstream ss;
+    if (number == "") {
+        ss << "./data/s" << fileNumber << "-" << cellNumber << ".jpg";
+    } else {
+        ss << "./data/" << number << "/s" << fileNumber << "-" << cellNumber << ".jpg";
+    }
+
+    std::string filename = ss.str();
+    cout << filename << endl;
+
+    imwrite(filename, input);
+}
+
 int main(int argc, char **argv) {
     const char *files[] = {
             "../puzzles/s0.jpg",
-//            "../puzzles/s1.jpg",
-//            "../puzzles/s2.jpg",
-//            "../puzzles/s3.jpg",
+            "../puzzles/s1.jpg",
+            "../puzzles/s2.jpg",
+            "../puzzles/s3.jpg",
     };
+
 
     unsigned nb_files = sizeof(files) / sizeof(const char *);
     for (unsigned j = 0; j < nb_files; ++j) {
@@ -253,26 +277,28 @@ int main(int argc, char **argv) {
                 ss << "0";
 //                outfile << endl;
             } else {
-//                std::stringstream ss;
-//                ss << "./data/s" << j << "-" << i << ".jpg";
-//                std::string filename = ss.str();
+                // when there is a new image add the new cell data in the training using this function
+                // prepareTraining(roi, j, i);
 
-                //imwrite(filename, roi);
+                string number = identifyText(roi);
 
-//                cout << identifyText(roi) << endl;
-                string s = identifyText(roi);
-                ss << s;
-//                outfile << s;
-//                outfile << endl;
+                std::stringstream trimmer;
+                trimmer << number;
+                number.clear();
+                trimmer >> number;
+
+                if (number == "") {
+                    ss << "X";
+                } else {
+                    ss << number;
+                }
 
 
+                outfile << number;
             }
-
-
         }
-                        std::string result = ss.str();
 
-
+        std::string result = ss.str();
         result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
         cout << result << endl;
 

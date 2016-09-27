@@ -11,6 +11,7 @@
 [CMake](https://cmake.org/)
 
 
+
 ## adding tesseract
 ```
 - clone the repo
@@ -36,3 +37,6 @@ cd build
 cmake ..
 make && ./DisplayImage
 ```
+
+## tips
+-  mkdir -p data/{1,2,3,4,5,6,7,8,9}
