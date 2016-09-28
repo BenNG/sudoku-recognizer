@@ -1,21 +1,11 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
 #include <tesseract/baseapi.h>
-#include "debug.h"
 #include <fstream>
-
-#include "opencv2/imgproc.hpp"
+#include "debug.h"
 #include "opencv2/text.hpp"
-#include "opencv2/highgui.hpp"
-
-#include <sstream>
-#include <string>
 
 using namespace cv::text;
-
-
-
-
 
 using namespace cv;
 using namespace std;
@@ -29,6 +19,13 @@ Scalar randomColor(RNG &rng) {
     int icolor = (unsigned) rng;
     return Scalar(icolor & 255, (icolor >> 8) & 255, (icolor >> 16) & 255);
 }
+
+Ptr<ml::ANN_MLP> ann;
+
+const char strCharacters[] = {'1','2','3','4','5','6','7','8','9'};
+const int numCharacters = 9;
+const int numFilesChars[]={11, 14, 15, 13, 13, 18, 18, 15, 9};
+
 
 /*
  * preprocess
@@ -152,6 +149,27 @@ Mat calculateLightPattern(Mat img) {
     return pattern;
 }
 
+
+Mat normalizeSize(Mat in) {
+
+    int charSize = 25;
+//Remap image
+    int h = in.rows;
+    int w = in.cols;
+    Mat transformMat = Mat::eye(2, 3, CV_32F);
+    int m = max(w, h);
+    transformMat.at<float>(0, 2) = m / 2 - w / 2;
+    transformMat.at<float>(1, 2) = m / 2 - h / 2;
+
+    Mat warpImage(m, m, in.type());
+    warpAffine(in, warpImage, transformMat, warpImage.size(), INTER_LINEAR, BORDER_CONSTANT, Scalar(0));
+
+    Mat out;
+    resize(warpImage, out, Size(charSize, charSize));
+
+    return out;
+}
+
 Mat extractRoiFromCell(Mat cell) {
 
     int cell_height = cell.rows;
@@ -194,9 +212,12 @@ Mat extractRoiFromCell(Mat cell) {
         Rect rect(left, top, width, height);
 //        Mat mask= labels==i;
 //        output.setTo(randomColor(rng), mask);
-        return cell(rect);
+        return normalizeSize(cell(rect));
+
+
 
     }
+
     return output;
 
 }
@@ -217,8 +238,25 @@ char *identifyText(Mat input, char *language = "eng") {
 
     return text;
 }
-
-void prepareTraining(Mat input, int fileNumber, int cellNumber) {
+/**
+ * pre training
+ *
+ * ├── data
+│*   ├── 1
+│*   ├── 2
+│*   ├── 3
+│*   ├── 4
+│*   ├── 5
+│*   ├── 6
+│*   ├── 7
+│*   ├── 8
+│*   └── 9
+ *
+ * create file image
+ * An input representing a 4 will be saved in 4 if recognize if not in the parent folder
+ *
+ * */
+void createImagesForTraining(Mat input, int fileNumber, int cellNumber) {
 
     string number = identifyText(input);
 
@@ -242,17 +280,128 @@ void prepareTraining(Mat input, int fileNumber, int cellNumber) {
     imwrite(filename, input);
 }
 
+
+Mat ProjectedHistogram(Mat img, int t) {
+    int sz = (t) ? img.rows : img.cols;
+    Mat mhist = Mat::zeros(1, sz, CV_32F);
+    for (int j = 0; j < sz; j++) {
+        Mat data = (t) ? img.row(j) : img.col(j);
+        mhist.at<float>(j) = countNonZero(data);
+    }
+    //Normalize histogram
+    double min, max;
+    minMaxLoc(mhist, &min, &max);
+    if (max > 0)
+        mhist.convertTo(mhist, -1, 1.0f / max, 0);
+    return mhist;
+}
+
+
+Mat features(Mat in, int sizeData){
+    int HORIZONTAL = 1;
+    int VERTICAL = 0;
+
+    //Histogram features
+    Mat vhist=ProjectedHistogram(in,VERTICAL);
+    Mat hhist=ProjectedHistogram(in,HORIZONTAL);
+
+    //Low data feature
+    Mat lowData;
+    resize(in, lowData, Size(sizeData, sizeData) );
+
+    //Last 10 is the number of moments components
+    int numCols=vhist.cols+hhist.cols+lowData.cols*lowData.cols;
+
+    Mat out=Mat::zeros(1,numCols,CV_32F);
+    //Asign values to feature
+    int j=0;
+    for(int i=0; i<vhist.cols; i++)
+    {
+        out.at<float>(j)=vhist.at<float>(i);
+        j++;
+    }
+    for(int i=0; i<hhist.cols; i++)
+    {
+        out.at<float>(j)=hhist.at<float>(i);
+        j++;
+    }
+    for(int x=0; x<lowData.cols; x++)
+    {
+        for(int y=0; y<lowData.rows; y++){
+            out.at<float>(j)=(float)lowData.at<unsigned char>(x,y);
+            j++;
+        }
+    }
+    return out;
+}
+
+void trainOCR(){
+
+//    cout << "OpenCV Training OCR Automatic Number Plate Recognition\n";
+//    cout << "\n";
+
+    char* path = "./training/";
+
+    Mat classes;
+    Mat trainingDataf5;
+    Mat trainingDataf10;
+    Mat trainingDataf15;
+    Mat trainingDataf20;
+
+    vector<int> trainingLabels;
+    for(int i=0; i< numCharacters; i++)
+    {
+        int numFiles=numFilesChars[i];
+        for(int j=1; j<= numFiles; j++){
+//            cout << "Character "<< strCharacters[i] << " file: " << j << "\n";
+            stringstream ss(stringstream::in | stringstream::out);
+            ss << path << strCharacters[i] << "/" << j << ".jpg";
+            string filename = ss.str();
+//            cout << filename << endl;
+            Mat img=imread(ss.str(), 0);
+            Mat f5=features(img, 5);
+            Mat f10=features(img, 10);
+            Mat f15=features(img, 15);
+            Mat f20=features(img, 20);
+
+            trainingDataf5.push_back(f5);
+            trainingDataf10.push_back(f10);
+            trainingDataf15.push_back(f15);
+            trainingDataf20.push_back(f20);
+            trainingLabels.push_back(i+1);
+        }
+    }
+
+    trainingDataf5.convertTo(trainingDataf5, CV_32FC1);
+    trainingDataf10.convertTo(trainingDataf10, CV_32FC1);
+    trainingDataf15.convertTo(trainingDataf15, CV_32FC1);
+    trainingDataf20.convertTo(trainingDataf20, CV_32FC1);
+    Mat(trainingLabels).copyTo(classes);
+
+    FileStorage fs("OCR.xml", FileStorage::WRITE);
+    fs << "TrainingDataF5" << trainingDataf5;
+    fs << "TrainingDataF10" << trainingDataf10;
+    fs << "TrainingDataF15" << trainingDataf15;
+    fs << "TrainingDataF20" << trainingDataf20;
+    fs << "classes" << classes;
+    fs.release();
+
+}
+
+
+
 int main(int argc, char **argv) {
+
     const char *files[] = {
             "../puzzles/s0.jpg",
             "../puzzles/s1.jpg",
             "../puzzles/s2.jpg",
             "../puzzles/s3.jpg",
     };
-
-
+    
     unsigned nb_files = sizeof(files) / sizeof(const char *);
     for (unsigned j = 0; j < nb_files; ++j) {
+        int error = 0;
         Mat raw = imread(files[j], CV_LOAD_IMAGE_GRAYSCALE);
         Mat preprocessed = preprocess(raw.clone());
         vector<Point> biggestApprox = findBigestApprox(preprocessed);
@@ -261,7 +410,7 @@ int main(int argc, char **argv) {
         std::ofstream outfile;
         std::stringstream ss;
         for (unsigned i = 0; i < 81; i++) {
-            Mat cell = getCell(sudoku, i), cell_no_noise, cell_no_light, final_cell, out;
+            Mat cell = getCell(sudoku, i), cell_no_noise, cell_no_light, final_cell;
 
             // remove noise
             medianBlur(cell, cell_no_noise, 1);
@@ -272,35 +421,51 @@ int main(int argc, char **argv) {
 
             Mat roi = extractRoiFromCell(final_cell);
 
+
             if (roi.empty()) {
 //                cout << "s" << j << "-" << i << " : " "0" << endl;
                 ss << "0";
 //                outfile << endl;
             } else {
                 // when there is a new image add the new cell data in the training using this function
-                // prepareTraining(roi, j, i);
-
-                string number = identifyText(roi);
-
-                std::stringstream trimmer;
-                trimmer << number;
-                number.clear();
-                trimmer >> number;
-
-                if (number == "") {
-                    ss << "X";
-                } else {
-                    ss << number;
-                }
+//                 createImagesForTraining(roi, j, i);
 
 
-                outfile << number;
+//                Mat feat = features(roi, 10);
+
+
+                trainOCR();
+
+//
+//                FileStorage fs;
+//                fs.open("OCR.xml", FileStorage::READ);
+//                Mat TrainingData;
+//                Mat Classes;
+//                fs["TrainingDataF15"] >> TrainingData;
+//                fs["classes"] >> Classes;
+//
+//                string number = identifyText(roi);
+//
+//                std::stringstream trimmer;
+//                trimmer << number;
+//                number.clear();
+//                trimmer >> number;
+//
+//                if (number == "") {
+//                    ss << "X";
+//                    error++;
+//                } else {
+//                    ss << number;
+//                }
+//
+//                outfile << number;
             }
         }
 
-        std::string result = ss.str();
-        result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
-        cout << result << endl;
+//        std::string result = ss.str();
+//        result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
+//        cout << "errors: " << error << endl;
+//        cout << result << endl;
 
 //        outfile.close();
 

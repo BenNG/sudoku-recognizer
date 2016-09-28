@@ -39,4 +39,11 @@ make && ./DisplayImage
 ```
 
 ## tips
--  mkdir -p data/{1,2,3,4,5,6,7,8,9}
+* mkdir -p data/{1,2,3,4,5,6,7,8,9}
+* data folder keep track of the puzzle that the cell has been extracted
+* training folder is the same as data but the filename has been renamed
+* use this to rename:
+```
+ for i in *.jpg; do let j+=1 ; mv $i $j.jpg ; done
+```
+* tesseract only use in dev ? for creating the cell in the data folder
