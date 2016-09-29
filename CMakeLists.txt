@@ -16,6 +16,8 @@ add_library(Debug debug.cpp debug.h)
 set(SOURCES main.cpp )
 
 add_executable( ${PROJECT_NAME} ${SOURCES}  )
+add_executable( xor xor.cpp  )
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
+target_link_libraries( xor ${OpenCV_LIBS} )
 target_link_libraries( ${PROJECT_NAME} ${Tesseract_LIBRARIES})
 target_link_libraries( ${PROJECT_NAME} Debug )
