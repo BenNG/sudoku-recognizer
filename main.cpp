@@ -2,12 +2,14 @@
 #include <opencv2/opencv.hpp>
 #include <tesseract/baseapi.h>
 #include <fstream>
-#include "debug.h"
+#include "lib/debug.h"
+#include "lib/extractPuzzle.h"
 #include "opencv2/text.hpp"
 
 using namespace cv::text;
 
 using namespace cv;
+using namespace cv::ml;
 using namespace std;
 
 Scalar white(255, 255, 255);
@@ -20,92 +22,13 @@ Scalar randomColor(RNG &rng) {
     return Scalar(icolor & 255, (icolor >> 8) & 255, (icolor >> 16) & 255);
 }
 
-Ptr<ml::ANN_MLP> ann;
+Ptr<ANN_MLP> mlp;
+const int hiddenLayerSize = 3;
 
-const char strCharacters[] = {'1','2','3','4','5','6','7','8','9'};
+
+const char strCharacters[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 const int numCharacters = 9;
-const int numFilesChars[]={11, 14, 15, 13, 13, 18, 18, 15, 9};
-
-
-/*
- * preprocess
- *
- * It's going to be easier for the opencv algorithm to detect the border of the sudoku
- * There is a Threshold where everything is white or black
- */
-Mat preprocess(Mat input) {
-    Mat outerBox = Mat(input.size(), CV_8UC1);
-    GaussianBlur(input, input, Size(11, 11), 0);
-    adaptiveThreshold(input, outerBox, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 2);
-    bitwise_not(outerBox, outerBox);
-    dilate(outerBox, outerBox, Mat());
-    return outerBox;
-}
-
-/*
- * findBigestApprox
- *
- * Find the biggest contour in the image
- * note that it returns vector< vector<Point> > because it is more convenient to use drawContours after
- * */
-vector<Point> findBigestApprox(Mat input) {
-
-    int largest_area = 0;
-    vector<vector<Point> > contours;
-    vector<cv::Point> approx;
-    vector<cv::Point> biggestApprox;
-
-    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-
-    for (int i = 0; i < contours.size(); i++) {
-        // Approximate contour with accuracy proportional to the contour perimeter
-        approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true) * 0.1, true);
-        // Skip small or non-convex objects
-        if (std::fabs(contourArea(contours[i])) < 1200 || !isContourConvex(approx))
-            continue;
-
-        if (approx.size() == 4) {
-            double a = contourArea(contours[i]);
-            if (a > largest_area) {
-                largest_area = a;
-                biggestApprox = approx;
-            }
-        }
-    }
-    return biggestApprox;
-}
-
-Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
-    Mat outerBox = Mat(input.size(), CV_8UC1);
-    cv::Point2f src_p[4];
-    cv::Point2f dst_p[4];
-
-    float w = (float) input.cols;
-    float h = (float) input.rows;
-    float hw = w / 2.0f;
-    float hh = h / 2.0f;
-
-    // from points
-    src_p[0] = cv::Point2f(biggestApprox.at(1));
-    src_p[1] = cv::Point2f(biggestApprox.at(0));
-    src_p[2] = cv::Point2f(biggestApprox.at(3));
-    src_p[3] = cv::Point2f(biggestApprox.at(2));
-
-    // to points
-    dst_p[0] = cv::Point2f(0.0f, 0.0f);
-    dst_p[1] = cv::Point2f(w, 0.0f);
-    dst_p[2] = cv::Point2f(w, h);
-    dst_p[3] = cv::Point2f(0.0f, h);
-//
-    cv::Mat dst_img;
-
-    // create perspective transform matrix
-    cv::Mat trans_mat33 = cv::getPerspectiveTransform(src_p, dst_p); //CV_64F->double
-
-    // perspective transform operation using transform matrix
-    warpPerspective(input, outerBox, trans_mat33, input.size(), cv::INTER_LINEAR);
-    return outerBox;
-}
+const int numFilesChars[] = {11, 14, 15, 13, 13, 18, 18, 15, 9};
 
 Mat getCell(Mat sudoku, int numCell) {
     Mat output = sudoku.clone();
@@ -215,7 +138,6 @@ Mat extractRoiFromCell(Mat cell) {
         return normalizeSize(cell(rect));
 
 
-
     }
 
     return output;
@@ -238,6 +160,7 @@ char *identifyText(Mat input, char *language = "eng") {
 
     return text;
 }
+
 /**
  * pre training
  *
@@ -297,50 +220,45 @@ Mat ProjectedHistogram(Mat img, int t) {
 }
 
 
-Mat features(Mat in, int sizeData){
+Mat features(Mat in, int sizeData) {
     int HORIZONTAL = 1;
     int VERTICAL = 0;
 
     //Histogram features
-    Mat vhist=ProjectedHistogram(in,VERTICAL);
-    Mat hhist=ProjectedHistogram(in,HORIZONTAL);
+    Mat vhist = ProjectedHistogram(in, VERTICAL);
+    Mat hhist = ProjectedHistogram(in, HORIZONTAL);
 
     //Low data feature
     Mat lowData;
-    resize(in, lowData, Size(sizeData, sizeData) );
+    resize(in, lowData, Size(sizeData, sizeData));
 
     //Last 10 is the number of moments components
-    int numCols=vhist.cols+hhist.cols+lowData.cols*lowData.cols;
+    int numCols = vhist.cols + hhist.cols + lowData.cols * lowData.cols;
 
-    Mat out=Mat::zeros(1,numCols,CV_32F);
+    Mat out = Mat::zeros(1, numCols, CV_32F);
     //Asign values to feature
-    int j=0;
-    for(int i=0; i<vhist.cols; i++)
-    {
-        out.at<float>(j)=vhist.at<float>(i);
+    int j = 0;
+    for (int i = 0; i < vhist.cols; i++) {
+        out.at<float>(j) = vhist.at<float>(i);
         j++;
     }
-    for(int i=0; i<hhist.cols; i++)
-    {
-        out.at<float>(j)=hhist.at<float>(i);
+    for (int i = 0; i < hhist.cols; i++) {
+        out.at<float>(j) = hhist.at<float>(i);
         j++;
     }
-    for(int x=0; x<lowData.cols; x++)
-    {
-        for(int y=0; y<lowData.rows; y++){
-            out.at<float>(j)=(float)lowData.at<unsigned char>(x,y);
+    for (int x = 0; x < lowData.cols; x++) {
+        for (int y = 0; y < lowData.rows; y++) {
+            out.at<float>(j) = (float) lowData.at < unsigned
+            char > (x, y);
             j++;
         }
     }
     return out;
 }
 
-void trainOCR(){
+void createDataForTraining() {
 
-//    cout << "OpenCV Training OCR Automatic Number Plate Recognition\n";
-//    cout << "\n";
-
-    char* path = "./training/";
+    char *path = "./training/";
 
     Mat classes;
     Mat trainingDataf5;
@@ -349,34 +267,34 @@ void trainOCR(){
     Mat trainingDataf20;
 
     vector<int> trainingLabels;
-    for(int i=0; i< numCharacters; i++)
-    {
-        int numFiles=numFilesChars[i];
-        for(int j=1; j<= numFiles; j++){
-//            cout << "Character "<< strCharacters[i] << " file: " << j << "\n";
+    for (int i = 0; i < numCharacters; i++) {
+        int numFiles = numFilesChars[i];
+        for (int j = 1; j <= numFiles; j++) {
+
             stringstream ss(stringstream::in | stringstream::out);
             ss << path << strCharacters[i] << "/" << j << ".jpg";
-            string filename = ss.str();
-//            cout << filename << endl;
-            Mat img=imread(ss.str(), 0);
-            Mat f5=features(img, 5);
-            Mat f10=features(img, 10);
-            Mat f15=features(img, 15);
-            Mat f20=features(img, 20);
+
+            Mat img = imread(ss.str(), 0);
+            Mat f5 = features(img, 5);
+            Mat f10 = features(img, 10);
+            Mat f15 = features(img, 15);
+            Mat f20 = features(img, 20);
 
             trainingDataf5.push_back(f5);
             trainingDataf10.push_back(f10);
             trainingDataf15.push_back(f15);
             trainingDataf20.push_back(f20);
-            trainingLabels.push_back(i+1);
+            trainingLabels.push_back(i);
         }
     }
 
-    trainingDataf5.convertTo(trainingDataf5, CV_32FC1);
-    trainingDataf10.convertTo(trainingDataf10, CV_32FC1);
-    trainingDataf15.convertTo(trainingDataf15, CV_32FC1);
-    trainingDataf20.convertTo(trainingDataf20, CV_32FC1);
+    trainingDataf5.convertTo(trainingDataf5, CV_32F);
+    trainingDataf10.convertTo(trainingDataf10, CV_32F);
+    trainingDataf15.convertTo(trainingDataf15, CV_32F);
+    trainingDataf20.convertTo(trainingDataf20, CV_32F);
     Mat(trainingLabels).copyTo(classes);
+
+    cout << classes << endl;
 
     FileStorage fs("OCR.xml", FileStorage::WRITE);
     fs << "TrainingDataF5" << trainingDataf5;
@@ -389,6 +307,56 @@ void trainOCR(){
 }
 
 
+int classify(Mat f) {
+    int result = -1;
+    Mat output(1, numCharacters, CV_32FC1);
+    mlp->predict(f, output);
+    Point maxLoc;
+    double maxVal;
+    minMaxLoc(output, 0, &maxVal, 0, &maxLoc);
+//We need to know where in output is the max val, the x (cols) is
+//the class.
+    return maxLoc.x;
+}
+
+TermCriteria TC(int iters, double eps)
+{
+    return TermCriteria(TermCriteria::MAX_ITER + (eps > 0 ? TermCriteria::EPS : 0), iters, eps);
+}
+
+static void test_and_save_classifier(const Ptr<StatModel>& model,
+                                     const Mat& data, const Mat& responses,
+                                     int ntrain_samples, int rdelta,
+                                     const string& filename_to_save)
+{
+    int i, nsamples_all = data.rows;
+    double train_hr = 0, test_hr = 0;
+
+    // compute prediction error on train and test data
+    for( i = 0; i < nsamples_all; i++ )
+    {
+        Mat sample = data.row(i);
+
+        float r = model->predict( sample );
+        r = std::abs(r + rdelta - responses.at<int>(i)) <= FLT_EPSILON ? 1.f : 0.f;
+
+        if( i < ntrain_samples )
+            train_hr += r;
+        else
+            test_hr += r;
+    }
+
+    test_hr /= nsamples_all - ntrain_samples;
+    train_hr = ntrain_samples > 0 ? train_hr/ntrain_samples : 1.;
+
+    printf( "Recognition rate: train = %.1f%%, test = %.1f%%\n",
+            train_hr*100., test_hr*100. );
+
+    if( !filename_to_save.empty() )
+    {
+        model->save( filename_to_save );
+    }
+}
 
 int main(int argc, char **argv) {
 
@@ -398,8 +366,9 @@ int main(int argc, char **argv) {
             "../puzzles/s2.jpg",
             "../puzzles/s3.jpg",
     };
-    
+
     unsigned nb_files = sizeof(files) / sizeof(const char *);
+
     for (unsigned j = 0; j < nb_files; ++j) {
         int error = 0;
         Mat raw = imread(files[j], CV_LOAD_IMAGE_GRAYSCALE);
@@ -407,67 +376,8 @@ int main(int argc, char **argv) {
         vector<Point> biggestApprox = findBigestApprox(preprocessed);
 
         Mat sudoku = extractPuzzle(raw, biggestApprox);
-        std::ofstream outfile;
-        std::stringstream ss;
-        for (unsigned i = 0; i < 81; i++) {
-            Mat cell = getCell(sudoku, i), cell_no_noise, cell_no_light, final_cell;
 
-            // remove noise
-            medianBlur(cell, cell_no_noise, 1);
-            // remove background/light
-            cell_no_light = removeLight(cell_no_noise, calculateLightPattern(cell), 2);
-            // binarize image
-            adaptiveThreshold(cell_no_light, final_cell, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
-
-            Mat roi = extractRoiFromCell(final_cell);
-
-
-            if (roi.empty()) {
-//                cout << "s" << j << "-" << i << " : " "0" << endl;
-                ss << "0";
-//                outfile << endl;
-            } else {
-                // when there is a new image add the new cell data in the training using this function
-//                 createImagesForTraining(roi, j, i);
-
-
-//                Mat feat = features(roi, 10);
-
-
-                trainOCR();
-
-//
-//                FileStorage fs;
-//                fs.open("OCR.xml", FileStorage::READ);
-//                Mat TrainingData;
-//                Mat Classes;
-//                fs["TrainingDataF15"] >> TrainingData;
-//                fs["classes"] >> Classes;
-//
-//                string number = identifyText(roi);
-//
-//                std::stringstream trimmer;
-//                trimmer << number;
-//                number.clear();
-//                trimmer >> number;
-//
-//                if (number == "") {
-//                    ss << "X";
-//                    error++;
-//                } else {
-//                    ss << number;
-//                }
-//
-//                outfile << number;
-            }
-        }
-
-//        std::string result = ss.str();
-//        result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
-//        cout << "errors: " << error << endl;
-//        cout << result << endl;
-
-//        outfile.close();
+        showImage(sudoku);
 
     }
 

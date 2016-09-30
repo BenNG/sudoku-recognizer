@@ -10,14 +10,18 @@ include_directories(${Tesseract_INCLUDE_DIRS})
 MESSAGE("OpenCV version : ${OpenCV_VERSION}")
 MESSAGE("Tesseract version : ${Tesseract_VERSION}")
 
-add_library(Debug debug.cpp debug.h)
+add_library(Debug lib/debug.cpp lib/debug.h)
+add_library(ExtractPuzzle lib/extractPuzzle.cpp lib/extractPuzzle.h)
 
 #Can manually add the sources using the set command as follows:
 set(SOURCES main.cpp )
 
 add_executable( ${PROJECT_NAME} ${SOURCES}  )
 add_executable( xor xor.cpp  )
+add_executable( letter_recog letter_recog.cpp)
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
 target_link_libraries( xor ${OpenCV_LIBS} )
+target_link_libraries( letter_recog ${OpenCV_LIBS} )
 target_link_libraries( ${PROJECT_NAME} ${Tesseract_LIBRARIES})
 target_link_libraries( ${PROJECT_NAME} Debug )
+target_link_libraries( ${PROJECT_NAME} ExtractPuzzle )
