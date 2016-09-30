@@ -12,6 +12,7 @@ MESSAGE("Tesseract version : ${Tesseract_VERSION}")
 
 add_library(Debug lib/debug.cpp lib/debug.h)
 add_library(ExtractPuzzle lib/extractPuzzle.cpp lib/extractPuzzle.h)
+add_library(CellHandling lib/cellHandling.cpp lib/cellHandling.h)
 
 #Can manually add the sources using the set command as follows:
 set(SOURCES main.cpp )
@@ -25,3 +26,4 @@ target_link_libraries( letter_recog ${OpenCV_LIBS} )
 target_link_libraries( ${PROJECT_NAME} ${Tesseract_LIBRARIES})
 target_link_libraries( ${PROJECT_NAME} Debug )
 target_link_libraries( ${PROJECT_NAME} ExtractPuzzle )
+target_link_libraries( ${PROJECT_NAME} CellHandling )
