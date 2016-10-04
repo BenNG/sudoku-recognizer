@@ -26,6 +26,7 @@ set(SOURCES main.cpp )
 add_executable( ${PROJECT_NAME} ${SOURCES}  )
 add_executable( xor xor.cpp  )
 add_executable( createDataForTraining lib/createDataForTraining.cpp)
+add_executable( randomizeDataForTraining lib/randomizeDataForTraining.cpp)
 
 
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
@@ -33,13 +34,17 @@ target_link_libraries( ${PROJECT_NAME} ${Tesseract_LIBRARIES})
 target_link_libraries( ${PROJECT_NAME} Debug )
 target_link_libraries( ${PROJECT_NAME} ExtractPuzzle )
 target_link_libraries( ${PROJECT_NAME} CellHandling )
+
 target_link_libraries( xor ${OpenCV_LIBS} )
+
 target_link_libraries( createDataForTraining ${OpenCV_LIBS} )
 target_link_libraries( createDataForTraining ${Tesseract_LIBRARIES})
 target_link_libraries( createDataForTraining Debug)
 target_link_libraries( createDataForTraining ExtractPuzzle)
 target_link_libraries( createDataForTraining CellHandling)
+
+
 if(Boost_FOUND)
     target_link_libraries(createDataForTraining ${Boost_LIBRARIES})
-#    target_link_libraries(random ${Boost_LIBRARIES})
+    target_link_libraries(randomizeDataForTraining ${Boost_LIBRARIES})
 endif()
