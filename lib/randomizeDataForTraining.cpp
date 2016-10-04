@@ -15,8 +15,22 @@
 
 namespace fs = boost::filesystem;
 
+
+void create_structure() {
+
+    fs::path randomized("data/randomized");
+
+    if (!fs::exists(randomized)) {
+        boost::filesystem::create_directories(randomized);
+    }else{
+        boost::filesystem::remove_all(randomized);
+        boost::filesystem::create_directories(randomized);
+    }
+}
+
 int main(int argc, char* argv[])
 {
+    create_structure();
     fs::path p("data");
 
 //    if (argc > 1)
