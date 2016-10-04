@@ -47,3 +47,5 @@ make && ./DisplayImage
  for i in *.jpg; do let j+=1 ; mv $i $j.jpg ; done
 ```
 * tesseract only use in dev ? for creating the cell in the data folder
+* boost library
+ * check is the /FindBoost.cmake the supported version
