@@ -1,8 +1,8 @@
 /**
- *
+ * 1/3
  * This file is not part of the main program.
  *
- * We will iterate in the puzzles folder and for each puzzle we will extract all the cells holding a number
+ * We will iterate in the `puzzles folder` and for each puzzle we will extract all the cells holding a number
  * We will normalize the cell (25x25) and save these images for future use.
  * Future use ?
  * All these images will be used to train the multi layer perceptron artificial neural network
@@ -21,11 +21,11 @@
     └── 9
  *
  * where every recognized number (eg 9) will be save in his folder (9)
- * unrecognize number will be save in the data folder waiting for an manual action
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * UNRECOGNIZE NUMBER WILL BE SAVE IN THE DATA FOLDER WAITING FOR AN MANUAL ACTION
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  * after manual action (the data folder has only folder no more images)
- * run the rename.sh script which will rename all the images with a part of uuid and the value at the end
- * eg: 6499470e_X
- * then we will use 80% all these images to train and 20% to test the mlp
+ * run the randomizeDataForTraining.sh script
  * */
 
 #include <opencv2/opencv.hpp>

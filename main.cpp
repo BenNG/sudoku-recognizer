@@ -84,98 +84,56 @@ inline TermCriteria TC(int iters, double eps) {
 }
 
 
+static void test_and_save_classifier(const Ptr<StatModel>& model,
+                                     const Mat& data, const Mat& responses,
+                                     int ntrain_samples, int rdelta,
+                                     const string& filename_to_save)
+{
+    int i, nsamples_all = data.rows;
+    double train_hr = 0, test_hr = 0;
+
+    // compute prediction error on train and test data
+    for( i = 0; i < nsamples_all; i++ )
+    {
+        Mat sample = data.row(i);
+
+        float r = model->predict( sample );
+        r = std::abs(r + rdelta - responses.at<int>(i)) <= FLT_EPSILON ? 1.f : 0.f;
+
+        if( i < ntrain_samples )
+            train_hr += r;
+        else
+            test_hr += r;
+    }
+
+    test_hr /= nsamples_all - ntrain_samples;
+    train_hr = ntrain_samples > 0 ? train_hr/ntrain_samples : 1.;
+
+    printf( "Recognition rate: train = %.1f%%, test = %.1f%%\n",
+            train_hr*100., test_hr*100. );
+
+    if( !filename_to_save.empty() )
+    {
+        model->save( filename_to_save );
+    }
+}
+
 /**
  *
  * ----------------------------- Main ------------------------------------
  *
  * */
 int main(int argc, char **argv) {
+    const int class_count = 9;
     Mat data;
     Mat responses;
-    Mat classes;
-    Mat trainingDataf5;
-    Mat trainingDataf10;
-    Mat trainingDataf15;
-    Mat trainingDataf20;
-    vector<int> trainingLabels;
-    boost::filesystem::path randomized("data/randomized");
 
-    unsigned long file_count = 0;
-    unsigned long dir_count = 0;
-    unsigned long other_count = 0;
-    unsigned long err_count = 0;
-
-    if (!boost::filesystem::exists(randomized)) {
-        std::cout << "\nNot found: " << randomized << std::endl;
-        return 1;
-    }
-
-    if (boost::filesystem::is_directory(randomized)) {
-        // std::cout << "\nIn directory: " << p << "\n\n";
-        boost::filesystem::directory_iterator end_iter;
-        for (boost::filesystem::directory_iterator dir_itr(randomized);
-             dir_itr != end_iter;
-             ++dir_itr) {
-            try {
-                if (boost::filesystem::is_directory(dir_itr->status())) {
-                    ++dir_count;
-                    // std::cout << dir_itr->path().filename() << " [directory]\n";
-                } else if (boost::filesystem::is_regular_file(dir_itr->status())) {
-                    ++file_count;
-                    boost::filesystem::path source_path(dir_itr->path());
-                    std::cout << source_path << "\n";
-                    string source = source_path.string();
+    FileStorage fs;
+    fs.open("featuredDataForTraining.xml", FileStorage::READ);
+    fs["TrainingDataF15"] >> data;
+    fs["classes"] >> responses;
 
 
-                    int lastChar = (int) source.at(source.length() - 5);
-                    int value((int) lastChar - 48);
-                    int index(value - 1);
-
-                    Mat img = imread(source, 0);
-                    Mat f5 = features(img, 5);
-                    Mat f10 = features(img, 10);
-                    Mat f15 = features(img, 15);
-                    Mat f20 = features(img, 20);
-
-
-                    trainingDataf5.push_back(f5);
-                    trainingDataf10.push_back(f10);
-                    trainingDataf15.push_back(f15);
-                    trainingDataf20.push_back(f20);
-                    trainingLabels.push_back(index);
-
-
-                } else {
-                    ++other_count;
-                    // std::cout << dir_itr->path().filename() << " [other]\n";
-                }
-
-            }
-            catch (const std::exception &ex) {
-                ++err_count;
-                std::cout << dir_itr->path().filename() << " " << ex.what() << std::endl;
-            }
-        }
-//        std::cout << "\n" << file_count << " files\n"
-//                  << dir_count << " directories\n"
-//                  << other_count << " others\n"
-//                  << err_count << " errors\n";
-    } else // must be a file
-    {
-//        std::cout << "\nFound: " << p << "\n";
-    }
-
-
-    trainingDataf5.convertTo(trainingDataf5, CV_32F);
-    trainingDataf10.convertTo(trainingDataf10, CV_32F);
-    trainingDataf15.convertTo(trainingDataf15, CV_32F);
-    trainingDataf20.convertTo(trainingDataf20, CV_32F);
-    Mat(trainingLabels).copyTo(classes);
-
-
-    const int class_count = 9;
-    data = trainingDataf15;
-    responses = classes;
 
     int nsamples_all = data.rows;
     int ntrain_samples = (int) (nsamples_all * 0.8);
@@ -190,7 +148,7 @@ int main(int argc, char **argv) {
     }
 
 
-    cout << train_responses << endl;
+//    cout << train_responses << endl;
 
     // 2. train classifier
     int layer_sz[] = {data.cols, 100, 100, class_count};
@@ -218,12 +176,13 @@ int main(int argc, char **argv) {
     model->train(tdata);
     cout << endl;
 
+    // manual test
+//    Mat sample = data.row(100);
+//    float r = model->predict(sample);
+//    cout << "r:" << r << endl;
 
-    Mat sample = data.row(100);
+    test_and_save_classifier(model, data, responses, ntrain_samples, 0, "classifier_data");
 
-    float r = model->predict(sample);
-
-    cout << "r:" << r << endl;
 
     return 0;
 }

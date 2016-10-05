@@ -27,6 +27,7 @@ add_executable( ${PROJECT_NAME} ${SOURCES}  )
 add_executable( xor xor.cpp  )
 add_executable( createDataForTraining lib/createDataForTraining.cpp)
 add_executable( randomizeDataForTraining lib/randomizeDataForTraining.cpp)
+add_executable( featurizeDataForTraining lib/featurizeDataForTraining.cpp)
 
 
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
@@ -43,9 +44,13 @@ target_link_libraries( createDataForTraining Debug)
 target_link_libraries( createDataForTraining ExtractPuzzle)
 target_link_libraries( createDataForTraining CellHandling)
 
+target_link_libraries( featurizeDataForTraining ${OpenCV_LIBS} )
+target_link_libraries( featurizeDataForTraining CellHandling )
+
 
 if(Boost_FOUND)
     target_link_libraries(createDataForTraining ${Boost_LIBRARIES})
     target_link_libraries(randomizeDataForTraining ${Boost_LIBRARIES})
+    target_link_libraries(featurizeDataForTraining ${Boost_LIBRARIES})
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 endif()
