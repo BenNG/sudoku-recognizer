@@ -137,7 +137,7 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
 
 
 
-static bool
+Ptr<ANN_MLP>
     build_mlp_classifier(const string& data_filename, const string& persistence){
 
     const int class_count = 9;
@@ -159,10 +159,7 @@ static bool
     boost::filesystem::path persistence_path(persistence);
     // Create or load MLP classifier
     if (boost::filesystem::exists(persistence_path)) {
-        model = load_classifier<ANN_MLP>(persistence);
-        if( model.empty() )
-            return false;
-        ntrain_samples = 0;
+        return load_classifier<ANN_MLP>(persistence);
     }
     else
     {
@@ -213,7 +210,7 @@ static bool
     }
 
     test_and_save_classifier(model, data, responses, ntrain_samples, 0, persistence);
-    return true;
+    return model;
 }
 
 /**
@@ -222,6 +219,21 @@ static bool
  *
  * */
 int main(int argc, char **argv) {
-    build_mlp_classifier("featuredDataForTraining.xml", "");
+    Ptr<ANN_MLP> model = build_mlp_classifier("featuredDataForTraining.xml", "trained_data_for_sudoku_15x15");
+    Mat data;
+    Mat responses;
+
+    // fn
+    FileStorage fs;
+    fs.open("featuredDataForTraining.xml", FileStorage::READ);
+    fs["TrainingDataF15"] >> data;
+    fs["classes"] >> responses;
+    // fn - end
+
+    // manual test
+    Mat sample = data.row(100);
+    float r = model->predict(sample);
+    cout << "r:" << r << endl;
+
     return 0;
 }
