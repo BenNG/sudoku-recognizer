@@ -37,6 +37,22 @@ Scalar randomColor(RNG &rng) {
 Ptr<ANN_MLP> model;
 const int hiddenLayerSize = 3;
 
+
+
+
+template<typename T>
+static Ptr<T> load_classifier(const string& persistence)
+{
+    // load classifier from the specified file
+    Ptr<T> model = StatModel::load<T>( persistence );
+    if( model.empty() )
+        cout << "Could not read the classifier " << persistence << endl;
+    else
+        cout << "The classifier " << persistence << " is loaded.\n";
+
+    return model;
+}
+
 static bool
 read_num_class_data(const string &filename, int var_count,
                     Mat *_data, Mat *_responses) {
@@ -118,71 +134,94 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
     }
 }
 
+
+
+
+static bool
+    build_mlp_classifier(const string& data_filename, const string& persistence){
+
+    const int class_count = 9;
+    Mat data;
+    Mat responses;
+
+    // fn
+    FileStorage fs;
+    fs.open("featuredDataForTraining.xml", FileStorage::READ);
+    fs["TrainingDataF15"] >> data;
+    fs["classes"] >> responses;
+    // fn - end
+
+    Ptr<ANN_MLP> model;
+
+    int nsamples_all = data.rows;
+    int ntrain_samples = (int)(nsamples_all*0.8);
+
+    boost::filesystem::path persistence_path(persistence);
+    // Create or load MLP classifier
+    if (boost::filesystem::exists(persistence_path)) {
+        model = load_classifier<ANN_MLP>(persistence);
+        if( model.empty() )
+            return false;
+        ntrain_samples = 0;
+    }
+    else
+    {
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //
+        // MLP does not support categorical variables by explicitly.
+        // So, instead of the output class label, we will use
+        // a binary vector of <class_count> components for training and,
+        // therefore, MLP will give us a vector of "probabilities" at the
+        // prediction stage
+        //
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        Mat train_data = data.rowRange(0, ntrain_samples);
+        Mat train_responses = Mat::zeros( ntrain_samples, class_count, CV_32F );
+
+        // 1. unroll the responses
+        cout << "Unrolling the responses...\n";
+        for (int i = 0; i < ntrain_samples; i++) {
+            train_responses.at<float>(i, responses.at<int>(i)) = 1.f;
+        }
+
+        // 2. train classifier
+        int layer_sz[] = {data.cols, 100, 100, class_count};
+        int nlayers = (int) (sizeof(layer_sz) / sizeof(layer_sz[0]));
+        Mat layer_sizes(1, nlayers, CV_32S, layer_sz);
+
+#if 1
+        int method = ANN_MLP::BACKPROP;
+        double method_param = 0.001;
+        int max_iter = 300;
+#else
+        int method = ANN_MLP::RPROP;
+        double method_param = 0.1;
+        int max_iter = 1000;
+#endif
+
+        Ptr<TrainData> tdata = TrainData::create(train_data, ROW_SAMPLE, train_responses);
+
+        cout << "Training the classifier (may take a few minutes)...\n";
+        model = ANN_MLP::create();
+        model->setLayerSizes(layer_sizes);
+        model->setActivationFunction(ANN_MLP::SIGMOID_SYM, 0, 0);
+        model->setTermCriteria(TC(max_iter,0));
+        model->setTrainMethod(method, method_param);
+        model->train(tdata);
+        cout << endl;
+    }
+
+    test_and_save_classifier(model, data, responses, ntrain_samples, 0, persistence);
+    return true;
+}
+
 /**
  *
  * ----------------------------- Main ------------------------------------
  *
  * */
 int main(int argc, char **argv) {
-    const int class_count = 9;
-    Mat data;
-    Mat responses;
-
-    FileStorage fs;
-    fs.open("featuredDataForTraining.xml", FileStorage::READ);
-    fs["TrainingDataF15"] >> data;
-    fs["classes"] >> responses;
-
-
-
-    int nsamples_all = data.rows;
-    int ntrain_samples = (int) (nsamples_all * 0.8);
-
-    Mat train_data = data.rowRange(0, ntrain_samples);
-    Mat train_responses = Mat::zeros(ntrain_samples, class_count, CV_32F);
-
-    // 1. unroll the responses
-    cout << "Unrolling the responses...\n";
-    for (int i = 0; i < ntrain_samples; i++) {
-        train_responses.at<float>(i, responses.at<int>(i)) = 1.f;
-    }
-
-
-//    cout << train_responses << endl;
-
-    // 2. train classifier
-    int layer_sz[] = {data.cols, 100, 100, class_count};
-    int nlayers = (int) (sizeof(layer_sz) / sizeof(layer_sz[0]));
-    Mat layer_sizes(1, nlayers, CV_32S, layer_sz);
-
-#if 1
-    int method = ANN_MLP::BACKPROP;
-    double method_param = 0.001;
-    int max_iter = 300;
-#else
-    int method = ANN_MLP::RPROP;
-        double method_param = 0.1;
-        int max_iter = 1000;
-#endif
-
-    Ptr<TrainData> tdata = TrainData::create(train_data, ROW_SAMPLE, train_responses);
-
-    cout << "Training the classifier (may take a few minutes)...\n";
-    model = ANN_MLP::create();
-    model->setLayerSizes(layer_sizes);
-    model->setActivationFunction(ANN_MLP::SIGMOID_SYM, 0, 0);
-    model->setTermCriteria(TC(max_iter, 0));
-    model->setTrainMethod(method, method_param);
-    model->train(tdata);
-    cout << endl;
-
-    // manual test
-//    Mat sample = data.row(100);
-//    float r = model->predict(sample);
-//    cout << "r:" << r << endl;
-
-    test_and_save_classifier(model, data, responses, ntrain_samples, 0, "classifier_data");
-
-
+    build_mlp_classifier("featuredDataForTraining.xml", "");
     return 0;
 }
