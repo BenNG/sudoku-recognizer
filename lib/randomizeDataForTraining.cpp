@@ -13,19 +13,22 @@
 #include "boost/progress.hpp"
 #include <iostream>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/uuid/uuid.hpp>            // uuid class
 #include <boost/uuid/uuid_generators.hpp> // generators
 #include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
 
-namespace fs = boost::filesystem;
+using namespace boost;
+using namespace std;
+
 
 
 void create_structure() {
 
-    fs::path randomized("data/randomized");
+    boost::filesystem::path randomized("data/randomized");
 
-    if (!fs::exists(randomized)) {
+    if (!boost::filesystem::exists(randomized)) {
         boost::filesystem::create_directories(randomized);
     } else {
         boost::filesystem::remove_all(randomized);
@@ -33,29 +36,38 @@ void create_structure() {
     }
 }
 
-std::string sub_uuid() {
-//    std::stringstream ss;
+std::string sub_uuid(boost::filesystem::path p) {
+    vector<string> strs;
+
+    string line(p.string());
+
+    boost::split(strs,line,boost::is_any_of("/"));
+//    std::cout << strs[1] << std::endl;
+//    string value(strs[1]);
+
+    std::stringstream ss;
     boost::uuids::uuid uuid = boost::uuids::random_generator()();
-//    std::cout << uuid << std::endl;
 
     const std::string tmp = boost::lexical_cast<std::string>(uuid);
-
     size_t first = tmp.find_first_of("-");
-    if (first == std::string::npos) return tmp;
-    return tmp.substr(0, first);
+    ss << tmp.substr(0, first);
+    ss << "_";
+    ss << strs[1]; // value
+    ss << p.filename().extension().string();
+    return ss.str();
 }
 
 int main(int argc, char *argv[]) {
     create_structure();
-//    fs::path data("data");
-//    fs::path data1("data/1");
-//    fs::path data2("data/2");
-//    fs::path data3("data/3");
-//    fs::path data4("data/4");
-//    fs::path data5("data/5");
-//    fs::path data6("data/6");
-//    fs::path data7("data/7");
-//    fs::path data8("data/8");
+//    boost::filesystem::path data("data");
+//    boost::filesystem::path data1("data/1");
+//    boost::filesystem::path data2("data/2");
+//    boost::filesystem::path data3("data/3");
+//    boost::filesystem::path data4("data/4");
+//    boost::filesystem::path data5("data/5");
+//    boost::filesystem::path data6("data/6");
+//    boost::filesystem::path data7("data/7");
+//    boost::filesystem::path data8("data/8");
 
     const char *files[] = {
             "data/1",
@@ -73,35 +85,41 @@ int main(int argc, char *argv[]) {
 
     for (unsigned j = 0; j < nb_files; ++j) {
 
-        fs::path p(files[j]);
+        boost::filesystem::path p(files[j]);
 
         unsigned long file_count = 0;
         unsigned long dir_count = 0;
         unsigned long other_count = 0;
         unsigned long err_count = 0;
 
-        if (!fs::exists(p)) {
+        if (!boost::filesystem::exists(p)) {
             std::cout << "\nNot found: " << p << std::endl;
             return 1;
         }
 
-        if (fs::is_directory(p)) {
+        if (boost::filesystem::is_directory(p)) {
             // std::cout << "\nIn directory: " << p << "\n\n";
-            fs::directory_iterator end_iter;
-            for (fs::directory_iterator dir_itr(p);
+            boost::filesystem::directory_iterator end_iter;
+            for (boost::filesystem::directory_iterator dir_itr(p);
                  dir_itr != end_iter;
                  ++dir_itr) {
                 try {
-                    if (fs::is_directory(dir_itr->status())) {
+                    if (boost::filesystem::is_directory(dir_itr->status())) {
                         ++dir_count;
                         // std::cout << dir_itr->path().filename() << " [directory]\n";
-                    } else if (fs::is_regular_file(dir_itr->status())) {
+                    } else if (boost::filesystem::is_regular_file(dir_itr->status())) {
                         ++file_count;
+                        boost::filesystem::path source(dir_itr->path());
 
-                        std::cout << dir_itr->path() << "\n";
+//                        std::cout << p << "\n";
 
-                        std::string s(sub_uuid());
+                        std::string s(sub_uuid(source));
                         std::cout << s << std::endl;
+
+                        boost::filesystem::path dest("data/randomized/" + s);
+
+                        boost::filesystem::rename(source, dest);
+
 
                     } else {
                         ++other_count;
