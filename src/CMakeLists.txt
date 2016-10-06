@@ -17,6 +17,7 @@ add_library(Debug lib/debug.cpp lib/debug.h)
 add_library(Add lib/add.cpp lib/add.h)
 add_library(ExtractPuzzle lib/extractPuzzle.cpp lib/extractPuzzle.h)
 add_library(CellHandling lib/cellHandling.cpp lib/cellHandling.h)
+add_library(mlp lib/mlp.cpp lib/mlp.h)
 
 #Can manually add the sources using the set command as follows:
 set(SOURCES main.cpp )
@@ -32,6 +33,7 @@ target_link_libraries( ${PROJECT_NAME} ${Tesseract_LIBRARIES})
 target_link_libraries( ${PROJECT_NAME} Debug )
 target_link_libraries( ${PROJECT_NAME} ExtractPuzzle )
 target_link_libraries( ${PROJECT_NAME} CellHandling )
+target_link_libraries( ${PROJECT_NAME} mlp )
 
 target_link_libraries( createDataForTraining ${OpenCV_LIBS} )
 target_link_libraries( createDataForTraining ${Tesseract_LIBRARIES})
@@ -42,6 +44,7 @@ target_link_libraries( createDataForTraining CellHandling)
 target_link_libraries( featurizeDataForTraining ${OpenCV_LIBS} )
 target_link_libraries( featurizeDataForTraining CellHandling )
 
+target_link_libraries( mlp ${OpenCV_LIBS} )
 
 if(Boost_FOUND)
     target_link_libraries(createDataForTraining ${Boost_LIBRARIES})
