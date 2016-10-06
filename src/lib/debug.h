@@ -3,6 +3,8 @@
 using namespace cv;
 using namespace std;
 
+
+int minuss(int i, int j);
 Mat drawAllContour(Mat input);
 void drawAllApprox(Mat input, Mat output);
 void drawMarkers(Mat input, vector<Point> biggestApprox);

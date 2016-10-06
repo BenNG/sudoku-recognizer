@@ -3,5 +3,5 @@ project( DisplayImage )
 
 add_subdirectory (src)
 
-enable_testing ()
+enable_testing()
 add_subdirectory (test)

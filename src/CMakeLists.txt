@@ -14,6 +14,7 @@ MESSAGE("OpenCV version : ${OpenCV_VERSION}")
 MESSAGE("Tesseract version : ${Tesseract_VERSION}")
 
 add_library(Debug lib/debug.cpp lib/debug.h)
+add_library(Add lib/add.cpp lib/add.h)
 add_library(ExtractPuzzle lib/extractPuzzle.cpp lib/extractPuzzle.h)
 add_library(CellHandling lib/cellHandling.cpp lib/cellHandling.h)
 

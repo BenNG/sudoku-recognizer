@@ -1,5 +1,10 @@
 #include "debug.h"
 
+int minuss(int i, int j)
+{
+    return i - j;
+}
+
 Mat drawAllContour(Mat input) {
     Mat output = Mat::zeros(input.rows, input.cols, input.type());
     Scalar white(255, 255, 255);
