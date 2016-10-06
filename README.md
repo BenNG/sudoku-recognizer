@@ -40,7 +40,6 @@ make && ./DisplayImage
 
 ## tips
 * mkdir -p data/{1,2,3,4,5,6,7,8,9}
-* use this to rename:
 * tesseract only use in dev ? for creating the cell in the data folder
 * boost library
  * check is the /FindBoost.cmake the supported version

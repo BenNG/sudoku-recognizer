@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 3.5.1)
-project( DisplayImage )
-
 find_package( OpenCV 3.1.0 REQUIRED core text)
 find_package( Tesseract REQUIRED ) # 3.05 is currently the latest version of the git repository.
 find_package(Boost 1.58 COMPONENTS system filesystem)
