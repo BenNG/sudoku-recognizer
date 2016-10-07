@@ -28,13 +28,15 @@
 #include <boost/uuid/uuid.hpp>            // uuid class
 #include <boost/uuid/uuid_generators.hpp> // generators
 #include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
+#include "randomizeDataForTraining.h"
+
 
 using namespace boost;
 using namespace std;
 
 
 
-void create_structure() {
+void create_structure_for_randomization() {
 
     boost::filesystem::path randomized("data/randomized");
 
@@ -67,8 +69,8 @@ std::string sub_uuid(boost::filesystem::path p) {
     return ss.str();
 }
 
-int main(int argc, char *argv[]) {
-    create_structure();
+int randomizeData() {
+    create_structure_for_randomization();
 //    boost::filesystem::path data("data");
 //    boost::filesystem::path data1("data/1");
 //    boost::filesystem::path data2("data/2");
@@ -124,11 +126,11 @@ int main(int argc, char *argv[]) {
 //                        std::cout << p << "\n";
 
                         std::string s(sub_uuid(source));
-                        std::cout << s << std::endl;
+//                        std::cout << s << std::endl;
 
                         boost::filesystem::path dest("data/randomized/" + s);
 
-                        boost::filesystem::rename(source, dest);
+                        boost::filesystem::copy(source, dest);
 
 
                     } else {

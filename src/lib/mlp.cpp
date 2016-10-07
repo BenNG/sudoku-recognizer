@@ -100,7 +100,7 @@ build_mlp_classifier(const string& data_filename, const string& persistence){
         Mat train_responses = Mat::zeros( ntrain_samples, class_count, CV_32F );
 
         // 1. unroll the responses
-        cout << "Unrolling the responses...\n";
+//        cout << "Unrolling the responses...\n";
         for (int i = 0; i < ntrain_samples; i++) {
             train_responses.at<float>(i, responses.at<int>(i)) = 1.f;
         }

@@ -27,7 +27,7 @@
 using namespace cv;
 using namespace std;
 
-int main(int argc, char **argv) {
+int featurizeData() {
     Mat classes;
     Mat trainingDataf5;
     Mat trainingDataf10;
@@ -35,7 +35,6 @@ int main(int argc, char **argv) {
     Mat trainingDataf20;
     vector<int> trainingLabels;
     boost::filesystem::path randomized("data/randomized");
-
 
     unsigned long file_count = 0;
     unsigned long dir_count = 0;
@@ -60,7 +59,7 @@ int main(int argc, char **argv) {
                 } else if (boost::filesystem::is_regular_file(dir_itr->status())) {
                     ++file_count;
                     boost::filesystem::path source_path(dir_itr->path());
-                    std::cout << source_path << "\n";
+//                    std::cout << source_path << "\n";
                     string source = source_path.string();
 
 
@@ -74,13 +73,11 @@ int main(int argc, char **argv) {
                     Mat f15 = features(img, 15);
                     Mat f20 = features(img, 20);
 
-
                     trainingDataf5.push_back(f5);
                     trainingDataf10.push_back(f10);
                     trainingDataf15.push_back(f15);
                     trainingDataf20.push_back(f20);
                     trainingLabels.push_back(index);
-
 
                 } else {
                     ++other_count;

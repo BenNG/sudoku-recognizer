@@ -2,15 +2,23 @@
 
 ## Requirement
 
-[This](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) will help you to install OpenCV and OpenCV_contrib
+To run this project you need 
+* [CMake](https://cmake.org/)
+* [OpenCV 3.1.0](http://opencv.org/downloads.html) and [OpenCV_contrib](https://github.com/opencv/opencv_contrib). This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful
+* [Tesseract](https://github.com/tesseract-ocr)
+  * build the project
+    * clone the repo
+    * mkdir build
+    * cmake ..
+  * use it in the project
+    * Tesseract_DIR=/keep/Repo/tesseract/build cmake .. # needed for the first time after you can use cmake .. only
 
-[OpenCV 3.1.0](http://opencv.org/downloads.html) I recommend using the official website instead of the github repo
+## Get started
 
-[opencv_contrib](https://github.com/opencv/opencv_contrib/releases/tag/3.1.0)
-
-[CMake](https://cmake.org/)
-
-
+* Go to the root of the project
+* mkdir build
+* cd build
+* Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/DisplayImage
 
 ## adding tesseract
 ```

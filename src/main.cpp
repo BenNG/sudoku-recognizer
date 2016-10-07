@@ -13,6 +13,9 @@
 #include "boost/filesystem/path.hpp"
 #include "boost/progress.hpp"
 #include "lib/mlp.h"
+#include "lib/createDataForTraining.h"
+#include "lib/randomizeDataForTraining.h"
+#include "lib/featurizeDataForTraining.h"
 #include <opencv2/opencv.hpp>
 
 namespace fs = boost::filesystem;
@@ -45,21 +48,22 @@ const int hiddenLayerSize = 3;
  * */
 int main(int argc, char **argv) {
 
+    string message;
     fs::path featured("featuredDataForTraining.xml");
     fs::path trained_data("trained_data");
 
-
     if (!fs::exists(featured) && !fs::exists(trained_data)) {
-        cout << "You have to prepare the data for you network" << endl;
-        cout << "1. src/createDataForTraining" << endl;
-        cout << "2. manually classify the files in data/" << endl;
-        cout << "3. src/randomizeDataForTraining" << endl;
-        cout << "4. src/featurizeDataForTraining" << endl;
-        return 1;
+        createData();
+
+        cout << "Go clean the data folder !! say 'ok' when you are ready "  << endl;
+        cin >> message;
+        if(message == "ok"){
+            std::cout << "2nd: randomize the file because we will use 80% of the data and 20% to test the network" << std::endl;
+            randomizeData();
+            std::cout << "3rd: extract feature for each cell and save it in featuredDataForTraining.xml" << std::endl;
+            featurizeData();
+        }
     }
-
-
-
 
     Ptr<ANN_MLP> model = build_mlp_classifier("featuredDataForTraining.xml", "trained_data");
     Mat data;

@@ -120,7 +120,7 @@ void createPreTrainingData(Mat input, string fileNumber, int cellIndex) {
     number.clear();
     trimmer >> number;
 
-    cout << "number is:" << number << endl;
+//    cout << "number is:" << number << endl;
 
     std::stringstream ss;
     if (number == "") {
@@ -130,7 +130,7 @@ void createPreTrainingData(Mat input, string fileNumber, int cellIndex) {
     }
 
     std::string filename = ss.str();
-    cout << filename << endl;
+//    cout << filename << endl;
 
     imwrite(filename, input);
 }
@@ -182,7 +182,7 @@ void create_structure() {
 
 }
 
-int main(int argc, char *argv[]) {
+int createData() {
 
     create_structure();
 //    fs::path p(fs::current_path());
@@ -194,12 +194,17 @@ int main(int argc, char *argv[]) {
     unsigned long err_count = 0;
 
     if (!fs::exists(p)) {
-        std::cout << "\nNot found: " << p << std::endl;
+        std::cout << "\nIn order to train the classifier you need to have some pictures holding a sudoku puzzle in assets/puzzles : " << p << std::endl;
         return 1;
     }
 
+    std::cout << "\n\n\nThe data needed to train the classifier was not found so we will create it." << std::endl;
+    std::cout << "There are 3 steps to create these data" << std::endl;
+    std::cout << "1st: extract each sudoku cells holding a number and save it in his folder" << std::endl;
+    std::cout << "  for example a cell holding a 1 will be save the data/1 folder (this could take a long time)" << std::endl;
+
     if (fs::is_directory(p)) {
-        std::cout << "\nIn directory: " << p << "\n\n";
+//        std::cout << "\nIn directory: " << "\n\n";
         fs::directory_iterator end_iter;
         for (fs::directory_iterator dir_itr(p);
              dir_itr != end_iter;
@@ -262,13 +267,19 @@ int main(int argc, char *argv[]) {
                 std::cout << dir_itr->path().filename() << " " << ex.what() << std::endl;
             }
         }
-        std::cout << "\n" << file_count << " files\n"
-                  << dir_count << " directories\n"
-                  << other_count << " others\n"
-                  << err_count << " errors\n";
+//        std::cout << "\n" << file_count << " files\n"
+//                  << dir_count << " directories\n"
+//                  << other_count << " others\n"
+//                  << err_count << " errors\n";
     } else // must be a file
     {
-        std::cout << "\nFound: " << p << "\n";
+//        std::cout << "\nFound: " << "\n";
     }
+    std::cout << "\n1st part done !" << std::endl;
+    std::cout << "GO TO data/ !!!\n" << std::endl;
+    std::cout << "You need to manually check if all the data are well classified in the data/X folder" << std::endl;
+    std::cout << "Note that there are probably some pictures in data/ as well, you also have to manually classify these ones" << std::endl;
+    std::cout << "When the data folder is empty (not data/X) you can continue\n" << std::endl;
+
     return 0;
 }
