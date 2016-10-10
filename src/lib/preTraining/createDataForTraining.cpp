@@ -33,9 +33,9 @@
 
 #include <opencv2/opencv.hpp>
 #include <tesseract/baseapi.h>
-#include "debug.h"
-#include "extractPuzzle.h"
-#include "cellHandling.h"
+#include "../debug.h"
+#include "../utils/extractPuzzle.h"
+#include "../utils/cell.h"
 
 #include <iostream>
 
@@ -108,7 +108,8 @@ char *identifyText(Mat input) {
 │*   └── 9
  *
  * create file image
- * An input representing a 4 will be saved in 4 if recognize if not in the parent folder
+ * An input representing a 4 will be saved in the 4 folder.
+ * Unrecognize cells will be saved in the date folder
  *
  * */
 void createPreTrainingData(Mat input, string fileNumber, int cellIndex) {

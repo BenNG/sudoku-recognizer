@@ -1,4 +1,8 @@
-#include "cellHandling.h"
+/**
+ * utils functions related to cell (when the puzzle has already been extracted )
+ * */
+
+#include "cell.h"
 
 /**
  * get cell from an image created by the extractPuzzle fn

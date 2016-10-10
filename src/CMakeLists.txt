@@ -13,12 +13,12 @@ MESSAGE("Tesseract version : ${Tesseract_VERSION}")
 
 add_library(Debug lib/debug.cpp lib/debug.h)
 add_library(Add lib/add.cpp lib/add.h)
-add_library(ExtractPuzzle lib/extractPuzzle.cpp lib/extractPuzzle.h)
-add_library(CellHandling lib/cellHandling.cpp lib/cellHandling.h)
+add_library(ExtractPuzzle lib/utils/extractPuzzle.cpp lib/utils/extractPuzzle.h)
+add_library(CellHandling lib/utils/cell.cpp lib/utils/cell.h)
 add_library(mlp lib/mlp.cpp lib/mlp.h)
-add_library(createDataForTraining lib/createDataForTraining.cpp lib/createDataForTraining.h)
-add_library(randomizeDataForTraining lib/randomizeDataForTraining.cpp lib/randomizeDataForTraining.h)
-add_library(featurizeDataForTraining lib/featurizeDataForTraining.cpp lib/featurizeDataForTraining.h)
+add_library(createDataForTraining lib/preTraining/createDataForTraining.cpp lib/preTraining/createDataForTraining.h)
+add_library(randomizeDataForTraining lib/preTraining/randomizeDataForTraining.cpp lib/preTraining/randomizeDataForTraining.h)
+add_library(featurizeDataForTraining lib/preTraining/featurizeDataForTraining.cpp lib/preTraining/featurizeDataForTraining.h)
 
 #Can manually add the sources using the set command as follows:
 set(SOURCES main.cpp )

@@ -72,7 +72,7 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
     dst_p[1] = cv::Point2f(w, 0.0f);
     dst_p[2] = cv::Point2f(w, h);
     dst_p[3] = cv::Point2f(0.0f, h);
-//
+
     cv::Mat dst_img;
 
     // create perspective transform matrix

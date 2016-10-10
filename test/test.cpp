@@ -11,8 +11,8 @@ using namespace cv;
 BOOST_AUTO_TEST_CASE(universeInOrder)
 {
     BOOST_CHECK(add(2, 2) == 4);
-}
+};
 BOOST_AUTO_TEST_CASE(universeInOrder2)
 {
     BOOST_CHECK(minuss(2, 2) == 0);
-}
+};

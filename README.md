@@ -18,7 +18,7 @@ To run this project you need
 * Go to the root of the project
 * mkdir build
 * cd build
-* Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/DisplayImage
+* Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/DisplayImage ../assets/puzzles/s0.jpg
 
 ## adding tesseract
 ```

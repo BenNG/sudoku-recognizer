@@ -13,9 +13,9 @@
 #include "boost/filesystem/path.hpp"
 #include "boost/progress.hpp"
 #include "lib/mlp.h"
-#include "lib/createDataForTraining.h"
-#include "lib/randomizeDataForTraining.h"
-#include "lib/featurizeDataForTraining.h"
+#include "lib/preTraining/createDataForTraining.h"
+#include "lib/preTraining/randomizeDataForTraining.h"
+#include "lib/preTraining/featurizeDataForTraining.h"
 #include <opencv2/opencv.hpp>
 
 namespace fs = boost::filesystem;
@@ -35,18 +35,14 @@ Scalar randomColor(RNG &rng) {
 }
 
 Ptr<ANN_MLP> model;
+
 const int hiddenLayerSize = 3;
 
+string grab(Mat image){
 
-
-
-
-/**
- *
- * ----------------------------- Main ------------------------------------
- *
- * */
-int main(int argc, char **argv) {
+    int cellValue;
+    Mat cellFeatured;
+    std::stringstream response;
 
     string message;
     fs::path featured("featuredDataForTraining.xml");
@@ -66,6 +62,34 @@ int main(int argc, char **argv) {
     }
 
     Ptr<ANN_MLP> model = build_mlp_classifier("featuredDataForTraining.xml", "trained_data");
+
+    Mat preprocessed = preprocess(image.clone());
+    vector<Point> biggestApprox = findBigestApprox(preprocessed);
+    Mat sudoku = extractPuzzle(image, biggestApprox);
+
+    for (unsigned i = 0; i < 81; i++) {
+        Mat cell = getCell(sudoku, i), cell_no_noise, cell_no_light, final_cell;
+
+        // remove noise
+        medianBlur(cell, cell_no_noise, 1);
+        // remove background/light
+        cell_no_light = removeLight(cell_no_noise, calculateLightPattern(cell), 2);
+        // binarize image
+        adaptiveThreshold(cell_no_light, final_cell, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
+
+        Mat roi = extractRoiFromCell(final_cell);
+
+        if (roi.empty()) {
+            response << "0";
+        } else {
+            cellFeatured = features(roi, 15);
+            cellValue = model->predict(cellFeatured);
+//            cout << "r:" << cellValue + 1 << endl;
+            response << cellValue + 1;
+//            showImage(roi);
+        }
+    }
+
     Mat data;
     Mat responses;
 
@@ -76,10 +100,38 @@ int main(int argc, char **argv) {
     fs["classes"] >> responses;
     // fn - end
 
-    // manual test
-    Mat sample = data.row(100);
-    float r = model->predict(sample);
-    cout << "r:" << r << endl;
+//    // manual test
+//    Mat sample = data.row(100);
+//    float r = model->predict(sample);
+//    cout << "r:" << r << endl;
+
+    return response.str();
+}
+
+
+/**
+ *
+ * ----------------------------- Main ------------------------------------
+ *
+ * */
+int main(int argc, char **argv) {
+
+    string imageName("./assets/puzzles/s0.jpg"); // by default
+    if( argc > 1)
+    {
+        imageName = argv[1];
+    }
+    Mat image;
+    image = imread(imageName.c_str(), 0); // Read the file
+    string response(grab(image));
+
+    if( image.empty() )                      // Check for invalid input
+    {
+        cout <<  "Could not open or find the image" << std::endl ;
+        return -1;
+    }
+
+    cout << response << endl;
 
     return 0;
 }

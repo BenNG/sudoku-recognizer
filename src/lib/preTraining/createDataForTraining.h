@@ -33,9 +33,9 @@
 
 #include <opencv2/opencv.hpp>
 #include <tesseract/baseapi.h>
-#include "debug.h"
-#include "extractPuzzle.h"
-#include "cellHandling.h"
+#include "../debug.h"
+#include "../utils/extractPuzzle.h"
+#include "../utils/cell.h"
 
 #include <iostream>
 
