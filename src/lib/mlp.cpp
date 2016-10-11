@@ -56,7 +56,7 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
 
 
 Ptr<ANN_MLP>
-build_mlp_classifier(const string& data_filename, const string& persistence){
+build_mlp_classifier(const fs::path data_filename, const string& persistence){
 
     const int class_count = 9;
     Mat data;

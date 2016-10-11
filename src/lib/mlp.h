@@ -4,6 +4,8 @@
 using namespace cv;
 using namespace cv::ml;
 using namespace std;
+namespace fs = boost::filesystem;
+
 
 #ifndef DISPLAYIMAGE_MLP_H
 #define DISPLAYIMAGE_MLP_H
@@ -15,6 +17,6 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
                                      int ntrain_samples, int rdelta,
                                      const string& filename_to_save);
 
-Ptr<ANN_MLP> build_mlp_classifier(const string& data_filename, const string& persistence);
+Ptr<ANN_MLP> build_mlp_classifier(const fs::path data_filename, const string& persistence);
 
 #endif //DISPLAYIMAGE_MLP_H
