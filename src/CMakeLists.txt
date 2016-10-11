@@ -19,6 +19,7 @@ add_library(mlp lib/mlp.cpp lib/mlp.h)
 add_library(createDataForTraining lib/preTraining/createDataForTraining.cpp lib/preTraining/createDataForTraining.h)
 add_library(randomizeDataForTraining lib/preTraining/randomizeDataForTraining.cpp lib/preTraining/randomizeDataForTraining.h)
 add_library(featurizeDataForTraining lib/preTraining/featurizeDataForTraining.cpp lib/preTraining/featurizeDataForTraining.h)
+add_library(sudoku lib/utils/sudoku.cpp lib/utils/sudoku.h)
 
 #Can manually add the sources using the set command as follows:
 set(SOURCES main.cpp )
@@ -39,10 +40,17 @@ target_link_libraries( featurizeDataForTraining CellHandling )
 
 target_link_libraries( mlp ${OpenCV_LIBS} )
 
+target_link_libraries( sudoku ${OpenCV_LIBS} )
+target_link_libraries( sudoku randomizeDataForTraining )
+target_link_libraries( sudoku createDataForTraining )
+target_link_libraries( sudoku featurizeDataForTraining )
+target_link_libraries( sudoku mlp )
+
 if(Boost_FOUND)
     target_link_libraries(createDataForTraining ${Boost_LIBRARIES})
     target_link_libraries(randomizeDataForTraining ${Boost_LIBRARIES})
     target_link_libraries(featurizeDataForTraining ${Boost_LIBRARIES})
+    target_link_libraries(sudoku ${Boost_LIBRARIES} )
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 endif()
 
@@ -52,6 +60,4 @@ target_link_libraries( ${PROJECT_NAME} Debug )
 target_link_libraries( ${PROJECT_NAME} ExtractPuzzle )
 target_link_libraries( ${PROJECT_NAME} CellHandling )
 target_link_libraries( ${PROJECT_NAME} mlp )
-target_link_libraries( ${PROJECT_NAME} randomizeDataForTraining )
-target_link_libraries( ${PROJECT_NAME} createDataForTraining )
-target_link_libraries( ${PROJECT_NAME} featurizeDataForTraining )
+target_link_libraries( ${PROJECT_NAME} sudoku )

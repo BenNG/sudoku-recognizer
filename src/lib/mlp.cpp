@@ -1,9 +1,4 @@
-//
-// Created by benng on 06/10/16.
-//
-
 #include "mlp.h"
-
 
 template<typename T>
 static Ptr<T> load_classifier(const string& persistence)

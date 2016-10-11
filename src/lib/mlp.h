@@ -1,7 +1,3 @@
-//
-// Created by benng on 06/10/16.
-//
-
 #include <opencv2/opencv.hpp>
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
