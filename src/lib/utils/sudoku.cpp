@@ -3,7 +3,19 @@
 /**
  * this function do too much things need to refact some day
  * */
-string grab(Mat image){
+string grab(string fileName){
+
+    Mat image = imread(fileName.c_str(), 0); // Read the file
+
+    if( image.empty() )                      // Check for invalid input
+    {
+        cout <<  "Could not open or find the image" << std::endl;
+        return "";
+    }
+
+    fs::path project_root(getMyProjectRoot(fs::current_path()));
+    project_root /= "bla";
+    cout << project_root << endl;
 
     int cellValue;
     Mat cellFeatured;

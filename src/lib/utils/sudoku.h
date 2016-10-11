@@ -9,9 +9,10 @@
 #endif
 
 #include "boost/filesystem/operations.hpp"
-#include "boost/filesystem/path.hpp"
+#include "boost/filesystem.hpp"
 #include "boost/progress.hpp"
 #include "../mlp.h"
+#include "../debug.h"
 #include "../preTraining/createDataForTraining.h"
 #include "../preTraining/randomizeDataForTraining.h"
 #include "../preTraining/featurizeDataForTraining.h"
@@ -26,4 +27,4 @@ using namespace boost;
 /**
  * this function do too much things need to refact some day
  * */
-string grab(Mat image);
+string grab(string fileName);

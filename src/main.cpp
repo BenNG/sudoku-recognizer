@@ -37,15 +37,7 @@ int main(int argc, char **argv) {
     {
         imageName = argv[1];
     }
-    Mat image;
-    image = imread(imageName.c_str(), 0); // Read the file
-    string response(grab(image));
-
-    if( image.empty() )                      // Check for invalid input
-    {
-        cout <<  "Could not open or find the image" << std::endl ;
-        return -1;
-    }
+    string response(grab(imageName));
 
     cout << response << endl;
     return 0;

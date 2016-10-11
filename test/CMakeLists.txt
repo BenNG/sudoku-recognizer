@@ -18,6 +18,7 @@ target_link_libraries(test_executable ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 target_link_libraries( test_executable ${OpenCV_LIBS} )
 target_link_libraries( test_executable Add)
 target_link_libraries( test_executable Debug)
+target_link_libraries( test_executable sudoku)
 
 
 # declares a test with our executable
