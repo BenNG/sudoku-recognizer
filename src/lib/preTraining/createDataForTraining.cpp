@@ -201,8 +201,7 @@ int createData() {
 
     std::cout << "\n\n\nThe data needed to train the classifier was not found so we will create it." << std::endl;
     std::cout << "There are 3 steps to create these data" << std::endl;
-    std::cout << "1st: extract each sudoku cells holding a number and save it in his folder" << std::endl;
-    std::cout << "  for example a cell holding a 1 will be save the data/1 folder (this could take a long time)" << std::endl;
+    std::cout << "1st: extract each sudoku cells holding a number and save it in his corresponding folder e.g: '1' -> data/1" << std::endl;
 
     if (fs::is_directory(p)) {
 //        std::cout << "\nIn directory: " << "\n\n";

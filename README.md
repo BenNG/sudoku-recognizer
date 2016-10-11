@@ -51,3 +51,6 @@ make && ./DisplayImage
 * tesseract only use in dev ? for creating the cell in the data folder
 * boost library
  * check is the /FindBoost.cmake the supported version
+* Artificial neural network - Multilayer perceptron
+  * This Artificial neural network (ann) need to be trained, either featuredDataForTraining.xml or trained_data is needed to work properly. If both the files don't exist, the system will created and use featuredDataForTraining.xml to create trained_data and after the system will use trained_data to predict.
+  

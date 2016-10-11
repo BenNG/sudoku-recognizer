@@ -38,6 +38,9 @@ Ptr<ANN_MLP> model;
 
 const int hiddenLayerSize = 3;
 
+/**
+ * this function do too much things need to refact some day
+ * */
 string grab(Mat image){
 
     int cellValue;
@@ -132,6 +135,5 @@ int main(int argc, char **argv) {
     }
 
     cout << response << endl;
-
     return 0;
 }
