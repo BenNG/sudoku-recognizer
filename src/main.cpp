@@ -47,9 +47,10 @@ string grab(Mat image){
     Mat cellFeatured;
     std::stringstream response;
 
+
     string message;
-    fs::path featured("featuredDataForTraining.xml");
-    fs::path trained_data("trained_data");
+    fs::path featured("../assets/featuredDataForTraining.xml");
+    fs::path trained_data("../assets/trained_data");
 
     if (!fs::exists(featured) && !fs::exists(trained_data)) {
         createData();
@@ -64,7 +65,7 @@ string grab(Mat image){
         }
     }
 
-    Ptr<ANN_MLP> model = build_mlp_classifier("featuredDataForTraining.xml", "trained_data");
+    Ptr<ANN_MLP> model = build_mlp_classifier("../assets/featuredDataForTraining.xml", "../assets/trained_data");
 
     Mat preprocessed = preprocess(image.clone());
     vector<Point> biggestApprox = findBigestApprox(preprocessed);
@@ -98,7 +99,7 @@ string grab(Mat image){
 
     // fn
     FileStorage fs;
-    fs.open("featuredDataForTraining.xml", FileStorage::READ);
+    fs.open("../assets/featuredDataForTraining.xml", FileStorage::READ);
     fs["TrainingDataF15"] >> data;
     fs["classes"] >> responses;
     // fn - end

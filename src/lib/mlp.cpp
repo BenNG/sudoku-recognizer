@@ -67,9 +67,11 @@ build_mlp_classifier(const string& data_filename, const string& persistence){
     Mat data;
     Mat responses;
 
+    cout << boost::filesystem::current_path() << endl;
+
     // fn
     FileStorage fs;
-    fs.open("featuredDataForTraining.xml", FileStorage::READ);
+    fs.open("../assets/featuredDataForTraining.xml", FileStorage::READ);
     fs["TrainingDataF15"] >> data;
     fs["classes"] >> responses;
     // fn - end

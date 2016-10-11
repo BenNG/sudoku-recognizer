@@ -106,7 +106,7 @@ int featurizeData() {
     trainingDataf20.convertTo(trainingDataf20, CV_32F);
     Mat(trainingLabels).copyTo(classes);
 
-    FileStorage fs("featuredDataForTraining.xml", FileStorage::WRITE);
+    FileStorage fs("../assets/featuredDataForTraining.xml", FileStorage::WRITE);
     fs << "TrainingDataF5" << trainingDataf5;
     fs << "TrainingDataF10" << trainingDataf10;
     fs << "TrainingDataF15" << trainingDataf15;
