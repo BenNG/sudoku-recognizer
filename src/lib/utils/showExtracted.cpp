@@ -42,10 +42,25 @@ int main(int argc, char **argv) {
              ++dir_itr) {
                     string fullName = dir_itr->path().string();
                     Mat raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
+
                     Mat preprocessed = preprocess(raw.clone());
                     vector<Point> biggestApprox = findBigestApprox(preprocessed);
-
                     Mat sudoku = extractPuzzle(raw, biggestApprox);
+
+                    // sometimes the biggest area found is not correct, our puzzle is inside the extract image
+                    // so we do it a second time to extract the biggest blob which is this time our puzzle
+                    // this is the case for s6.jpg and s9.jpg for example
+
+                    Mat preprocessed2 = preprocess(sudoku.clone());
+                    vector<Point> biggestApprox2 = findBigestApprox(preprocessed2);
+
+                    if(!biggestApprox2.empty()){
+                      sudoku = extractPuzzle(sudoku, biggestApprox2);
+                    }
+
+                    // Mat sudoku2 = extractPuzzle(sudoku, biggestApprox2);
+                    // output = drawAllApprox(preprocessed, raw);
+
                     showImage(sudoku);
 
         }

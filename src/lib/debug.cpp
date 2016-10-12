@@ -5,11 +5,11 @@ int minuss(int i, int j)
     return i - j;
 }
 
-Mat drawAllContour(Mat input) {
-    Mat output = Mat::zeros(input.rows, input.cols, input.type());
+Mat drawAllContour(Mat preprocessed) {
+    Mat output = Mat::zeros(preprocessed.rows, preprocessed.cols, preprocessed.type());
     Scalar white(255, 255, 255);
     vector < vector< Point > > contours;
-    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+    findContours(preprocessed, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
     cout << "contours : " << contours.size() << endl;
 
@@ -20,12 +20,14 @@ Mat drawAllContour(Mat input) {
     return output;
 }
 
-void drawAllApprox(Mat input, Mat output) {
+Mat drawAllApprox(Mat preprocessed) {
+    Mat output = Mat::zeros(preprocessed.rows, preprocessed.cols, preprocessed.type());
+
     Scalar white(255, 255, 255);
     vector<vector<Point> > contours;
     std::vector<cv::Point> approx;
 
-    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+    findContours(preprocessed.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
     for (int i = 0; i < contours.size(); i++) {
 
@@ -40,6 +42,31 @@ void drawAllApprox(Mat input, Mat output) {
         std::vector<vector<Point> > approx_contour(1, approx);
         drawContours(output, approx_contour, 0, white, 2, 8);
     }
+    return output;
+}
+Mat drawAllApprox(Mat preprocessed, Mat origial) {
+    Mat output = origial.clone();
+
+    Scalar white(255, 255, 255);
+    vector<vector<Point> > contours;
+    std::vector<cv::Point> approx;
+
+    findContours(preprocessed.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+
+    for (int i = 0; i < contours.size(); i++) {
+
+        // Approximate contour with accuracy proportional
+        // to the contour perimeter
+        cv::approxPolyDP(cv::Mat(contours[i]), approx, cv::arcLength(cv::Mat(contours[i]), true) * 0.1, true);
+
+        // Skip small or non-convex objects
+        if (std::fabs(cv::contourArea(contours[i])) < 100 || !cv::isContourConvex(approx))
+            continue;
+
+        std::vector<vector<Point> > approx_contour(1, approx);
+        drawContours(output, approx_contour, 0, white, 2, 8);
+    }
+    return output;
 }
 
 void drawMarkers(Mat input, vector<Point> biggestApprox) {

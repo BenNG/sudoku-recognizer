@@ -15,8 +15,9 @@ using namespace std;
 namespace fs = boost::filesystem;
 
 int minuss(int i, int j);
-Mat drawAllContour(Mat input);
-void drawAllApprox(Mat input, Mat output);
+Mat drawAllContour(Mat preprocessed);
+Mat drawAllApprox(Mat preprocessed);
+Mat drawAllApprox(Mat preprocessed, Mat original);
 void drawMarkers(Mat input, vector<Point> biggestApprox);
 Mat drawGrid(Mat input);
 void showImage(Mat img);
