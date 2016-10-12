@@ -17,6 +17,6 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
                                      int ntrain_samples, int rdelta,
                                      const string& filename_to_save);
 
-Ptr<ANN_MLP> build_mlp_classifier(const fs::path data_filename, const string& persistence);
+Ptr<ANN_MLP> build_mlp_classifier(const fs::path data_filename, const fs::path persistence);
 
 #endif //DISPLAYIMAGE_MLP_H

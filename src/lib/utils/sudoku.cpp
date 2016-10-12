@@ -5,7 +5,15 @@
  * */
 string grab(string fileName){
 
-    Mat image = imread(fileName.c_str(), 0); // Read the file
+    fs::path image_path(getMyProjectRoot(fs::current_path()));
+    image_path /= fileName;
+
+    string image_path_str = image_path.string();
+
+//    cout << image_path_str << endl;
+
+    Mat image = imread(image_path_str, 0); // Read the file
+
 
     if( image.empty() )                      // Check for invalid input
     {
@@ -27,9 +35,10 @@ string grab(string fileName){
 
     fs::path trained_data(getMyProjectRoot(fs::current_path()));
     trained_data /= "assets/trained_data";
+//
+//    cout << featured << endl;
+//    cout << trained_data << endl;
 
-    cout << featured << endl;
-    cout << trained_data << endl;
 
 
     if (!fs::exists(featured) && !fs::exists(trained_data)) {
@@ -45,7 +54,7 @@ string grab(string fileName){
         }
     }
 
-    Ptr<ANN_MLP> model = build_mlp_classifier("../assets/featuredDataForTraining.xml", "../assets/trained_data");
+    Ptr<ANN_MLP> model = build_mlp_classifier(featured, trained_data);
 
     Mat preprocessed = preprocess(image.clone());
     vector<Point> biggestApprox = findBigestApprox(preprocessed);

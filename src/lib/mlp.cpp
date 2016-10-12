@@ -56,7 +56,7 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
 
 
 Ptr<ANN_MLP>
-build_mlp_classifier(const fs::path data_filename, const string& persistence){
+build_mlp_classifier(const fs::path data_filename, const fs::path persistence){
 
     const int class_count = 9;
     Mat data;
@@ -65,8 +65,9 @@ build_mlp_classifier(const fs::path data_filename, const string& persistence){
     cout << boost::filesystem::current_path() << endl;
 
     // fn
+    string data_filename_str = data_filename.string();
     FileStorage fs;
-    fs.open("../assets/featuredDataForTraining.xml", FileStorage::READ);
+    fs.open(data_filename_str, FileStorage::READ);
     fs["TrainingDataF15"] >> data;
     fs["classes"] >> responses;
     // fn - end
@@ -76,10 +77,11 @@ build_mlp_classifier(const fs::path data_filename, const string& persistence){
     int nsamples_all = data.rows;
     int ntrain_samples = (int)(nsamples_all*0.8);
 
-    boost::filesystem::path persistence_path(persistence);
+//    boost::filesystem::path persistence_path(persistence);
+    string persistence_str = persistence.string();
     // Create or load MLP classifier
-    if (boost::filesystem::exists(persistence_path)) {
-        return load_classifier<ANN_MLP>(persistence);
+    if (boost::filesystem::exists(persistence)) {
+        return load_classifier<ANN_MLP>(persistence_str);
     }
     else
     {
@@ -129,6 +131,6 @@ build_mlp_classifier(const fs::path data_filename, const string& persistence){
         cout << endl;
     }
 
-    test_and_save_classifier(model, data, responses, ntrain_samples, 0, persistence);
+    test_and_save_classifier(model, data, responses, ntrain_samples, 0, persistence_str);
     return model;
 }
