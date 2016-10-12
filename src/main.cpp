@@ -9,9 +9,11 @@
 #endif
 
 #include "opencv2/text.hpp"
+
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
 #include "boost/progress.hpp"
+
 #include "lib/mlp.h"
 #include "lib/preTraining/createDataForTraining.h"
 #include "lib/preTraining/randomizeDataForTraining.h"

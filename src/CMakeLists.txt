@@ -1,6 +1,6 @@
 find_package( OpenCV 3.1.0 REQUIRED core text)
 find_package( Tesseract REQUIRED ) # 3.05 is currently the latest version of the git repository.
-find_package(Boost 1.58 COMPONENTS system filesystem)
+find_package(Boost 1.58 COMPONENTS system filesystem program_options)
 
 include_directories( ${OpenCV_INCLUDE_DIRS})
 include_directories(${Tesseract_INCLUDE_DIRS})
@@ -25,7 +25,7 @@ add_library(sudoku lib/utils/sudoku.cpp lib/utils/sudoku.h)
 set(SOURCES main.cpp )
 
 add_executable( ${PROJECT_NAME} ${SOURCES} )
-#add_executable( createDataForTraining lib/createDataForTraining.cpp)
+add_executable( showExtracted lib/utils/showExtracted.cpp)
 #add_executable( randomizeDataForTraining lib/randomizeDataForTraining.cpp)
 #add_executable( featurizeDataForTraining lib/featurizeDataForTraining.cpp)
 
@@ -38,6 +38,10 @@ target_link_libraries( createDataForTraining CellHandling)
 target_link_libraries( featurizeDataForTraining ${OpenCV_LIBS} )
 target_link_libraries( featurizeDataForTraining CellHandling )
 
+target_link_libraries( showExtracted Debug )
+target_link_libraries( showExtracted ExtractPuzzle )
+target_link_libraries( showExtracted ${OpenCV_LIBS} )
+
 target_link_libraries( mlp ${OpenCV_LIBS} )
 
 target_link_libraries( sudoku ${OpenCV_LIBS} )
@@ -47,6 +51,7 @@ target_link_libraries( sudoku featurizeDataForTraining )
 target_link_libraries( sudoku mlp )
 
 if(Boost_FOUND)
+    target_link_libraries(showExtracted ${Boost_LIBRARIES} )
     target_link_libraries(createDataForTraining ${Boost_LIBRARIES})
     target_link_libraries(randomizeDataForTraining ${Boost_LIBRARIES})
     target_link_libraries(featurizeDataForTraining ${Boost_LIBRARIES})
