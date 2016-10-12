@@ -31,6 +31,7 @@ using namespace boost;
  *
  * */
 int main(int argc, char **argv) {
+    Mat output;
     fs::path p(getMyProjectRoot(fs::current_path()));
     p /= "assets/puzzles/";
 
@@ -43,7 +44,9 @@ int main(int argc, char **argv) {
                     Mat raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
                     Mat preprocessed = preprocess(raw.clone());
                     vector<Point> biggestApprox = findBigestApprox(preprocessed);
+
                     Mat sudoku = extractPuzzle(raw, biggestApprox);
+
                     showImage(sudoku);
         }
     }

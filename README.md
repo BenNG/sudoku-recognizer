@@ -53,4 +53,4 @@ make && ./DisplayImage
  * check is the /FindBoost.cmake the supported version
 * Artificial neural network - Multilayer perceptron
   * This Artificial neural network (ann) need to be trained, either featuredDataForTraining.xml or trained_data is needed to work properly. If both the files don't exist, the system will created and use featuredDataForTraining.xml to create trained_data and after the system will use trained_data to predict.
-  
+* Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted
