@@ -18,6 +18,21 @@ Mat preprocess(Mat input) {
     return outerBox;
 }
 
+
+    // sort using a custom function object
+    struct str{
+      bool operator() ( Point2f a, Point2f b ){
+          return a.x <= b.x ;
+      }
+    } sort_xs;
+
+    // sort using a custom function object
+    struct str2{
+      bool operator() ( Point2f a, Point2f b ){
+          return a.y <= b.y ;
+      }
+    } sort_ys;
+
 /*
  * findBigestApprox
  *
@@ -53,8 +68,56 @@ vector<Point> findBigestApprox(Mat input) {
 
 Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
     Mat outerBox = Mat(input.size(), CV_8UC1);
+
+    cv::Point2f tl;
+    cv::Point2f tr;
+    cv::Point2f bl;
+    cv::Point2f br;
+
+
+    cv::Point2f xs[4];
+    cv::Point2f ys[4];
+
+    cv::Point2f tops[2];
+    cv::Point2f bottoms[2];
+
     cv::Point2f src_p[4];
     cv::Point2f dst_p[4];
+
+    xs[0] = biggestApprox.at(0);
+    xs[1] = biggestApprox.at(1);
+    xs[2] = biggestApprox.at(2);
+    xs[3] = biggestApprox.at(3);
+
+    ys[0] = biggestApprox.at(0);
+    ys[1] = biggestApprox.at(1);
+    ys[2] = biggestApprox.at(2);
+    ys[3] = biggestApprox.at(3);
+
+    std::sort(ys, ys + 4, sort_ys);
+
+    tops[0] = ys[0];
+    tops[1] = ys[1];
+
+    std::sort(tops, tops + 2, sort_xs);
+
+    tl = tops[0];
+    tr = tops[1];
+
+    bottoms[0] = ys[2];
+    bottoms[1] = ys[3];
+
+    std::sort(bottoms, bottoms + 2, sort_xs);
+
+    bl = bottoms[0];
+    br = bottoms[1];
+
+    //
+    // cout << tl << endl;
+    // cout << tr << endl;
+    // cout << bl << endl;
+    // cout << br << endl;
+    // cout << "------------------------------------" << endl;
 
     float w = (float) input.cols;
     float h = (float) input.rows;
@@ -62,10 +125,10 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
     float hh = h / 2.0f;
 
     // from points
-    src_p[0] = cv::Point2f(biggestApprox.at(1));
-    src_p[1] = cv::Point2f(biggestApprox.at(0));
-    src_p[2] = cv::Point2f(biggestApprox.at(3));
-    src_p[3] = cv::Point2f(biggestApprox.at(2));
+    src_p[0] = tl;
+    src_p[1] = tr;
+    src_p[2] = br;
+    src_p[3] = bl;
 
     // to points
     dst_p[0] = cv::Point2f(0.0f, 0.0f);

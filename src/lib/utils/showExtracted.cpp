@@ -46,8 +46,8 @@ int main(int argc, char **argv) {
                     vector<Point> biggestApprox = findBigestApprox(preprocessed);
 
                     Mat sudoku = extractPuzzle(raw, biggestApprox);
-
                     showImage(sudoku);
+
         }
     }
     return 0;
