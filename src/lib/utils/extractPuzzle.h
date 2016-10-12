@@ -20,3 +20,4 @@ Mat preprocess(Mat input);
 vector<Point> findBigestApprox(Mat input);
 
 Mat extractPuzzle(Mat input, vector<Point> biggestApprox);
+Mat extractPuzzle(Mat input);
