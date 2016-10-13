@@ -13,11 +13,11 @@ Mat preprocess(Mat input) {
     Mat outerBox = Mat(input.size(), CV_8UC1);
     GaussianBlur(input, input, Size(11, 11), 0);
     adaptiveThreshold(input, outerBox, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 2);
+    outerBox = removeTinyVolume(outerBox.clone());
     bitwise_not(outerBox, outerBox);
     dilate(outerBox, outerBox, Mat());
     return outerBox;
 }
-
 
     // sort using a custom function object
     struct str{
@@ -145,11 +145,10 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox) {
     return outerBox;
 }
 
-Mat extractPuzzle(Mat input) {
-    Mat outerBox = Mat(input.size(), CV_8UC1);
+Mat extractPuzzle(Mat original) {
+    Mat outerBox = Mat(original.size(), CV_8UC1);
 
-
-    Mat preprocessed = preprocess(input.clone());
+    Mat preprocessed = preprocess(original.clone());
     vector<Point> biggestApprox = findBigestApprox(preprocessed);
 
     cv::Point2f tl;
@@ -201,8 +200,8 @@ Mat extractPuzzle(Mat input) {
     // cout << br << endl;
     // cout << "------------------------------------" << endl;
 
-    float w = (float) input.cols;
-    float h = (float) input.rows;
+    float w = (float) original.cols;
+    float h = (float) original.rows;
     float hw = w / 2.0f;
     float hh = h / 2.0f;
 
@@ -224,7 +223,7 @@ Mat extractPuzzle(Mat input) {
     cv::Mat trans_mat33 = cv::getPerspectiveTransform(src_p, dst_p); //CV_64F->double
 
     // perspective transform operation using transform matrix
-    warpPerspective(input, outerBox, trans_mat33, input.size(), cv::INTER_LINEAR);
+    warpPerspective(original, outerBox, trans_mat33, original.size(), cv::INTER_LINEAR);
 
     // trick
     // sometimes the biggest area found is not correct, our puzzle is inside the extract image
@@ -235,7 +234,7 @@ Mat extractPuzzle(Mat input) {
     vector<Point> biggestApprox2 = findBigestApprox(preprocessed2);
 
     if(!biggestApprox2.empty()){
-      outerBox = extractPuzzle(outerBox, biggestApprox2);
+      outerBox = extractPuzzle(outerBox);
     }
     // trick - end
 

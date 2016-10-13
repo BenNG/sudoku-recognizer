@@ -56,9 +56,9 @@ string grab(string fileName){
 
     Ptr<ANN_MLP> model = build_mlp_classifier(featured, trained_data);
 
-    Mat preprocessed = preprocess(image.clone());
-    vector<Point> biggestApprox = findBigestApprox(preprocessed);
-    Mat sudoku = extractPuzzle(image, biggestApprox);
+    // Mat preprocessed = preprocess(image.clone());
+    // vector<Point> biggestApprox = findBigestApprox(preprocessed);
+    Mat sudoku = extractPuzzle(image);
 
     for (unsigned i = 0; i < 81; i++) {
         Mat cell = getCell(sudoku, i), cell_no_noise, cell_no_light, final_cell;
@@ -89,7 +89,11 @@ string grab(string fileName){
     // fn
     FileStorage fs;
     fs.open("../assets/featuredDataForTraining.xml", FileStorage::READ);
-    fs["TrainingDataF15"] >> data;
+    // trainingDataf5;
+    // trainingDataf10;
+    // trainingDataf15;
+    // trainingDataf20;
+    fs["TrainingDataF20"] >> data;
     fs["classes"] >> responses;
     // fn - end
 

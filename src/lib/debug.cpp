@@ -113,3 +113,24 @@ fs::path getMyProjectRoot(fs::path p){
         return getMyProjectRoot(p.parent_path());
     }
 }
+
+/**
+* from time to time there are some tiny text around the puzzle and it kills the detection
+* this function remove the tiny contour 
+*/
+Mat removeTinyVolume(Mat input) {
+    Mat output = input.clone();
+    Scalar black(0, 0, 0);
+    Scalar white(255, 255, 255);
+    vector < vector< Point > > contours;
+    findContours(input, contours, RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+
+    cout << "contours : " << contours.size() << endl;
+
+    for (int i = 0; i < contours.size(); i++) {
+      if (contourArea(contours[i]) < 400){
+        drawContours(output, contours, i, white, -1, 8);
+      }
+    }
+    return output;
+}

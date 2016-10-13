@@ -2,7 +2,7 @@
 
 ## Requirement
 
-To run this project you need 
+To run this project you need
 * [CMake](https://cmake.org/)
 * [OpenCV 3.1.0](http://opencv.org/downloads.html) and [OpenCV_contrib](https://github.com/opencv/opencv_contrib). This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful
 * [Tesseract](https://github.com/tesseract-ocr)
@@ -54,3 +54,6 @@ make && ./DisplayImage
 * Artificial neural network - Multilayer perceptron
   * This Artificial neural network (ann) need to be trained, either featuredDataForTraining.xml or trained_data is needed to work properly. If both the files don't exist, the system will created and use featuredDataForTraining.xml to create trained_data and after the system will use trained_data to predict.
 * Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted
+* showExtracted:
+  * Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted # see all images in assets/puzzles
+  * Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted assets/puzzles/s6.jpg # show detailed steps on 1 file

@@ -31,19 +31,30 @@ using namespace boost;
  *
  * */
 int main(int argc, char **argv) {
-    Mat output;
     fs::path p(getMyProjectRoot(fs::current_path()));
-    p /= "assets/puzzles/";
+    string fullName;
+    Mat output, raw, preprocessed, sudoku;
+
+    string path_str("assets/puzzles/"); // by default
+    if( argc > 1)
+    {
+        path_str = argv[1];
+    }
+
+    p /= path_str;
+
 
     if (fs::is_directory(p)) {
         fs::directory_iterator end_iter;
         for (fs::directory_iterator dir_itr(p);
              dir_itr != end_iter;
              ++dir_itr) {
-                    string fullName = dir_itr->path().string();
-                    Mat raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
+                    fullName = dir_itr->path().string();
+                    cout << fullName << endl;
 
-                    Mat sudoku = extractPuzzle(raw);
+                    raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
+
+                    sudoku = extractPuzzle(raw);
 
                     // sometimes the biggest area found is not correct, our puzzle is inside the extract image
                     // so we do it a second time to extract the biggest blob which is this time our puzzle
@@ -59,9 +70,30 @@ int main(int argc, char **argv) {
                     // Mat sudoku2 = extractPuzzle(sudoku, biggestApprox2);
                     // output = drawAllApprox(preprocessed, raw);
 
-                    showImage(sudoku);
+                    // showImage(sudoku);
 
         }
+    }else{
+      fullName = p.string();
+      raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
+      // preprocessed = preprocess(raw.clone());
+      sudoku = extractPuzzle(raw);
+
+
+      Mat preprocessed = preprocess(raw.clone());
+      // vector<Point> biggestApprox = findBigestApprox(preprocessed.clone());
+      // if(biggestApprox.empty()){
+      //   cout << "no approx found" << endl;
+      // }
+
+      // vector<Point> biggestApprox = findBigestApprox(preprocessed);
+      // sudoku = removeTinyVolume(preprocessed, raw);
+      // sudoku = drawAllContour(preprocessed, raw);
+      // sudoku = drawBiggestContour(preprocessed, raw);
+      // sudoku = drawAllApprox(preprocessed, raw);
+
+      showImage(sudoku);
     }
+
     return 0;
 }

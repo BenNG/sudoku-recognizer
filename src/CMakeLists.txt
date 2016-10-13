@@ -29,6 +29,8 @@ add_executable( showExtracted lib/utils/showExtracted.cpp)
 #add_executable( randomizeDataForTraining lib/randomizeDataForTraining.cpp)
 #add_executable( featurizeDataForTraining lib/featurizeDataForTraining.cpp)
 
+target_link_libraries( ExtractPuzzle Debug)
+
 target_link_libraries( createDataForTraining ${OpenCV_LIBS} )
 target_link_libraries( createDataForTraining ${Tesseract_LIBRARIES})
 target_link_libraries( createDataForTraining Debug)

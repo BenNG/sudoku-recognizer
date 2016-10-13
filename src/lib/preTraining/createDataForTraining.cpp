@@ -227,12 +227,9 @@ int createData() {
 
                     Mat raw = imread(fullPath, CV_LOAD_IMAGE_GRAYSCALE);
 
+                    Mat sudoku = extractPuzzle(raw);
 
-                    Mat preprocessed = preprocess(raw.clone());
-                    vector<Point> biggestApprox = findBigestApprox(preprocessed);
-
-                    Mat sudoku = extractPuzzle(raw, biggestApprox);
-
+                    // showImage(sudoku);
 
                     for (unsigned i = 0; i < 81; i++) {
                         Mat cell = getCell(sudoku, i), cell_no_noise, cell_no_light, final_cell;
