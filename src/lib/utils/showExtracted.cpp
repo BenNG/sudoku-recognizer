@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
                     // Mat sudoku2 = extractPuzzle(sudoku, biggestApprox2);
                     // output = drawAllApprox(preprocessed, raw);
 
-                    // showImage(sudoku);
+                    showImage(sudoku);
 
         }
     }else{
