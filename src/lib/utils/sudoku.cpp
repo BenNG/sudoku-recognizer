@@ -62,16 +62,9 @@ string grab(string fileName){
 
 
     for (unsigned i = 0; i < 81; i++) {
-        Mat cell = getCell(sudoku, i), cell_no_noise, cell_no_light, final_cell;
-
-        // remove noise
-        medianBlur(cell, cell_no_noise, 1);
-        // remove background/light
-        cell_no_light = removeLight(cell_no_noise, calculateLightPattern(cell), 2);
-        // binarize image
-        adaptiveThreshold(cell_no_light, final_cell, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
-
-        Mat roi = extractRoiFromCell(final_cell);
+        Mat cell = getCell(sudoku, i), prepared_cell;
+        prepared_cell = prepareCell(cell);
+        Mat roi = extractRoiFromCell(prepared_cell);
 
         if (roi.empty()) {
             response << "0";

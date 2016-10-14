@@ -15,7 +15,7 @@ using namespace std;
  * get cell from an image created by the extractPuzzle fn
  * */
 Mat getCell(Mat sudoku, int numCell);
-
+Mat prepareCell(Mat cell);
 Mat removeLight(Mat img, Mat pattern, int method);
 
 Mat calculateLightPattern(Mat img);

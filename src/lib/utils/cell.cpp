@@ -20,6 +20,30 @@ Mat getCell(Mat sudoku, int numCell) {
     return output(rect);
 }
 
+Mat prepareCell(Mat cell) {
+
+    Mat output = cell.clone(), cell_no_noise, cell_no_light;
+    // remove noise
+    medianBlur(cell, cell_no_noise, 1);
+    // remove background/light
+    cell_no_light = removeLight(cell_no_noise, calculateLightPattern(cell), 2);
+    // binarize image
+    // adaptiveThreshold(cell_no_light, output, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
+    // ADAPTIVE_THRESH_MEAN_C
+    // ADAPTIVE_THRESH_GAUSSIAN_C
+
+    // THRESH_BINARY
+    // THRESH_BINARY_INV
+    // THRESH_TRUNC
+    // THRESH_TOZERO
+    // THRESH_TOZERO_INV
+    // THRESH_MASK
+    // THRESH_OTSU
+    // THRESH_TRIANGLE
+
+    adaptiveThreshold(cell_no_light, output, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
+    return output;
+}
 
 Mat removeLight(Mat img, Mat pattern, int method) {
     Mat aux;

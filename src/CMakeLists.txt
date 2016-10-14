@@ -26,6 +26,7 @@ set(SOURCES main.cpp )
 
 add_executable( ${PROJECT_NAME} ${SOURCES} )
 add_executable( showExtracted lib/utils/showExtracted.cpp)
+add_executable( knn lib/knn.cpp)
 #add_executable( randomizeDataForTraining lib/randomizeDataForTraining.cpp)
 #add_executable( featurizeDataForTraining lib/featurizeDataForTraining.cpp)
 
@@ -42,10 +43,13 @@ target_link_libraries( featurizeDataForTraining CellHandling )
 
 target_link_libraries( showExtracted CellHandling )
 target_link_libraries( showExtracted Debug )
+target_link_libraries( showExtracted mlp )
 target_link_libraries( showExtracted ExtractPuzzle )
 target_link_libraries( showExtracted ${OpenCV_LIBS} )
 
 target_link_libraries( mlp ${OpenCV_LIBS} )
+
+target_link_libraries( knn ${OpenCV_LIBS} )
 
 target_link_libraries( sudoku ${OpenCV_LIBS} )
 target_link_libraries( sudoku randomizeDataForTraining )

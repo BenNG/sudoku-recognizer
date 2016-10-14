@@ -24,6 +24,7 @@ Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted a
 #include "boost/progress.hpp"
 
 #include "../debug.h"
+#include "../mlp.h"
 #include "cell.h"
 #include "extractPuzzle.h"
 
@@ -103,7 +104,26 @@ int main(int argc, char **argv) {
       // sudoku = drawBiggestContour(preprocessed, raw);
       // sudoku = drawAllApprox(preprocessed, raw);
       Mat cell = getCell(sudoku, 71);
-      showImage(preprocessed);
+      Mat preparedCell = prepareCell(cell);
+      Mat roi = extractRoiFromCell(preparedCell);
+      Mat normalized = normalizeSize(roi);
+
+      fs::path featured(getMyProjectRoot(fs::current_path()));
+      featured /= "assets/featuredDataForTraining.xml";
+
+      fs::path trained_data(getMyProjectRoot(fs::current_path()));
+      trained_data /= "assets/trained_data";
+
+      Ptr<ANN_MLP> model = build_mlp_classifier(featured, trained_data);
+
+      Mat feature = features(roi, 15);
+
+
+
+      float r = model->predict(feature);
+      cout << "r:" << r + 1 << endl;
+
+      showImage(normalized);
     }
 
     return 0;
