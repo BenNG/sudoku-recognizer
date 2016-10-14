@@ -1,3 +1,13 @@
+/**
+this file show the extrated sudoku for each file
+usage:
+
+Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted
+
+Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted assets/puzzles/s15.jpg
+
+*/
+
 #define BOOST_FILESYSTEM_VERSION 3
 
 //  As an example program, we don't want to use any deprecated features
@@ -14,6 +24,7 @@
 #include "boost/progress.hpp"
 
 #include "../debug.h"
+#include "cell.h"
 #include "extractPuzzle.h"
 
 
@@ -91,8 +102,8 @@ int main(int argc, char **argv) {
       // sudoku = drawAllContour(preprocessed, raw);
       // sudoku = drawBiggestContour(preprocessed, raw);
       // sudoku = drawAllApprox(preprocessed, raw);
-
-      showImage(sudoku);
+      Mat cell = getCell(sudoku, 71);
+      showImage(preprocessed);
     }
 
     return 0;

@@ -60,6 +60,7 @@ string grab(string fileName){
     // vector<Point> biggestApprox = findBigestApprox(preprocessed);
     Mat sudoku = extractPuzzle(image);
 
+
     for (unsigned i = 0; i < 81; i++) {
         Mat cell = getCell(sudoku, i), cell_no_noise, cell_no_light, final_cell;
 
@@ -93,7 +94,7 @@ string grab(string fileName){
     // trainingDataf10;
     // trainingDataf15;
     // trainingDataf20;
-    fs["TrainingDataF20"] >> data;
+    fs["trainingDataf15"] >> data;
     fs["classes"] >> responses;
     // fn - end
 
@@ -102,5 +103,7 @@ string grab(string fileName){
     // float r = model->predict(sample);
     // cout << "r:" << r << endl;
 
-    return response.str();
+    string resp = response.str();
+    showImage(sudoku);
+    return resp;
 }

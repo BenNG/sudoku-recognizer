@@ -40,6 +40,7 @@ target_link_libraries( createDataForTraining CellHandling)
 target_link_libraries( featurizeDataForTraining ${OpenCV_LIBS} )
 target_link_libraries( featurizeDataForTraining CellHandling )
 
+target_link_libraries( showExtracted CellHandling )
 target_link_libraries( showExtracted Debug )
 target_link_libraries( showExtracted ExtractPuzzle )
 target_link_libraries( showExtracted ${OpenCV_LIBS} )
