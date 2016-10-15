@@ -12,7 +12,7 @@ using namespace std;
 
 
 /**
- * get cell from an image created by the extractPuzzle fn
+ * get cell from an image created by the picture fn
  * */
 Mat getCell(Mat sudoku, int numCell);
 Mat prepareCell(Mat cell);

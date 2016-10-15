@@ -26,7 +26,7 @@ Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted a
 #include "../debug.h"
 #include "../mlp.h"
 #include "cell.h"
-#include "extractPuzzle.h"
+#include "picture.h"
 
 
 #include <opencv2/opencv.hpp>

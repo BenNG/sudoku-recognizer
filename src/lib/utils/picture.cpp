@@ -1,4 +1,4 @@
-#include "extractPuzzle.h"
+#include "picture.h"
 
 using namespace cv;
 using namespace std;
