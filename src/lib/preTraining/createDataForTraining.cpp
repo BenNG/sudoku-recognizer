@@ -36,6 +36,7 @@
 #include "../debug.h"
 #include "../utils/picture.h"
 #include "../utils/puzzle.h"
+#include "../utils/cell.h"
 
 #include <iostream>
 
@@ -55,6 +56,7 @@
 #  define BOOST_SYSTEM_NO_DEPRECATED
 #endif
 
+#include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
 #include "boost/progress.hpp"
@@ -242,7 +244,7 @@ int createData() {
                         adaptiveThreshold(cell_no_light, final_cell, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3,
                                           1);
 
-                        Mat roi = extractRoiFromCell(final_cell);
+                        Mat roi = extractNumber(final_cell);
 
                         if (roi.empty()) {
 

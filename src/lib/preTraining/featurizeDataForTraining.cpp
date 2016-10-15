@@ -18,7 +18,7 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "../utils/puzzle.h"
+#include "../utils/cell.h"
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
 #include "boost/progress.hpp"

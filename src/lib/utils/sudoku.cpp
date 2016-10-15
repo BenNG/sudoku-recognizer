@@ -64,7 +64,7 @@ string grab(string fileName){
     for (unsigned i = 0; i < 81; i++) {
         Mat cell = extractCell(sudoku, i), prepared_cell;
         prepared_cell = prepareCell(cell);
-        Mat roi = extractRoiFromCell(prepared_cell);
+        Mat roi = extractNumber(prepared_cell);
 
         if (roi.empty()) {
             response << "0";

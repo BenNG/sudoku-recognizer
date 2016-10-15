@@ -1,3 +1,9 @@
+/**
+this module handle the original picture
+you can preprocess, find the biggest contour and etract it in order to get the puzzle then you can use the puzzle module.
+*/
+
+
 #include "picture.h"
 
 using namespace cv;
