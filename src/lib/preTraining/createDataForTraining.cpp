@@ -35,7 +35,7 @@
 #include <tesseract/baseapi.h>
 #include "../debug.h"
 #include "../utils/picture.h"
-#include "../utils/cell.h"
+#include "../utils/puzzle.h"
 
 #include <iostream>
 
@@ -232,7 +232,7 @@ int createData() {
                     // showImage(sudoku);
 
                     for (unsigned i = 0; i < 81; i++) {
-                        Mat cell = getCell(sudoku, i), cell_no_noise, cell_no_light, final_cell;
+                        Mat cell = extractCell(sudoku, i), cell_no_noise, cell_no_light, final_cell;
 
                         // remove noise
                         medianBlur(cell, cell_no_noise, 1);

@@ -2,12 +2,12 @@
  * utils functions related to cell (when the puzzle has already been extracted )
  * */
 
-#include "cell.h"
+#include "puzzle.h"
 
 /**
  * get cell from an image created by the picture fn
  * */
-Mat getCell(Mat sudoku, int numCell) {
+Mat extractCell(Mat sudoku, int numCell) {
     Mat output = sudoku.clone();
     int y = sudoku.cols;
     int x = sudoku.rows;

@@ -14,7 +14,7 @@ using namespace std;
 /**
  * get cell from an image created by the picture fn
  * */
-Mat getCell(Mat sudoku, int numCell);
+Mat extractCell(Mat sudoku, int numCell);
 Mat prepareCell(Mat cell);
 Mat removeLight(Mat img, Mat pattern, int method);
 

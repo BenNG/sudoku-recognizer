@@ -25,7 +25,7 @@ Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted a
 
 #include "../debug.h"
 #include "../mlp.h"
-#include "cell.h"
+#include "puzzle.h"
 #include "picture.h"
 
 
@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
       // sudoku = drawAllContour(preprocessed, raw);
       // sudoku = drawBiggestContour(preprocessed, raw);
       // sudoku = drawAllApprox(preprocessed, raw);
-      Mat cell = getCell(sudoku, 71);
+      Mat cell = extractCell(sudoku, 71);
       Mat preparedCell = prepareCell(cell);
       Mat roi = extractRoiFromCell(preparedCell);
       Mat normalized = normalizeSize(roi);
