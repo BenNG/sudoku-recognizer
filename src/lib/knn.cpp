@@ -35,11 +35,8 @@ int readFlippedInteger(FILE *fp)
 int main()
 {
 
-    fs::path trainImages(getMyProjectRoot(fs::current_path()));
-    trainImages /= "assets/train-images.idx3-ubyte";
-
-    fs::path trainLabels(getMyProjectRoot(fs::current_path()));
-    trainLabels /= "assets/train-labels.idx1-ubyte";
+    fs::path trainImages(getPath("assets/train-images.idx3-ubyte"));
+    fs::path trainLabels(getPath("assets/train-labels.idx1-ubyte"));
 
     string trainImages_str = trainImages.string();
     string trainLabels_str = trainLabels.string();
@@ -50,7 +47,6 @@ int main()
     if(!fp || !fp2)
            return 0;
 
-
     int magicNumber = readFlippedInteger(fp);
     int numImages = readFlippedInteger(fp);
     int numRows = readFlippedInteger(fp);
@@ -60,7 +56,6 @@ int main()
     int size = numRows*numCols;
     CvMat *trainingVectors = cvCreateMat(numImages, size, CV_32FC1);
     CvMat *trainingLabels = cvCreateMat(numImages, 1, CV_32FC1);
-
 
     BYTE *temp = new BYTE[size];
     BYTE tempClass=0;

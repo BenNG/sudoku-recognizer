@@ -1,6 +1,7 @@
 /**
 this module handle the original picture
-you can preprocess, find the biggest contour and etract it in order to get the puzzle then you can use the puzzle module.
+* You can preprocess the original picture
+, Find the biggest contour and etract it in order to get the puzzle
 */
 
 

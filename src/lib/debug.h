@@ -22,4 +22,5 @@ void drawMarkers(Mat input, vector<Point> biggestApprox);
 Mat drawGrid(Mat input);
 void showImage(Mat img);
 fs::path getMyProjectRoot(fs::path p);
+fs::path getPath(fs::path p);
 Mat removeTinyVolume(Mat input);

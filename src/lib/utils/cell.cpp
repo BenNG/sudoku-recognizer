@@ -1,8 +1,8 @@
 /**
- * You will handle cells here
+ * You will handle cells here a cell is a square that hold a number or not. A puzle has 81 cells
     - you will first preprocess the cell using prepareCell
     - then extract the number in a normalize size
-    - finally you can extract the feature
+    - finally extract the feature
  * */
 
 #include "cell.h"

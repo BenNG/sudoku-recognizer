@@ -114,6 +114,11 @@ fs::path getMyProjectRoot(fs::path p){
     }
 }
 
+fs::path getPath(fs::path p){
+  fs::path rootPath(getMyProjectRoot(fs::current_path()));
+  return rootPath /= p;
+}
+
 /**
 * from time to time there are some tiny text around the puzzle and it kills the detection
 * this function remove the tiny contour

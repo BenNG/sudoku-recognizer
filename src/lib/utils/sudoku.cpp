@@ -5,8 +5,7 @@
  * */
 string grab(string fileName){
 
-    fs::path image_path(getMyProjectRoot(fs::current_path()));
-    image_path /= fileName;
+    fs::path image_path(getPath(fileName));
 
     string image_path_str = image_path.string();
 
@@ -14,27 +13,19 @@ string grab(string fileName){
 
     Mat image = imread(image_path_str, 0); // Read the file
 
-
     if( image.empty() )                      // Check for invalid input
     {
         cout <<  "Could not open or find the image" << std::endl;
         return "";
     }
-
-//    fs::path project_root(getMyProjectRoot(fs::current_path()));
-//    project_root /= "bla";
-//    cout << project_root << endl;
-
+    
     int cellValue;
     Mat cellFeatured;
     std::stringstream response;
 
     string message;
-    fs::path featured(getMyProjectRoot(fs::current_path()));
-    featured /= "assets/featuredDataForTraining.xml";
-
-    fs::path trained_data(getMyProjectRoot(fs::current_path()));
-    trained_data /= "assets/trained_data";
+    fs::path featured(getPath("assets/featuredDataForTraining.xml"));
+    fs::path trained_data(getPath("assets/trained_data"));
 //
 //    cout << featured << endl;
 //    cout << trained_data << endl;

@@ -44,7 +44,6 @@ using namespace boost;
  *
  * */
 int main(int argc, char **argv) {
-    fs::path p(getMyProjectRoot(fs::current_path()));
     string fullName;
     Mat output, raw, preprocessed, sudoku;
 
@@ -54,8 +53,7 @@ int main(int argc, char **argv) {
         path_str = argv[1];
     }
 
-    p /= path_str;
-
+    fs::path p(getPath(path_str));
 
     if (fs::is_directory(p)) {
         fs::directory_iterator end_iter;
@@ -109,11 +107,8 @@ int main(int argc, char **argv) {
       Mat roi = extractNumber(preparedCell);
       Mat normalized = normalizeSize(roi);
 
-      fs::path featured(getMyProjectRoot(fs::current_path()));
-      featured /= "assets/featuredDataForTraining.xml";
-
-      fs::path trained_data(getMyProjectRoot(fs::current_path()));
-      trained_data /= "assets/trained_data";
+      fs::path featured(getPath("assets/featuredDataForTraining.xml"));
+      fs::path trained_data(getPath("assets/trained_data"));
 
       Ptr<ANN_MLP> model = build_mlp_classifier(featured, trained_data);
 
