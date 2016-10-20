@@ -3,8 +3,17 @@
 
 #include <string>
 #include <sstream>      // std::stringstream
-using namespace std;    // Or using std::string;
+#include <stdio.h>
+#include <iostream>
+#include <opencv2/opencv.hpp>
+#include "debug.h"
 
-string sayHello(string name);
+using namespace cv;
+using namespace std;
+
+typedef unsigned char       BYTE;
+
+int readFlippedInteger(FILE *fp);
+Ptr<ml::KNearest> getKnn();
 
 #endif //DISPLAYIMAGE_KNN_H

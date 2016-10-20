@@ -1,6 +1,6 @@
 find_package( OpenCV 3.1.0 REQUIRED core text)
 find_package( Tesseract REQUIRED ) # 3.05 is currently the latest version of the git repository.
-find_package(Boost 1.58 COMPONENTS system filesystem program_options)
+find_package(Boost 1.58 COMPONENTS system filesystem)
 
 include_directories( ${OpenCV_INCLUDE_DIRS})
 include_directories(${Tesseract_INCLUDE_DIRS})
@@ -43,6 +43,9 @@ target_link_libraries( createDataForTraining cell)
 target_link_libraries( featurizeDataForTraining ${OpenCV_LIBS} )
 target_link_libraries( featurizeDataForTraining puzzle )
 
+target_link_libraries( knn ${OpenCV_LIBS})
+target_link_libraries( knn Debug)
+
 target_link_libraries( showExtracted puzzle )
 target_link_libraries( showExtracted cell )
 target_link_libraries( showExtracted Debug )
@@ -67,6 +70,8 @@ if(Boost_FOUND)
     target_link_libraries(featurizeDataForTraining ${Boost_LIBRARIES})
     target_link_libraries(sudoku ${Boost_LIBRARIES} )
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+    target_link_libraries( Debug ${Boost_LIBRARIES})
+    target_link_libraries( knn ${Boost_LIBRARIES})
 endif()
 
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
