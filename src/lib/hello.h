@@ -3,8 +3,10 @@
 
 #include <string>
 #include <sstream>      // std::stringstream
+#include <iostream>
+
 using namespace std;    // Or using std::string;
 
-string sayHello(string name);
+void sayHello(string name);
 
 #endif //DISPLAYIMAGE_HELLO_H
