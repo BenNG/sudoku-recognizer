@@ -18,6 +18,7 @@ Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted a
 #  define BOOST_SYSTEM_NO_DEPRECATED
 #endif
 
+typedef unsigned char       BYTE;
 
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
@@ -38,6 +39,22 @@ using namespace cv::ml;
 using namespace std;
 using namespace boost;
 
+int readFlippedInteger(FILE *fp)
+{
+    int ret = 0;
+
+    BYTE *temp;
+
+    temp = (BYTE*)(&ret);
+    fread(&temp[3], sizeof(BYTE), 1, fp);
+    fread(&temp[2], sizeof(BYTE), 1, fp);
+    fread(&temp[1], sizeof(BYTE), 1, fp);
+
+    fread(&temp[0], sizeof(BYTE), 1, fp);
+
+    return ret;
+}
+
 /**
  *
  * ----------------------------- Main ------------------------------------
@@ -53,74 +70,122 @@ int main(int argc, char **argv) {
         path_str = argv[1];
     }
 
-    fs::path p(getPath(path_str));
+    FILE *fp = fopen("/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/train-images-idx3-ubyte", "rb");
+    FILE *fp2 = fopen("/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/train-labels-idx1-ubyte", "rb");
 
-    if (fs::is_directory(p)) {
-        fs::directory_iterator end_iter;
-        for (fs::directory_iterator dir_itr(p);
-             dir_itr != end_iter;
-             ++dir_itr) {
-                    fullName = dir_itr->path().string();
-                    cout << fullName << endl;
-
-                    raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
-
-                    sudoku = extractPuzzle(raw);
-
-                    // sometimes the biggest area found is not correct, our puzzle is inside the extract image
-                    // so we do it a second time to extract the biggest blob which is this time our puzzle
-                    // this is the case for s6.jpg and s9.jpg for example
-
-                    // Mat preprocessed2 = preprocess(sudoku.clone());
-                    // vector<Point> biggestApprox2 = findBigestApprox(preprocessed2);
-                    //
-                    // if(!biggestApprox2.empty()){
-                    //   sudoku = extractPuzzle(sudoku, biggestApprox2);
-                    // }
-
-                    // Mat sudoku2 = extractPuzzle(sudoku, biggestApprox2);
-                    // output = drawAllApprox(preprocessed, raw);
-
-                    showImage(sudoku);
-
-        }
-    }else{
-      fullName = p.string();
-      raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
-      // preprocessed = preprocess(raw.clone());
-      sudoku = extractPuzzle(raw);
-
-
-      Mat preprocessed = preprocess(raw.clone());
-      // vector<Point> biggestApprox = findBigestApprox(preprocessed.clone());
-      // if(biggestApprox.empty()){
-      //   cout << "no approx found" << endl;
-      // }
-
-      // vector<Point> biggestApprox = findBigestApprox(preprocessed);
-      // sudoku = removeTinyVolume(preprocessed, raw);
-      // sudoku = drawAllContour(preprocessed, raw);
-      // sudoku = drawBiggestContour(preprocessed, raw);
-      // sudoku = drawAllApprox(preprocessed, raw);
-      Mat cell = extractCell(sudoku, 71);
-      Mat preparedCell = prepareCell(cell);
-      Mat roi = extractNumber(preparedCell);
-      Mat normalized = normalizeSize(roi);
-
-      fs::path featured(getPath("assets/featuredDataForTraining.xml"));
-      fs::path trained_data(getPath("assets/trained_data"));
-
-      Ptr<ANN_MLP> model = build_mlp_classifier(featured, trained_data);
-
-      Mat feature = features(roi, 15);
-
-
-
-      float r = model->predict(feature);
-      cout << "r:" << r + 1 << endl;
-
-      showImage(normalized);
+    if(!fp || !fp2){
+      cout << "can't open file" << endl;
+      return 0;
     }
+
+    int magicNumber = readFlippedInteger(fp);
+    int numImages = readFlippedInteger(fp);
+    int numRows = readFlippedInteger(fp);
+    int numCols = readFlippedInteger(fp);
+    fseek(fp2, 0x08, SEEK_SET);
+
+    int size = numRows*numCols;
+
+    cout << "size: " << size << endl;
+    cout << "rows: " << numRows << endl;
+    cout << "cols: " << numCols << endl;
+
+    Mat_<float> trainFeatures(numImages, size);
+    Mat_<int> trainLabels(1,numImages);
+
+    BYTE *temp = new BYTE[size];
+    BYTE tempClass=0;
+    for(int i=0;i<numImages;i++)
+    {
+        fread((void*)temp, size, 1, fp);
+        fread((void*)(&tempClass), sizeof(BYTE), 1, fp2);
+
+        trainLabels[0][i] = (int)tempClass;
+
+        for(int k=0;k<size;k++){
+            trainFeatures[i][k] = (float)temp[k];
+        }
+    }
+
+    Mat_<float> test(numRows, numCols);
+
+    // Mat_<float> testFeature(1, size);
+    int expected_resp = trainLabels[0][5];
+
+    Mat_<float> testFeature = trainFeatures.row(5);
+    Mat_<float> testImage = createMatFromMNIST( trainFeatures.row(5) );
+
+    showImage(testImage);
+
+    Ptr<ml::KNearest>  knn(ml::KNearest::create());
+    knn->train(trainFeatures, ml::ROW_SAMPLE, trainLabels);
+
+    int K=1;
+    Mat response,dist;
+    knn->findNearest(testFeature, K, noArray(), response, dist);
+    cerr << response << endl;
+    cerr << dist<< endl;
+
+    cout << "expected: " << expected_resp << endl;
+
+    // int K=1;
+    // Mat response,dist;
+    // knn->findNearest(trainFeatures[5], K, noArray(), response, dist);
+    // cout << trainLabels[0][5] << endl;
+    //
+    // cerr << response << endl;
+    // cerr << dist<< endl;
+
+    // fs::path p(getPath(path_str));
+    //
+    // if (fs::is_directory(p)) {
+    //     fs::directory_iterator end_iter;
+    //     for (fs::directory_iterator dir_itr(p);
+    //          dir_itr != end_iter;
+    //          ++dir_itr) {
+    //                 fullName = dir_itr->path().string();
+    //                 cout << fullName << endl;
+    //                 raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
+    //                 sudoku = extractPuzzle(raw);
+    //                 showImage(sudoku);
+    //     }
+    // }else{
+    //   fullName = p.string();
+    //   raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
+    //   // preprocessed = preprocess(raw.clone());
+    //   sudoku = extractPuzzle(raw);
+    //
+    //
+    //   Mat preprocessed = preprocess(raw.clone());
+    //   // vector<Point> biggestApprox = findBigestApprox(preprocessed.clone());
+    //   // if(biggestApprox.empty()){
+    //   //   cout << "no approx found" << endl;
+    //   // }
+    //
+    //   // vector<Point> biggestApprox = findBigestApprox(preprocessed);
+    //   // sudoku = removeTinyVolume(preprocessed, raw);
+    //   // sudoku = drawAllContour(preprocessed, raw);
+    //   // sudoku = drawBiggestContour(preprocessed, raw);
+    //   // sudoku = drawAllApprox(preprocessed, raw);
+    //   Mat cell = extractCell(sudoku, 71);
+    //   Mat preparedCell = prepareCell(cell);
+    //   Mat roi = extractNumber(preparedCell);
+    //   Mat normalized = normalizeSize(roi);
+    //
+    //   fs::path featured(getPath("assets/featuredDataForTraining.xml"));
+    //   fs::path trained_data(getPath("assets/trained_data"));
+    //
+    //   Ptr<ANN_MLP> model = build_mlp_classifier(featured, trained_data);
+    //
+    //   Mat feature = features(roi, 15);
+    //
+    //
+    //
+    //   float r = model->predict(feature);
+    //   cout << "r:" << r + 1 << endl;
+    //
+    //   showImage(normalized);
+    // }
 
     return 0;
 }

@@ -139,3 +139,20 @@ Mat removeTinyVolume(Mat input) {
     }
     return output;
 }
+
+Mat createMatFromMNIST(Mat_<float> input){
+  int numCols = 28;
+  int numRows = 28;
+
+  Mat_<float> test(numRows, numCols);
+
+  for(int i=0;i<numRows;i++)
+  {
+      for(int j=0;j<numCols;j++)
+      {
+        // cout << i * numCols + j << endl;
+        test[i][j] = input[0][i*numCols + j];
+      }
+  }
+  return test;
+}
