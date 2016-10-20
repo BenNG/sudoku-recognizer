@@ -2,7 +2,6 @@
 #define BOOST_TEST_MODULE Hello
 #include <opencv2/opencv.hpp>
 #include <boost/test/unit_test.hpp>
-#include "../src/lib/add.h"
 #include "../src/lib/debug.h"
 #include "../src/lib/utils/sudoku.h"
 #include <iostream>

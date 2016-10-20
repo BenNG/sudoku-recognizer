@@ -12,7 +12,6 @@ MESSAGE("OpenCV version : ${OpenCV_VERSION}")
 MESSAGE("Tesseract version : ${Tesseract_VERSION}")
 
 add_library(Debug lib/debug.cpp lib/debug.h)
-add_library(Add lib/add.cpp lib/add.h)
 add_library(picture lib/utils/picture.cpp lib/utils/picture.h)
 add_library(puzzle lib/utils/puzzle.cpp lib/utils/puzzle.h)
 add_library(cell lib/utils/cell.cpp lib/utils/cell.h)
@@ -21,6 +20,8 @@ add_library(createDataForTraining lib/preTraining/createDataForTraining.cpp lib/
 add_library(randomizeDataForTraining lib/preTraining/randomizeDataForTraining.cpp lib/preTraining/randomizeDataForTraining.h)
 add_library(featurizeDataForTraining lib/preTraining/featurizeDataForTraining.cpp lib/preTraining/featurizeDataForTraining.h)
 add_library(sudoku lib/utils/sudoku.cpp lib/utils/sudoku.h)
+add_library(knn lib/knn.cpp lib/knn.h)
+add_library(hello lib/hello.cpp lib/hello.h)
 
 #Can manually add the sources using the set command as follows:
 set(SOURCES main.cpp )
@@ -48,6 +49,8 @@ target_link_libraries( showExtracted Debug )
 target_link_libraries( showExtracted mlp )
 target_link_libraries( showExtracted picture )
 target_link_libraries( showExtracted ${OpenCV_LIBS} )
+target_link_libraries( showExtracted knn )
+target_link_libraries( showExtracted hello )
 
 target_link_libraries( mlp ${OpenCV_LIBS} )
 

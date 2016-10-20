@@ -16,7 +16,6 @@ target_compile_definitions(test_executable PRIVATE "BOOST_TEST_DYN_LINK=1")
 # indicates the link paths
 target_link_libraries(test_executable ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 target_link_libraries( test_executable ${OpenCV_LIBS} )
-target_link_libraries( test_executable Add)
 target_link_libraries( test_executable Debug)
 target_link_libraries( test_executable sudoku)
 

@@ -24,6 +24,7 @@ typedef unsigned char       BYTE;
 #include "boost/filesystem/path.hpp"
 #include "boost/progress.hpp"
 
+#include "../knn.h"
 #include "../debug.h"
 #include "../mlp.h"
 #include "puzzle.h"
@@ -61,6 +62,10 @@ int readFlippedInteger(FILE *fp)
  *
  * */
 int main(int argc, char **argv) {
+
+    string message = sayHello("LouLou");
+    cout << message << endl;
+
     string fullName;
     Mat output, raw, preprocessed, sudoku;
 
