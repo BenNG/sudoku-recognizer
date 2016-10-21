@@ -55,25 +55,50 @@ Ptr<ml::KNearest> getKnn(){
       }
   }
   knn->train(trainFeatures, ml::ROW_SAMPLE, trainLabels);
-  
-  Mat_<float> test(numRows, numCols);
 
-  // Mat_<float> testFeature(1, size);
-  int expected_resp = trainLabels[0][5];
-
-  Mat_<float> testFeature = trainFeatures.row(5);
-  Mat_<float> testImage = createMatFromMNIST( trainFeatures.row(5) );
-
-  showImage(testImage);
-
-
-
-  int K=1;
-  Mat response,dist;
-  knn->findNearest(testFeature, K, noArray(), response, dist);
-  cerr << response << endl;
-  cerr << dist<< endl;
-
-  cout << "expected: " << expected_resp << endl;
   return knn;
+}
+
+
+void testKnn(Ptr<ml::KNearest> knn){
+    int totalCorrect=0;
+
+    FILE *fp = fopen("/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/t10k-images-idx3-ubyte", "rb");
+    FILE *fp2 = fopen("/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/t10k-labels-idx1-ubyte", "rb");
+
+    int magicNumber = readFlippedInteger(fp);
+    int numImages = readFlippedInteger(fp);
+    int numRows = readFlippedInteger(fp);
+    int numCols = readFlippedInteger(fp);
+    fseek(fp2, 0x08, SEEK_SET);
+
+    int size = numRows*numCols;
+
+    Mat_<float> testFeatures(numImages, size);
+    Mat_<int> expectedLabels(1,numImages);
+
+    BYTE *temp = new BYTE[size];
+    BYTE tempClass=0;
+
+    int K=1;
+    Mat response,dist;
+
+    for(int i=0;i<numImages;i++)
+    {
+        fread((void*)temp, size, 1, fp);
+        fread((void*)(&tempClass), sizeof(BYTE), 1, fp2);
+
+        expectedLabels[0][i] = (int)tempClass;
+
+        for(int k=0;k<size;k++){
+            testFeatures[i][k] = (float)temp[k];
+        }
+
+        knn->findNearest(testFeatures.row(i), K, noArray(), response, dist);
+
+        if(expectedLabels[0][i] == response.at<float>(0)){
+          totalCorrect++;
+        }
+    }
+    printf("Accuracy: %f ", (double)totalCorrect*100/(double)numImages);
 }
