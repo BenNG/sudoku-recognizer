@@ -94,6 +94,11 @@ void testKnn(Ptr<ml::KNearest> knn){
             testFeatures[i][k] = (float)temp[k];
         }
 
+        Mat m = testFeatures.row(i);
+        Mat m2 = createMatFromMNIST(m);
+
+        showImage(m2);
+
         knn->findNearest(testFeatures.row(i), K, noArray(), response, dist);
 
         if(expectedLabels[0][i] == response.at<float>(0)){
@@ -101,4 +106,5 @@ void testKnn(Ptr<ml::KNearest> knn){
         }
     }
     printf("Accuracy: %f ", (double)totalCorrect*100/(double)numImages);
+
 }

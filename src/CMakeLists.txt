@@ -28,6 +28,7 @@ set(SOURCES main.cpp )
 
 add_executable( ${PROJECT_NAME} ${SOURCES} )
 add_executable( showExtracted lib/utils/showExtracted.cpp)
+add_executable( showCells lib/utils/showCells.cpp)
 #add_executable( randomizeDataForTraining lib/randomizeDataForTraining.cpp)
 #add_executable( featurizeDataForTraining lib/featurizeDataForTraining.cpp)
 
@@ -55,6 +56,13 @@ target_link_libraries( showExtracted ${OpenCV_LIBS} )
 target_link_libraries( showExtracted knn )
 target_link_libraries( showExtracted hello )
 
+target_link_libraries( showCells ${OpenCV_LIBS} )
+target_link_libraries( showCells hello )
+target_link_libraries( showCells Debug )
+target_link_libraries( showCells picture )
+target_link_libraries( showCells cell )
+target_link_libraries( showCells puzzle )
+
 target_link_libraries( mlp ${OpenCV_LIBS} )
 
 target_link_libraries( sudoku ${OpenCV_LIBS} )
@@ -65,6 +73,7 @@ target_link_libraries( sudoku mlp )
 
 if(Boost_FOUND)
     target_link_libraries(showExtracted ${Boost_LIBRARIES} )
+    target_link_libraries(showCells ${Boost_LIBRARIES} )
     target_link_libraries(createDataForTraining ${Boost_LIBRARIES})
     target_link_libraries(randomizeDataForTraining ${Boost_LIBRARIES})
     target_link_libraries(featurizeDataForTraining ${Boost_LIBRARIES})

@@ -55,9 +55,8 @@ Mat removeLight(Mat img, Mat pattern, int method) {
 
 
 Mat normalizeSize(Mat in) {
-
-    int charSize = 25;
-//Remap image
+    int charSize = 20;
+    //Remap image
     int h = in.rows;
     int w = in.cols;
     Mat transformMat = Mat::eye(2, 3, CV_32F);
@@ -100,6 +99,7 @@ Mat extractNumber(Mat cell) {
     } else {
 //        cout << "Number of objects detected: " << num_objects - 1 << endl;
     }
+    Scalar white(255, 255, 255);
 
     // Create output image coloring the objects and show area
     for (int i = 1; i < num_objects; i++) {
@@ -117,15 +117,13 @@ Mat extractNumber(Mat cell) {
         if (area < 110) continue; // area of the connected object
 
         // should be the number here
+        Mat mask= labels==i;
+        cell.setTo(white, mask);
         Rect rect(left, top, width, height);
-//        Mat mask= labels==i;
-//        output.setTo(randomColor(rng), mask);
-        return normalizeSize(cell(rect));
+        return cell(rect);
 
     }
-
     return output;
-
 }
 
 
