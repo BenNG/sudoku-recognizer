@@ -64,7 +64,7 @@ int main(int argc, char **argv)
                 int size = 28;
                 int mid = size / 2;
                 //
-                Mat output = Mat::zeros(size, size, normalized.type());
+                Mat output = Mat::zeros(size, size, CV_32F);
                 normalized.copyTo(output(Rect((mid - normalized.rows / 2), (mid - normalized.cols / 2), normalized.cols, normalized.rows)));
                 // //
                 // // showImage(output);
