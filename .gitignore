@@ -3,3 +3,4 @@ mnist
 .idea/
 build/
 temp.temp
+.vscode

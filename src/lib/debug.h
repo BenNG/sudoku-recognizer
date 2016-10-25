@@ -16,6 +16,7 @@ namespace fs = boost::filesystem;
 
 int minuss(int i, int j);
 Mat drawAllContour(Mat preprocessed);
+Mat findBiggestComponent(Mat input);
 Mat drawAllApprox(Mat preprocessed);
 Mat drawAllApprox(Mat preprocessed, Mat original);
 void drawMarkers(Mat input, vector<Point> biggestApprox);
@@ -23,5 +24,6 @@ Mat drawGrid(Mat input);
 void showImage(Mat img);
 fs::path getMyProjectRoot(fs::path p);
 fs::path getPath(fs::path p);
-Mat removeTinyVolume(Mat input);
+Mat removeTinyVolume(Mat input, int area, Scalar color);
 Mat createMatFromMNIST(Mat_<float> input);
+Mat createMatToMNIST(Mat input);

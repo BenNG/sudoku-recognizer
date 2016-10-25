@@ -5,22 +5,71 @@ int minuss(int i, int j)
     return i - j;
 }
 
-Mat drawAllContour(Mat preprocessed) {
+Mat drawAllContour(Mat preprocessed)
+{
     Mat output = Mat::zeros(preprocessed.rows, preprocessed.cols, preprocessed.type());
     Scalar white(255, 255, 255);
-    vector < vector< Point > > contours;
+    vector<vector<Point> > contours;
     findContours(preprocessed, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
-    cout << "contours : " << contours.size() << endl;
+    // cout << "contours : " << contours.size() << endl;
 
-    for (int i = 0; i < contours.size(); i++) {
+    for (int i = 0; i < contours.size(); i++)
+    {
         drawContours(output, contours, i, white, 2, 8);
     }
 
     return output;
 }
 
-Mat drawAllApprox(Mat preprocessed) {
+Mat findBiggestComponent(Mat input)
+{
+    Mat output = Mat::zeros(input.rows, input.cols, input.type());
+
+    Mat labels, stats, centroids;
+    int num_objects = connectedComponentsWithStats(input, labels, stats, centroids);
+    // Check the number of objects detected
+
+    if (num_objects < 2)
+    {
+        throw "No objects detected";
+    }
+    else
+    {
+        // cout << "Number of objects detected: " << num_objects - 1 << endl;
+    }
+
+    int biggestArea = 0;
+    int index = 0;
+    // Create output image coloring the objects and show area
+    for (int i = 1; i < num_objects; i++)
+    {
+        int area = stats.at<int>(i, CC_STAT_AREA);
+        int width = stats.at<int>(i, CC_STAT_WIDTH);
+        int height = stats.at<int>(i, CC_STAT_HEIGHT);
+        int left = stats.at<int>(i, CC_STAT_LEFT);
+        int top = stats.at<int>(i, CC_STAT_TOP);
+
+        if (biggestArea < area)
+        {
+            biggestArea = area;
+            index = i;
+        }
+    }
+
+    // cout << "area: " << stats.at<int>(index, CC_STAT_AREA) << endl;
+    int area = stats.at<int>(index, CC_STAT_AREA);
+    int width = stats.at<int>(index, CC_STAT_WIDTH);
+    int height = stats.at<int>(index, CC_STAT_HEIGHT);
+    int left = stats.at<int>(index, CC_STAT_LEFT);
+    int top = stats.at<int>(index, CC_STAT_TOP);
+
+    Rect rect(left, top, width, height);
+    return input(rect);
+}
+
+Mat drawAllApprox(Mat preprocessed)
+{
     Mat output = Mat::zeros(preprocessed.rows, preprocessed.cols, preprocessed.type());
 
     Scalar white(255, 255, 255);
@@ -29,7 +78,8 @@ Mat drawAllApprox(Mat preprocessed) {
 
     findContours(preprocessed.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
-    for (int i = 0; i < contours.size(); i++) {
+    for (int i = 0; i < contours.size(); i++)
+    {
 
         // Approximate contour with accuracy proportional
         // to the contour perimeter
@@ -44,7 +94,8 @@ Mat drawAllApprox(Mat preprocessed) {
     }
     return output;
 }
-Mat drawAllApprox(Mat preprocessed, Mat origial) {
+Mat drawAllApprox(Mat preprocessed, Mat origial)
+{
     Mat output = origial.clone();
 
     Scalar white(255, 255, 255);
@@ -53,7 +104,8 @@ Mat drawAllApprox(Mat preprocessed, Mat origial) {
 
     findContours(preprocessed.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
-    for (int i = 0; i < contours.size(); i++) {
+    for (int i = 0; i < contours.size(); i++)
+    {
 
         // Approximate contour with accuracy proportional
         // to the contour perimeter
@@ -69,7 +121,8 @@ Mat drawAllApprox(Mat preprocessed, Mat origial) {
     return output;
 }
 
-void drawMarkers(Mat input, vector<Point> biggestApprox) {
+void drawMarkers(Mat input, vector<Point> biggestApprox)
+{
     Scalar white(255, 255, 255);
 
     drawMarker(input, biggestApprox.at(0), white);
@@ -78,7 +131,8 @@ void drawMarkers(Mat input, vector<Point> biggestApprox) {
     drawMarker(input, biggestApprox.at(3), white);
 }
 
-Mat drawGrid(Mat input) {
+Mat drawGrid(Mat input)
+{
     Scalar white(255, 255, 255);
 
     Mat output = input.clone();
@@ -87,8 +141,10 @@ Mat drawGrid(Mat input) {
     int cw = w / 9;
     int ch = h / 9;
 
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
             //  drawMarker(input, Point(j * ch, i * cw), white);
             Rect rect = Rect(j * ch, i * cw, ch, cw);
             rectangle(output, rect, white);
@@ -97,62 +153,91 @@ Mat drawGrid(Mat input) {
     return output;
 }
 
-void showImage(Mat img){
+void showImage(Mat img)
+{
     namedWindow("Display Image", WINDOW_AUTOSIZE);
     imshow("Display Image", img);
     waitKey(0);
 }
 
-fs::path getMyProjectRoot(fs::path p){
+fs::path getMyProjectRoot(fs::path p)
+{
     string projectRootFolderName = "sudoku";
-    if(p.filename() == projectRootFolderName){
+    if (p.filename() == projectRootFolderName)
+    {
         return p;
-    }else if (p.filename() == "/") {
+    }
+    else if (p.filename() == "/")
+    {
         throw "could not find project root (in function getMyProjectRoot)";
-    }else{
+    }
+    else
+    {
         return getMyProjectRoot(p.parent_path());
     }
 }
 
-fs::path getPath(fs::path p){
-  fs::path rootPath(getMyProjectRoot(fs::current_path()));
-  return rootPath /= p;
+fs::path getPath(fs::path p)
+{
+    fs::path rootPath(getMyProjectRoot(fs::current_path()));
+    return rootPath /= p;
 }
 
 /**
 * from time to time there are some tiny text around the puzzle and it kills the detection
 * this function remove the tiny contour
 */
-Mat removeTinyVolume(Mat input) {
+Mat removeTinyVolume(Mat input, int area, Scalar color)
+{
+    // we draw to the color of the background
     Mat output = input.clone();
     Scalar black(0, 0, 0);
     Scalar white(255, 255, 255);
-    vector < vector< Point > > contours;
+    vector<vector<Point> > contours;
     findContours(input, contours, RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 
     // cout << "contours : " << contours.size() << endl;
 
-    for (int i = 0; i < contours.size(); i++) {
-      if (contourArea(contours[i]) < 400){
-        drawContours(output, contours, i, white, -1, 8);
-      }
+    for (int i = 0; i < contours.size(); i++)
+    {
+        if (contourArea(contours[i]) < area)
+        {
+            drawContours(output, contours, i, color, -1, 8);
+        }
     }
     return output;
 }
 
-Mat createMatFromMNIST(Mat_<float> input){
-  int numCols = 28;
-  int numRows = 28;
+Mat createMatFromMNIST(Mat_<float> input)
+{
+    int numCols = 28;
+    int numRows = 28;
 
-  Mat_<float> test(numRows, numCols);
+    Mat_<float> test(numRows, numCols);
 
-  for(int i=0;i<numRows;i++)
-  {
-      for(int j=0;j<numCols;j++)
-      {
-        // cout << i * numCols + j << endl;
-        test[i][j] = input[0][i*numCols + j];
-      }
-  }
-  return test;
+    for (int i = 0; i < numRows; i++)
+    {
+        for (int j = 0; j < numCols; j++)
+        {
+            // cout << i * numCols + j << endl;
+            test[i][j] = input[0][i * numCols + j];
+        }
+    }
+    return test;
+}
+
+Mat createMatToMNIST(Mat input)
+{
+    int rows = 28;
+    int cols = 28;
+    Mat m3(1, rows * cols, CV_32F);
+    for (int i = 0; i < rows; i++)
+    {
+        for (int k = 0; k < cols; k++)
+        {
+            // cout << input.at<float>(i,k) << endl;
+            m3.at<float>(i * rows + k) = input.at<float>(i, k);
+        }
+    }
+    return m3;
 }

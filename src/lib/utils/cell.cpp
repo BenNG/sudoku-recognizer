@@ -1,14 +1,14 @@
 /**
- * You will handle cells here a cell is a square that hold a number or not. A puzle has 81 cells
-    - you will first preprocess the cell using prepareCell
-    - then extract the number in a normalize size
-    - finally extract the feature
- * */
+* You will handle cells here a cell is a square that hold a number or not. A puzle has 81 cells
+- you will first preprocess the cell using prepareCell
+- then extract the number in a normalize size
+- finally extract the feature
+* */
 
 #include "cell.h"
 
-
-Mat prepareCell(Mat cell) {
+Mat prepareCell(Mat cell)
+{
 
     Mat output = cell.clone(), cell_no_noise, cell_no_light;
     // remove noise
@@ -33,28 +33,32 @@ Mat prepareCell(Mat cell) {
     return output;
 }
 
-Mat removeLight(Mat img, Mat pattern, int method) {
+Mat removeLight(Mat img, Mat pattern, int method)
+{
     Mat aux;
-// if method is normalization
-    if (method == 1) {
-// Require change our image to 32 float for division
+    // if method is normalization
+    if (method == 1)
+    {
+        // Require change our image to 32 float for division
         Mat img32, pattern32;
         img.convertTo(img32, CV_32F);
         pattern.convertTo(pattern32, CV_32F);
-// Divide the image by the pattern
+        // Divide the image by the pattern
         aux = 1 - (img32 / pattern32);
         // Scale it to convert to 8bit format
         aux = aux * 255;
-// Convert 8 bits format
+        // Convert 8 bits format
         aux.convertTo(aux, CV_8U);
-    } else {
+    }
+    else
+    {
         aux = pattern - img;
     }
     return aux;
 }
 
-
-Mat normalizeSize(Mat in) {
+Mat normalizeSize(Mat in)
+{
     int charSize = 20;
     //Remap image
     int h = in.rows;
@@ -74,9 +78,12 @@ Mat normalizeSize(Mat in) {
 }
 
 /**
- * extract the number and normelize the size
- * */
-Mat extractNumber(Mat cell) {
+* extract the number and normelize the size
+* */
+Mat extractNumber(Mat input)
+{
+
+    Mat cell = prepareCell(input);
 
     int cell_height = cell.rows;
     int cell_width = cell.cols;
@@ -93,16 +100,20 @@ Mat extractNumber(Mat cell) {
     // Check the number of objects detected
     Mat output;
 
-    if (num_objects < 2) {
-//        cout << "No objects detected" << endl;
+    if (num_objects < 2)
+    {
+        //        cout << "No objects detected" << endl;
         return output;
-    } else {
-//        cout << "Number of objects detected: " << num_objects - 1 << endl;
+    }
+    else
+    {
+        //        cout << "Number of objects detected: " << num_objects - 1 << endl;
     }
     Scalar white(255, 255, 255);
 
     // Create output image coloring the objects and show area
-    for (int i = 1; i < num_objects; i++) {
+    for (int i = 1; i < num_objects; i++)
+    {
         int area = stats.at<int>(i, CC_STAT_AREA);
         int width = stats.at<int>(i, CC_STAT_WIDTH);
         int height = stats.at<int>(i, CC_STAT_HEIGHT);
@@ -111,34 +122,39 @@ Mat extractNumber(Mat cell) {
 
         // filtering
         int boundingArea = width * height;
-        if (width > width_threshold) continue; // drop long horizontal line
-        if (height > height_threshold) continue; // drop long vetical line
-        if (boundingArea < 220 || boundingArea > 900) continue;
-        if (area < 110) continue; // area of the connected object
+        if (width > width_threshold)
+            continue; // drop long horizontal line
+        if (height > height_threshold)
+            continue; // drop long vetical line
+        if (boundingArea < 220 || boundingArea > 900)
+            continue;
+        if (area < 110)
+            continue; // area of the connected object
 
         // should be the number here
-        Mat mask= labels==i;
-        cell.setTo(white, mask);
+        // Mat mask= labels==i;
+        // cell.setTo(white, mask);
         Rect rect(left, top, width, height);
-        return cell(rect);
-
+        return input(rect);
     }
     return output;
 }
 
-
-Mat calculateLightPattern(Mat img) {
+Mat calculateLightPattern(Mat img)
+{
     Mat pattern;
-// Basic and effective way to calculate the light pattern from one image
+    // Basic and effective way to calculate the light pattern from one image
     blur(img, pattern, Size(img.cols / 3, img.cols / 3));
-//    showImage(pattern);
+    //    showImage(pattern);
     return pattern;
 }
 
-Mat ProjectedHistogram(Mat img, int t) {
+Mat ProjectedHistogram(Mat img, int t)
+{
     int sz = (t) ? img.rows : img.cols;
     Mat mhist = Mat::zeros(1, sz, CV_32F);
-    for (int j = 0; j < sz; j++) {
+    for (int j = 0; j < sz; j++)
+    {
         Mat data = (t) ? img.row(j) : img.col(j);
         mhist.at<float>(j) = countNonZero(data);
     }
@@ -151,9 +167,10 @@ Mat ProjectedHistogram(Mat img, int t) {
 }
 
 /**
- * this function is used on a normalize number (after extractNumber)
- * */
-Mat features(Mat in, int sizeData) {
+* this function is used on a normalize number (after extractNumber)
+* */
+Mat features(Mat in, int sizeData)
+{
     int HORIZONTAL = 1;
     int VERTICAL = 0;
 
@@ -171,18 +188,21 @@ Mat features(Mat in, int sizeData) {
     Mat out = Mat::zeros(1, numCols, CV_32F);
     //Asign values to feature
     int j = 0;
-    for (int i = 0; i < vhist.cols; i++) {
+    for (int i = 0; i < vhist.cols; i++)
+    {
         out.at<float>(j) = vhist.at<float>(i);
         j++;
     }
-    for (int i = 0; i < hhist.cols; i++) {
+    for (int i = 0; i < hhist.cols; i++)
+    {
         out.at<float>(j) = hhist.at<float>(i);
         j++;
     }
-    for (int x = 0; x < lowData.cols; x++) {
-        for (int y = 0; y < lowData.rows; y++) {
-            out.at<float>(j) = (float) lowData.at < unsigned
-            char > (x, y);
+    for (int x = 0; x < lowData.cols; x++)
+    {
+        for (int y = 0; y < lowData.rows; y++)
+        {
+            out.at<float>(j) = (float)lowData.at<unsigned char>(x, y);
             j++;
         }
     }

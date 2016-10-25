@@ -62,6 +62,7 @@ target_link_libraries( showCells Debug )
 target_link_libraries( showCells picture )
 target_link_libraries( showCells cell )
 target_link_libraries( showCells puzzle )
+target_link_libraries( showCells knn )
 
 target_link_libraries( mlp ${OpenCV_LIBS} )
 
