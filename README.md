@@ -5,7 +5,7 @@
 To run this project you need
 * [CMake](https://cmake.org/)
 * [OpenCV 3.1.0](http://opencv.org/downloads.html) and [OpenCV_contrib](https://github.com/opencv/opencv_contrib). This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful
-* [Tesseract](https://github.com/tesseract-ocr)
+* [Tesseract](https://github.com/tesseract-ocr) (not needed anymore)
   * build the project
     * clone the repo
     * mkdir build
@@ -19,6 +19,22 @@ To run this project you need
 * mkdir build
 * cd build
 * Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/DisplayImage ../assets/puzzles/s0.jpg
+
+## Actions
+* You can see each extrated puzzle by using:
+```
+Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted
+```
+* You can see each cell of a puzzle using:
+```
+Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showCells
+``` 
+* The knn network can be tested using this:
+```
+Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/testKnn
+```
+> You can iterate over each picture by setting debug=true in the `testKnn` fn  
+
 
 ## adding tesseract
 ```

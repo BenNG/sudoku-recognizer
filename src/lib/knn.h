@@ -17,6 +17,6 @@ typedef unsigned char       BYTE;
 int readFlippedInteger(FILE *fp);
 Ptr<ml::KNearest> getKnn();
 
-void testKnn(Ptr<ml::KNearest> knn);
+void testKnn(Ptr<ml::KNearest> knn, bool debug);
 
 #endif //DISPLAYIMAGE_KNN_H

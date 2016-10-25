@@ -29,6 +29,7 @@ set(SOURCES main.cpp )
 add_executable( ${PROJECT_NAME} ${SOURCES} )
 add_executable( showExtracted lib/utils/showExtracted.cpp)
 add_executable( showCells lib/utils/showCells.cpp)
+add_executable( testKnn lib/utils/testKnn.cpp)
 #add_executable( randomizeDataForTraining lib/randomizeDataForTraining.cpp)
 #add_executable( featurizeDataForTraining lib/featurizeDataForTraining.cpp)
 
@@ -63,6 +64,14 @@ target_link_libraries( showCells picture )
 target_link_libraries( showCells cell )
 target_link_libraries( showCells puzzle )
 target_link_libraries( showCells knn )
+
+target_link_libraries( testKnn ${OpenCV_LIBS} )
+target_link_libraries( testKnn hello )
+target_link_libraries( testKnn Debug )
+target_link_libraries( testKnn picture )
+target_link_libraries( testKnn cell )
+target_link_libraries( testKnn puzzle )
+target_link_libraries( testKnn knn )
 
 target_link_libraries( mlp ${OpenCV_LIBS} )
 

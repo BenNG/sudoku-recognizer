@@ -62,7 +62,7 @@ Ptr<ml::KNearest> getKnn()
     return knn;
 }
 
-void testKnn(Ptr<ml::KNearest> knn)
+void testKnn(Ptr<ml::KNearest> knn, bool debug)
 {
     int totalCorrect = 0;
 
@@ -84,10 +84,16 @@ void testKnn(Ptr<ml::KNearest> knn)
     BYTE tempClass = 0;
 
     int K = 1;
-    Mat response, dist;
+    Mat response, dist, m;
 
     for (int i = 0; i < numImages; i++)
     {
+
+        if (i % 1000 == 0 && i != 0)
+        {
+            cout << i << endl;
+        }
+
         fread((void *)temp, size, 1, fp);
         fread((void *)(&tempClass), sizeof(BYTE), 1, fp2);
 
@@ -99,15 +105,19 @@ void testKnn(Ptr<ml::KNearest> knn)
         }
 
         // test to verify if createMatFromMNIST and createMatToMNIST are well.
-        Mat m = testFeatures.row(i);
-        // Mat m2 = createMatFromMNIST(m);
-        // showImage(m2);
-        // Mat m3 = createMatToMNIST(m2);
-        // showImage(m3);
+        m = testFeatures.row(i);
 
         knn->findNearest(m, K, noArray(), response, dist);
-        // cout << "response: " << response << endl;
-        // cout << "dist: " << dist << endl;
+
+        if (debug)
+        {
+            cout << "response: " << response << endl;
+            cout << "dist: " << dist << endl;
+            Mat m2 = createMatFromMNIST(m);
+            showImage(m2);
+            // Mat m3 = createMatToMNIST(m2);
+            // showImage(m3);
+        }
 
         if (expectedLabels[0][i] == response.at<float>(0))
         {
