@@ -40,8 +40,8 @@ Ptr<ml::KNearest> getKnn()
     cout << "rows: " << numRows << endl;
     cout << "cols: " << numCols << endl;
 
-    Mat_<float> trainFeatures(numImages, size);
-    Mat_<int> trainLabels(1, numImages);
+    Mat trainFeatures(numImages, size, CV_32F), fff;
+    Mat trainLabels(1, numImages, CV_32S);
 
     BYTE *temp = new BYTE[size];
     BYTE tempClass = 0;
@@ -50,13 +50,14 @@ Ptr<ml::KNearest> getKnn()
         fread((void *)temp, size, 1, fp);
         fread((void *)(&tempClass), sizeof(BYTE), 1, fp2);
 
-        trainLabels[0][i] = (int)tempClass;
+        trainLabels.at<int>(0,i) = (int)tempClass;
 
         for (int k = 0; k < size; k++)
         {
-            trainFeatures[i][k] = (float)temp[k];
+            trainFeatures.at<float>(i,k) = (float)temp[k];
         }
     }
+
     knn->train(trainFeatures, ml::ROW_SAMPLE, trainLabels);
 
     return knn;
@@ -75,10 +76,14 @@ void testKnn(Ptr<ml::KNearest> knn, bool debug)
     int numCols = readFlippedInteger(fp);
     fseek(fp2, 0x08, SEEK_SET);
 
+    numImages = 100;
+
     int size = numRows * numCols;
 
-    Mat_<float> testFeatures(numImages, size);
-    Mat_<int> expectedLabels(1, numImages);
+    Mat testFeatures(numImages, size, CV_32F);
+    Mat expectedLabels(1, numImages, CV_32S);
+
+    cout << "expectedLabels.type(): " << expectedLabels.type() << endl;
 
     BYTE *temp = new BYTE[size];
     BYTE tempClass = 0;
@@ -97,11 +102,11 @@ void testKnn(Ptr<ml::KNearest> knn, bool debug)
         fread((void *)temp, size, 1, fp);
         fread((void *)(&tempClass), sizeof(BYTE), 1, fp2);
 
-        expectedLabels[0][i] = (int)tempClass;
+        expectedLabels.at<int>(0,i) = (int)tempClass;
 
         for (int k = 0; k < size; k++)
         {
-            testFeatures[i][k] = (float)temp[k];
+            testFeatures.at<float>(i,k) = (float)temp[k];
         }
 
         // test to verify if createMatFromMNIST and createMatToMNIST are well.
@@ -115,11 +120,11 @@ void testKnn(Ptr<ml::KNearest> knn, bool debug)
             cout << "dist: " << dist << endl;
             Mat m2 = createMatFromMNIST(m);
             showImage(m2);
-            // Mat m3 = createMatToMNIST(m2);
-            // showImage(m3);
+            Mat m3 = createMatToMNIST(m2);
+            showImage(m3);
         }
 
-        if (expectedLabels[0][i] == response.at<float>(0))
+        if (expectedLabels.at<int>(0,i) == response.at<float>(0))
         {
             totalCorrect++;
         }

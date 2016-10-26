@@ -14,7 +14,8 @@
 #include "../mlp.h"
 #include "../debug.h"
 #include "cell.h"
-#include "../preTraining/createDataForTraining.h"
+#include "picture.h"
+// #include "../preTraining/createDataForTraining.h"
 #include "../preTraining/randomizeDataForTraining.h"
 #include "../preTraining/featurizeDataForTraining.h"
 #include <opencv2/opencv.hpp>

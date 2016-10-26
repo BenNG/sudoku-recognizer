@@ -32,7 +32,7 @@
  * */
 
 #include <opencv2/opencv.hpp>
-#include <tesseract/baseapi.h>
+// #include <tesseract/baseapi.h>
 #include "../debug.h"
 #include "../utils/picture.h"
 #include "../utils/puzzle.h"

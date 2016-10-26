@@ -18,7 +18,7 @@ string grab(string fileName){
         cout <<  "Could not open or find the image" << std::endl;
         return "";
     }
-    
+
     int cellValue;
     Mat cellFeatured;
     std::stringstream response;
@@ -33,7 +33,7 @@ string grab(string fileName){
 
 
     if (!fs::exists(featured) && !fs::exists(trained_data)) {
-        createData();
+        // createData();
 
         cout << "Go clean the data folder !! say 'ok' when you are ready "  << endl;
         cin >> message;

@@ -22,7 +22,7 @@ Mat drawAllContour(Mat preprocessed)
     return output;
 }
 
-Mat findBiggestComponent(Mat input)
+vector<double> findBiggestComponent(Mat input)
 {
     Mat output = Mat::zeros(input.rows, input.cols, input.type());
 
@@ -64,8 +64,9 @@ Mat findBiggestComponent(Mat input)
     int left = stats.at<int>(index, CC_STAT_LEFT);
     int top = stats.at<int>(index, CC_STAT_TOP);
 
-    Rect rect(left, top, width, height);
-    return input(rect);
+    vector<double> v = {left, top, width, height, centroids.at<double>(index,0), centroids.at<double>(index,1)};
+
+    return v;
 }
 
 Mat drawAllApprox(Mat preprocessed)

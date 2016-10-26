@@ -3,7 +3,7 @@ set(Boost_ADDITIONAL_VERSIONS "1.58" "1.58.0")
 
 # finds boost, triggers an error otherwise
 find_package(Boost 1.58 REQUIRED COMPONENTS unit_test_framework)
-find_package( OpenCV 3.1.0 REQUIRED core text)
+# find_package( OpenCV 3.1.0 REQUIRED core text)
 
 
 # creates the executable

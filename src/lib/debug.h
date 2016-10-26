@@ -16,7 +16,7 @@ namespace fs = boost::filesystem;
 
 int minuss(int i, int j);
 Mat drawAllContour(Mat preprocessed);
-Mat findBiggestComponent(Mat input);
+vector<double> findBiggestComponent(Mat input);
 Mat drawAllApprox(Mat preprocessed);
 Mat drawAllApprox(Mat preprocessed, Mat original);
 void drawMarkers(Mat input, vector<Point> biggestApprox);

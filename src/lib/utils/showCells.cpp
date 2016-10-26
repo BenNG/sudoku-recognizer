@@ -47,37 +47,61 @@ int main(int argc, char **argv)
 
         for (int k = 0; k < 81; k++)
         {
-            // cout << "index: " << k << endl;
             Mat cell = extractCell(sudoku, k);
-            // Mat preparedCell = prepareCell(cell);
             Mat roi = extractNumber(cell);
 
             if (!roi.empty())
             {
                 adaptiveThreshold(roi, fin, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
+                // fin 8bits (CV_8U)
                 fin2 = removeTinyVolume(fin, 90, Scalar(0, 0, 0));
-                fin3 = findBiggestComponent(fin2);
+                // fin2 8bits
+                vector<double> v = findBiggestComponent(fin2);
 
-                Mat normalized = normalizeSize(fin3);
-                // showImage(normalized);
-                //
+                double left = v[0];
+                double top = v[1];
+                double width = v[2];
+                double height = v[3];
+                double x = v[4];
+                double y = v[5];
+                Rect rect(left, top, width, height);
+                fin3 = fin2(rect);
+
+                cout << "fin3.type()" << fin3.type() << endl;
+
+                Mat normalized = normalizeSize(fin3), dest;
+
+                threshold(normalized, dest, 100, 255, normalized.type());
+
+                int notZero = 0;
+                int sumI = 0, sumY = 0;
+                for (int i = 0; i < 20; i++)
+                {
+                    for (int j = 0; j < 20; j++)
+                    {
+                        if (dest.at<float>(i, j) != 0)
+                        {
+                            sumI = sumI + i;
+                            sumY = sumY + j;
+                            notZero++;
+                        }
+                    }
+                }
+
                 int size = 28;
                 int mid = size / 2;
-                //
-                Mat output = Mat::zeros(size, size, CV_32F);
-                normalized.copyTo(output(Rect((mid - normalized.rows / 2), (mid - normalized.cols / 2), normalized.cols, normalized.rows)));
-                // //
-                // // showImage(output);
-                showImage(output);
-                Mat test = createMatToMNIST(output);
 
-                knn->findNearest(test, K, noArray(), response, dist);
+                Mat output = Mat::zeros(size, size, CV_32F);
+                normalized.copyTo(output(Rect((mid - sumI / (double)notZero), (mid - sumY / (double)notZero), normalized.cols, normalized.rows)));
+
+                output.convertTo(output,CV_32F);
+
+                knn->findNearest(output.reshape(1,1), K, noArray(), response, dist);
                 cout << "response: " << response << endl;
                 cout << "dist: " << dist << endl;
                 showImage(output);
             }
         }
-        // showImage(sudoku);
     }
     return 0;
 }
