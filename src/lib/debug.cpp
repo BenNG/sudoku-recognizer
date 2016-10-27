@@ -208,3 +208,18 @@ Mat removeTinyVolume(Mat input, int area, Scalar color)
     }
     return output;
 }
+
+Mat deskew(Mat t){
+    Moments m = moments(t, true);
+    double skew = m.mu11/(int)m.mu02;
+    Mat transform = Mat(2,3,CV_32F);
+    transform.at<float>(0,0) = 1;
+    transform.at<float>(0,1) = skew;
+    transform.at<float>(0,2) = -0.5*28*skew;
+    transform.at<float>(1,0) = 0;
+    transform.at<float>(1,1) = 1;
+    transform.at<float>(1,2) = 0;
+    // cout << skew << endl;
+    warpAffine(t, t, transform, t.size(), cv::WARP_INVERSE_MAP);
+    return t;
+}

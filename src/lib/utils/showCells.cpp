@@ -95,6 +95,8 @@ int main(int argc, char **argv)
 
                 output.convertTo(output,CV_32F);
 
+                output = deskew(output);
+
                 knn->findNearest(output.reshape(1,1), K, noArray(), response, dist);
                 cout << "response: " << response << endl;
                 cout << "dist: " << dist << endl;

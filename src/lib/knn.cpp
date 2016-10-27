@@ -58,8 +58,10 @@ Ptr<ml::KNearest> getKnn()
         }
 
         Mat t = trainFeatures.row(i).reshape(1,28);
-        
-        showImage(t);
+
+        // showImage(t);
+        t = deskew(t);
+        // showImage(t);
     }
     knn->train(trainFeatures, ml::ROW_SAMPLE, trainLabels);
     return knn;
