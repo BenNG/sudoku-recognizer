@@ -56,10 +56,12 @@ Ptr<ml::KNearest> getKnn()
         {
             trainFeatures.at<float>(i,k) = (float)temp[k];
         }
+
+        Mat t = trainFeatures.row(i).reshape(1,28);
+        
+        showImage(t);
     }
-
     knn->train(trainFeatures, ml::ROW_SAMPLE, trainLabels);
-
     return knn;
 }
 
@@ -118,9 +120,9 @@ void testKnn(Ptr<ml::KNearest> knn, bool debug)
         {
             cout << "response: " << response << endl;
             cout << "dist: " << dist << endl;
-            Mat m2 = createMatFromMNIST(m);
+            Mat m2 = m.reshape(1,28);
             showImage(m2);
-            Mat m3 = createMatToMNIST(m2);
+            Mat m3 = m2.reshape(1,1);
             showImage(m3);
         }
 

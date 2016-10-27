@@ -208,37 +208,3 @@ Mat removeTinyVolume(Mat input, int area, Scalar color)
     }
     return output;
 }
-
-Mat createMatFromMNIST(Mat_<float> input)
-{
-    int numCols = 28;
-    int numRows = 28;
-
-    Mat_<float> test(numRows, numCols);
-
-    for (int i = 0; i < numRows; i++)
-    {
-        for (int j = 0; j < numCols; j++)
-        {
-            // cout << i * numCols + j << endl;
-            test[i][j] = input[0][i * numCols + j];
-        }
-    }
-    return test;
-}
-
-Mat createMatToMNIST(Mat input)
-{
-    int rows = 28;
-    int cols = 28;
-    Mat m3(1, rows * cols, CV_32F);
-    for (int i = 0; i < rows; i++)
-    {
-        for (int k = 0; k < cols; k++)
-        {
-            // cout << input.at<float>(i,k) << endl;
-            m3.at<float>(i * rows + k) = input.at<float>(i, k);
-        }
-    }
-    return m3;
-}
