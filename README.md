@@ -3,15 +3,14 @@
 ## Requirement
 
 To run this project you need
-* [CMake](https://cmake.org/)
-* [OpenCV 3.1.0](http://opencv.org/downloads.html) and [OpenCV_contrib](https://github.com/opencv/opencv_contrib). This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful
+* [CMake](https://cmake.org/)  
+* [OpenCV 3.1.0](http://opencv.org/downloads.html). This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful
 
 ## Get started
-
-* Go to the root of the project
-* mkdir build
-* cd build
-* Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/DisplayImage ../assets/puzzles/s0.jpg
+At the root of the project:
+```
+mkdir build && cd build && cmake .. && make && ./DisplayImage
+```
 
 ## Actions
 * You can see each extrated puzzle by using:
@@ -27,14 +26,6 @@ cmake .. && make && src/showCells
 cmake .. && make && src/testKnn
 ```
 > You can iterate over each picture by setting debug=true in the `testKnn` fn  
-
-
-## Build the project
-
-At the root of the project:
-```
-mkdir build && cd build && cmake .. && make && ./DisplayImage
-```
 
 ## tips
 * mkdir -p data/{1,2,3,4,5,6,7,8,9}
