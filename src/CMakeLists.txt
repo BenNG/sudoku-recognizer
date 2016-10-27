@@ -50,6 +50,8 @@ target_link_libraries( featurizeDataForTraining puzzle )
 target_link_libraries( knn ${OpenCV_LIBS})
 target_link_libraries( knn Debug)
 
+target_link_libraries( cell ${OpenCV_LIBS} )
+
 target_link_libraries( showExtracted puzzle )
 target_link_libraries( showExtracted cell )
 target_link_libraries( showExtracted Debug )
