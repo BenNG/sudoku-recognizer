@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     sayHello("LouLou");
 
     int K = 1;
-    Mat response, dist, fin, fin2, fin3;
+    Mat response, dist, fin, fin2, roi;
     string path_str("assets/puzzles/s0.jpg"); // by default
     if (argc > 1)
     {
@@ -47,29 +47,14 @@ int main(int argc, char **argv)
 
         for (int k = 0; k < 81; k++)
         {
-            Mat cell = extractCell(sudoku, k);
-            Mat roi = extractNumber(cell);
+            Mat roi = extractRoiFromCell(sudoku, k);
 
             if (!roi.empty())
             {
-                adaptiveThreshold(roi, fin, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
-                // fin 8bits (CV_8U)
-                fin2 = removeTinyVolume(fin, 90, Scalar(0, 0, 0));
-                // fin2 8bits
-                vector<double> v = findBiggestComponent(fin2);
 
-                double left = v[0];
-                double top = v[1];
-                double width = v[2];
-                double height = v[3];
-                double x = v[4];
-                double y = v[5];
-                Rect rect(left, top, width, height);
-                fin3 = fin2(rect);
+                cout << "roi.type()" << roi.type() << endl;
 
-                cout << "fin3.type()" << fin3.type() << endl;
-
-                Mat normalized = normalizeSize(fin3), dest;
+                Mat normalized = normalizeSize(roi), dest;
 
                 threshold(normalized, dest, 100, 255, normalized.type());
 
@@ -91,7 +76,7 @@ int main(int argc, char **argv)
                 int size = 28;
                 int mid = size / 2;
 
-                Mat output = Mat::zeros(size, size, CV_32F);
+                Mat output = Mat::zeros(size, size, CV_8UC1);
                 normalized.copyTo(output(Rect((mid - sumI / (double)notZero), (mid - sumY / (double)notZero), normalized.cols, normalized.rows)));
 
                 output.convertTo(output,CV_32F);
@@ -102,7 +87,10 @@ int main(int argc, char **argv)
                 cout << "response: " << response << endl;
                 cout << "dist: " << dist << endl;
                 showImage(output);
+            }else{
+                cout << "O" << endl;
             }
+            
         }
     }
     return 0;

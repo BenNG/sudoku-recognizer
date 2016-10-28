@@ -13,8 +13,6 @@
 using namespace cv;
 using namespace std;
 
-typedef unsigned char       BYTE;
-
 int readFlippedInteger(FILE *fp);
 Ptr<ml::KNearest> getKnn();
 

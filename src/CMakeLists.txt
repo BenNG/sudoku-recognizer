@@ -53,7 +53,8 @@ target_link_libraries( knn ${OpenCV_LIBS})
 target_link_libraries( knn Debug)
 target_link_libraries( knn mnist)
 
-target_link_libraries( cell ${OpenCV_LIBS} )
+target_link_libraries( cell ${OpenCV_LIBS})
+target_link_libraries( cell puzzle )
 
 target_link_libraries( showExtracted puzzle )
 target_link_libraries( showExtracted cell )

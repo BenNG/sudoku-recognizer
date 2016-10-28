@@ -208,3 +208,31 @@ Mat features(Mat in, int sizeData)
     }
     return out;
 }
+
+Mat extractRoiFromCell(Mat sudoku, int k)
+{
+    Mat rawCell, rawRoi, output, thresholded, cleaned;
+
+    rawCell = extractCell(sudoku, k);
+    rawRoi = extractNumber(rawCell);
+
+    if (!rawRoi.empty())
+    {
+        adaptiveThreshold(rawRoi, thresholded, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
+        // fin 8bits (CV_8U)
+        cleaned = removeTinyVolume(thresholded, 90, Scalar(0, 0, 0));
+        // fin2 8bits
+        vector<double> v = findBiggestComponent(cleaned);
+
+        double left = v[0];
+        double top = v[1];
+        double width = v[2];
+        double height = v[3];
+        double x = v[4];
+        double y = v[5];
+        Rect rect(left, top, width, height);
+        return cleaned(rect);
+    }
+
+    return output;
+}
