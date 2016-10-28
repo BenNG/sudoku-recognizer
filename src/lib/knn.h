@@ -7,6 +7,7 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include "debug.h"
+#include "utils/mnist.h"
 #include <time.h>
 
 using namespace cv;

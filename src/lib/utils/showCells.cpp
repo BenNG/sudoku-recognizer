@@ -40,6 +40,7 @@ int main(int argc, char **argv)
     else
     {
         Ptr<ml::KNearest> knn = getKnn();
+        // testKnn(knn, true);
         string fullName = p.string();
         Mat raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
         Mat sudoku = extractPuzzle(raw);

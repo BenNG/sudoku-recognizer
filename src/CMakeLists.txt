@@ -18,6 +18,7 @@ add_library(picture lib/utils/picture.cpp lib/utils/picture.h)
 add_library(puzzle lib/utils/puzzle.cpp lib/utils/puzzle.h)
 add_library(cell lib/utils/cell.cpp lib/utils/cell.h)
 add_library(number lib/utils/number.cpp lib/utils/number.h)
+add_library(mnist lib/utils/mnist.cpp lib/utils/mnist.h)
 add_library(mlp lib/mlp.cpp lib/mlp.h)
 # add_library(createDataForTraining lib/preTraining/createDataForTraining.cpp lib/preTraining/createDataForTraining.h)
 add_library(randomizeDataForTraining lib/preTraining/randomizeDataForTraining.cpp lib/preTraining/randomizeDataForTraining.h)
@@ -50,6 +51,7 @@ target_link_libraries( featurizeDataForTraining puzzle )
 
 target_link_libraries( knn ${OpenCV_LIBS})
 target_link_libraries( knn Debug)
+target_link_libraries( knn mnist)
 
 target_link_libraries( cell ${OpenCV_LIBS} )
 
