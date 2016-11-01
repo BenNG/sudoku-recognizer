@@ -57,9 +57,9 @@ Mat removeLight(Mat img, Mat pattern, int method)
     return aux;
 }
 
-Mat normalizeSize(Mat in)
+Mat normalizeSize(Mat in, int size)
 {
-    int charSize = 20;
+    // int charSize = 20;
     //Remap image
     int h = in.rows;
     int w = in.cols;
@@ -72,7 +72,7 @@ Mat normalizeSize(Mat in)
     warpAffine(in, warpImage, transformMat, warpImage.size(), INTER_LINEAR, BORDER_CONSTANT, Scalar(0));
 
     Mat out;
-    resize(warpImage, out, Size(charSize, charSize));
+    resize(warpImage, out, Size(size, size));
 
     return out;
 }

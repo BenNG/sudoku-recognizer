@@ -8,7 +8,7 @@ using namespace std;
 #ifndef DISPLAYIMAGE_CELL_H
 #define DISPLAYIMAGE_CELL_H
 
-Mat normalizeSize(Mat in);
+Mat normalizeSize(Mat in, int size);
 
 /**
  * extract the number and normelize the size

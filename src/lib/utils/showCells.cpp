@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 
     int K = 1;
     Mat response, dist, fin, fin2, roi;
-    string path_str("assets/puzzles/s0.jpg"); // by default
+    string path_str("assets/puzzles/s0.jpg"); // by default 
     if (argc > 1)
     {
         path_str = argv[1];
@@ -52,45 +52,48 @@ int main(int argc, char **argv)
             if (!roi.empty())
             {
 
-                cout << "roi.type()" << roi.type() << endl;
+                // cout << "roi.type()" << roi.type() << endl;
 
-                Mat normalized = normalizeSize(roi), dest;
+                // Mat normalized = normalizeSize(roi), dest;
 
-                threshold(normalized, dest, 100, 255, normalized.type());
+                // threshold(normalized, dest, 100, 255, normalized.type());
 
-                int notZero = 0;
-                int sumI = 0, sumY = 0;
-                for (int i = 0; i < 20; i++)
-                {
-                    for (int j = 0; j < 20; j++)
-                    {
-                        if (dest.at<float>(i, j) != 0)
-                        {
-                            sumI = sumI + i;
-                            sumY = sumY + j;
-                            notZero++;
-                        }
-                    }
-                }
+                // int notZero = 0;
+                // int sumI = 0, sumY = 0;
+                // for (int i = 0; i < 20; i++)
+                // {
+                //     for (int j = 0; j < 20; j++)
+                //     {
+                //         if (dest.at<float>(i, j) != 0)
+                //         {
+                //             sumI = sumI + i;
+                //             sumY = sumY + j;
+                //             notZero++;
+                //         }
+                //     }
+                // }
 
-                int size = 28;
+                int size = 32;
                 int mid = size / 2;
 
                 Mat output = Mat::zeros(size, size, CV_8UC1);
-                normalized.copyTo(output(Rect((mid - sumI / (double)notZero), (mid - sumY / (double)notZero), normalized.cols, normalized.rows)));
+                // normalized.copyTo(output(Rect((mid - sumI / (double)notZero), (mid - sumY / (double)notZero), normalized.cols, normalized.rows)));
+                roi.copyTo(output(Rect(mid - roi.cols / 2, mid - roi.rows / 2, roi.cols, roi.rows)));
+                Mat normalized = normalizeSize(roi, 28);
+                normalized.convertTo(normalized, CV_32F);
 
-                output.convertTo(output,CV_32F);
+                // output = deskew(output);
+                // showImage(normalized);
 
-                output = deskew(output);
-
-                knn->findNearest(output.reshape(1,1), K, noArray(), response, dist);
+                knn->findNearest(normalized.reshape(1, 1), K, noArray(), response, dist);
                 cout << "response: " << response << endl;
                 cout << "dist: " << dist << endl;
-                showImage(output);
-            }else{
+                showImage(normalized);
+            }
+            else
+            {
                 cout << "O" << endl;
             }
-            
         }
     }
     return 0;
