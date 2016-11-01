@@ -28,7 +28,7 @@ typedef unsigned char BYTE;
 #include "../knn.h"
 #include "../debug.h"
 #include "../mlp.h"
-#include "puzzle.h"
+#include "opencv.h"
 #include "picture.h"
 #include "opencv.h"
 

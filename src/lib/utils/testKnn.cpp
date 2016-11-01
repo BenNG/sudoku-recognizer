@@ -2,7 +2,7 @@
 #include "../debug.h"
 #include "picture.h"
 #include "opencv.h"
-#include "puzzle.h"
+#include "opencv.h"
 #include "../knn.h"
 
 int main(int argc, char **argv)

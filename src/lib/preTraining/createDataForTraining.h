@@ -35,7 +35,7 @@
 // #include <tesseract/baseapi.h>
 #include "../debug.h"
 #include "../utils/picture.h"
-#include "../utils/puzzle.h"
+#include "../utils/opencv.h"
 
 #include <iostream>
 
