@@ -20,7 +20,6 @@ add_library(mlp lib/mlp.cpp lib/mlp.h)
 add_library(randomizeDataForTraining lib/preTraining/randomizeDataForTraining.cpp lib/preTraining/randomizeDataForTraining.h)
 add_library(featurizeDataForTraining lib/preTraining/featurizeDataForTraining.cpp lib/preTraining/featurizeDataForTraining.h)
 add_library(sudoku lib/utils/sudoku.cpp lib/utils/sudoku.h)
-add_library(knn lib/knn.cpp lib/knn.h)
 add_library(hello lib/hello.cpp lib/hello.h)
 
 #Can manually add the sources using the set command as follows:
@@ -30,43 +29,32 @@ add_executable( ${PROJECT_NAME} ${SOURCES} )
 add_executable( showExtracted lib/utils/showExtracted.cpp)
 add_executable( showCells lib/utils/showCells.cpp)
 add_executable( testKnn lib/utils/testKnn.cpp)
-#add_executable( randomizeDataForTraining lib/randomizeDataForTraining.cpp)
-#add_executable( featurizeDataForTraining lib/featurizeDataForTraining.cpp)
 
 target_link_libraries( Debug ${OpenCV_LIBS})
 
 target_link_libraries( opencv Debug)
 
-# target_link_libraries( createDataForTraining ${OpenCV_LIBS} )
-# # target_link_libraries( createDataForTraining ${Tesseract_LIBRARIES})
-# target_link_libraries( createDataForTraining Debug)
-# target_link_libraries( createDataForTraining opencv)
-
 target_link_libraries( featurizeDataForTraining ${OpenCV_LIBS} )
 target_link_libraries( featurizeDataForTraining opencv )
 
-target_link_libraries( knn ${OpenCV_LIBS})
-target_link_libraries( knn Debug)
-target_link_libraries( knn opencv)
+target_link_libraries( opencv ${OpenCV_LIBS})
+target_link_libraries( opencv Debug)
 
-target_link_libraries( showExtracted opencv )
 target_link_libraries( showExtracted Debug )
 target_link_libraries( showExtracted mlp )
 target_link_libraries( showExtracted ${OpenCV_LIBS} )
-target_link_libraries( showExtracted knn )
+target_link_libraries( showExtracted opencv )
 target_link_libraries( showExtracted hello )
 
 target_link_libraries( showCells ${OpenCV_LIBS} )
 target_link_libraries( showCells hello )
 target_link_libraries( showCells Debug )
 target_link_libraries( showCells opencv )
-target_link_libraries( showCells knn )
 
 target_link_libraries( testKnn ${OpenCV_LIBS} )
 target_link_libraries( testKnn hello )
 target_link_libraries( testKnn Debug )
 target_link_libraries( testKnn opencv )
-target_link_libraries( testKnn knn )
 
 target_link_libraries( mlp ${OpenCV_LIBS} )
 
@@ -86,7 +74,7 @@ if(Boost_FOUND)
     target_link_libraries(sudoku ${Boost_LIBRARIES} )
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
     target_link_libraries( Debug ${Boost_LIBRARIES})
-    target_link_libraries( knn ${Boost_LIBRARIES})
+    target_link_libraries( opencv ${Boost_LIBRARIES})
 endif()
 
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )

@@ -25,11 +25,8 @@ typedef unsigned char BYTE;
 #include "boost/progress.hpp"
 
 #include "../hello.h"
-#include "../knn.h"
 #include "../debug.h"
 #include "../mlp.h"
-#include "opencv.h"
-#include "picture.h"
 #include "opencv.h"
 
 #include <opencv2/opencv.hpp>

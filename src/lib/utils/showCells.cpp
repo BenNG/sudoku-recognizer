@@ -15,9 +15,7 @@
 namespace fs = boost::filesystem;
 
 #include "../hello.h"
-#include "picture.h"
 #include "opencv.h"
-#include "../knn.h"
 
 int main(int argc, char **argv)
 {

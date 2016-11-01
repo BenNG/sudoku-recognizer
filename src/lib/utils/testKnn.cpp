@@ -1,9 +1,6 @@
 #include "../hello.h"
 #include "../debug.h"
-#include "picture.h"
 #include "opencv.h"
-#include "opencv.h"
-#include "../knn.h"
 
 int main(int argc, char **argv)
 {

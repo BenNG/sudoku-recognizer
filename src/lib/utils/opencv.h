@@ -29,5 +29,9 @@ Mat preprocess(Mat input);
 vector<Point> findBigestApprox(Mat input);
 Mat extractPuzzle(Mat input, vector<Point> biggestApprox);
 Mat extractPuzzle(Mat input);
+// knn
+int readFlippedInteger(FILE *fp);
+Ptr<ml::KNearest> getKnn();
+void testKnn(Ptr<ml::KNearest> knn, bool debug);
 
 #endif //UTILS_OPENCV_LIB
