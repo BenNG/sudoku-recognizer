@@ -30,7 +30,7 @@ typedef unsigned char BYTE;
 #include "../mlp.h"
 #include "puzzle.h"
 #include "picture.h"
-#include "cell.h"
+#include "opencv.h"
 
 #include <opencv2/opencv.hpp>
 

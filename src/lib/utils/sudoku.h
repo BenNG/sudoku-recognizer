@@ -13,7 +13,7 @@
 #include "boost/progress.hpp"
 #include "../mlp.h"
 #include "../debug.h"
-#include "cell.h"
+#include "opencv.h"
 #include "picture.h"
 // #include "../preTraining/createDataForTraining.h"
 #include "../preTraining/randomizeDataForTraining.h"

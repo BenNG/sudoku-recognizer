@@ -1,7 +1,7 @@
 #include "../hello.h"
 #include "../debug.h"
 #include "picture.h"
-#include "cell.h"
+#include "opencv.h"
 #include "puzzle.h"
 #include "../knn.h"
 

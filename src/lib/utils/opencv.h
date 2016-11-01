@@ -5,16 +5,13 @@
 using namespace cv;
 using namespace std;
 
-#ifndef DISPLAYIMAGE_CELL_H
-#define DISPLAYIMAGE_CELL_H
+#ifndef UTILS_OPENCV_LIB
+#define UTILS_OPENCV_LIB
 
+
+// cells
 Mat normalizeSize(Mat in, int size);
-
-/**
- * extract the number and normelize the size
- * */
 Mat extractNumber(Mat cell);
-
 Mat prepareCell(Mat cell);
 Mat removeLight(Mat img, Mat pattern, int method);
 Mat calculateLightPattern(Mat img);
@@ -22,4 +19,4 @@ Mat ProjectedHistogram(Mat img, int t);
 Mat features(Mat in, int sizeData);
 Mat extractRoiFromCell(Mat sudoku, int k);
 
-#endif //DISPLAYIMAGE_CELL_H
+#endif //UTILS_OPENCV_LIB

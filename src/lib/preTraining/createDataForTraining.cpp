@@ -36,7 +36,7 @@
 #include "../debug.h"
 #include "../utils/picture.h"
 #include "../utils/puzzle.h"
-#include "../utils/cell.h"
+#include "../utils/opencv.h"
 
 #include <iostream>
 
