@@ -49,6 +49,7 @@ int main(int argc, char **argv)
             if (!roi.empty())
             {
 
+
                 // cout << "roi.type()" << roi.type() << endl;
 
                 // Mat normalized = normalizeSize(roi), dest;
@@ -70,22 +71,28 @@ int main(int argc, char **argv)
                 //     }
                 // }
 
-                int size = 32;
-                int mid = size / 2;
+                // int size = 32;
+                // int mid = size / 2;
 
-                Mat output = Mat::zeros(size, size, CV_8UC1);
-                // normalized.copyTo(output(Rect((mid - sumI / (double)notZero), (mid - sumY / (double)notZero), normalized.cols, normalized.rows)));
-                roi.copyTo(output(Rect(mid - roi.cols / 2, mid - roi.rows / 2, roi.cols, roi.rows)));
+
+                cout << 20 % 5 << endl;
+
+                // Mat output = Mat::zeros(size, size, CV_8UC1);
+                // // normalized.copyTo(output(Rect((mid - sumI / (double)notZero), (mid - sumY / (double)notZero), normalized.cols, normalized.rows)));
+                // roi.copyTo(output(Rect(mid - roi.cols / 2, mid - roi.rows / 2, roi.cols, roi.rows)));
                 Mat normalized = normalizeSize(roi, 28);
-                normalized.convertTo(normalized, CV_32F);
+                cout << normalized.size() << endl;
+                hog_feature(normalized);
+                
+                // normalized.convertTo(normalized, CV_32F);
 
-                // output = deskew(output);
+                // // output = deskew(output);
+                // // showImage(normalized);
+
+                // knn->findNearest(normalized.reshape(1, 1), K, noArray(), response, dist);
+                // cout << "response: " << response << endl;
+                // cout << "dist: " << dist << endl;
                 // showImage(normalized);
-
-                knn->findNearest(normalized.reshape(1, 1), K, noArray(), response, dist);
-                cout << "response: " << response << endl;
-                cout << "dist: " << dist << endl;
-                showImage(normalized);
             }
             else
             {

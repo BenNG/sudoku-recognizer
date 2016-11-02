@@ -1,3 +1,7 @@
+#ifndef UTILS_OPENCV_LIB
+#define UTILS_OPENCV_LIB
+
+
 #define BOOST_FILESYSTEM_VERSION 3
 
 //  As an example program, we don't want to use any deprecated features
@@ -9,6 +13,7 @@
 #endif
 
 #include <opencv2/opencv.hpp>
+#include <opencv2/objdetect.hpp>
 #include "boost/filesystem.hpp"
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
@@ -18,9 +23,9 @@ using namespace cv::ml;
 using namespace std;
 namespace fs = boost::filesystem;
 
-#ifndef UTILS_OPENCV_LIB
-#define UTILS_OPENCV_LIB
-
+// HOG parameters for training that for some reason are not included in the HOG class
+static const Size trainingPadding = Size(0, 0);
+static const Size winStride = Size(8, 8);
 
 // cells
 Mat normalizeSize(Mat in, int size);
@@ -69,6 +74,9 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
                                      const string& filename_to_save);
 
 Ptr<ANN_MLP> build_mlp_classifier(const fs::path data_filename, const fs::path persistence);
-
+//hog
+Mat hog_feature(Mat input);
 
 #endif //UTILS_OPENCV_LIB
+
+

@@ -28,6 +28,7 @@ cmake .. && make && src/testKnn
 > You can iterate over each picture by setting debug=true in the `testKnn` fn  
 
 ## tips
+* add set(OpenCV_LIBS opencv_core opencv_objdetect) for HOGDescriptor
 * mkdir -p data/{1,2,3,4,5,6,7,8,9}
 * tesseract only use in dev ? for creating the cell in the data folder
 * boost library

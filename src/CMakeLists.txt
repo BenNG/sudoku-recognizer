@@ -10,6 +10,8 @@ if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
+set(OpenCV_LIBS opencv_core opencv_objdetect)
+
 MESSAGE("OpenCV version : ${OpenCV_VERSION}")
 # MESSAGE("Tesseract version : ${Tesseract_VERSION}")
 

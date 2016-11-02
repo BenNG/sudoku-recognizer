@@ -39,9 +39,9 @@ string grab(string fileName){
         cin >> message;
         if(message == "ok"){
             std::cout << "2nd: randomize the file because we will use 80% of the data and 20% to test the network" << std::endl;
-            randomizeData();
+            // randomizeData();
             std::cout << "3rd: extract feature for each cell and save it in featuredDataForTraining.xml" << std::endl;
-            featurizeData();
+            // featurizeData();
         }
     }
 

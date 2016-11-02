@@ -384,8 +384,8 @@ vector<Point> findBigestApprox(Mat input)
 
     int largest_area = 0;
     vector<vector<Point> > contours;
-    vector<cv::Point> approx;
-    vector<cv::Point> biggestApprox;
+    vector<Point> approx;
+    vector<Point> biggestApprox;
 
     findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
@@ -414,19 +414,19 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
 {
     Mat outerBox = Mat(input.size(), CV_8UC1);
 
-    cv::Point2f tl;
-    cv::Point2f tr;
-    cv::Point2f bl;
-    cv::Point2f br;
+    Point2f tl;
+    Point2f tr;
+    Point2f bl;
+    Point2f br;
 
-    cv::Point2f xs[4];
-    cv::Point2f ys[4];
+    Point2f xs[4];
+    Point2f ys[4];
 
-    cv::Point2f tops[2];
-    cv::Point2f bottoms[2];
+    Point2f tops[2];
+    Point2f bottoms[2];
 
-    cv::Point2f src_p[4];
-    cv::Point2f dst_p[4];
+    Point2f src_p[4];
+    Point2f dst_p[4];
 
     xs[0] = biggestApprox.at(0);
     xs[1] = biggestApprox.at(1);
@@ -475,18 +475,18 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
     src_p[3] = bl;
 
     // to points
-    dst_p[0] = cv::Point2f(0.0f, 0.0f);
-    dst_p[1] = cv::Point2f(w, 0.0f);
-    dst_p[2] = cv::Point2f(w, h);
-    dst_p[3] = cv::Point2f(0.0f, h);
+    dst_p[0] = Point2f(0.0f, 0.0f);
+    dst_p[1] = Point2f(w, 0.0f);
+    dst_p[2] = Point2f(w, h);
+    dst_p[3] = Point2f(0.0f, h);
 
-    cv::Mat dst_img;
+    Mat dst_img;
 
     // create perspective transform matrix
-    cv::Mat trans_mat33 = cv::getPerspectiveTransform(src_p, dst_p); //CV_64F->double
+    Mat trans_mat33 = getPerspectiveTransform(src_p, dst_p); //CV_64F->double
 
     // perspective transform operation using transform matrix
-    warpPerspective(input, outerBox, trans_mat33, input.size(), cv::INTER_LINEAR);
+    warpPerspective(input, outerBox, trans_mat33, input.size(), INTER_LINEAR);
     return outerBox;
 }
 
@@ -681,7 +681,7 @@ Mat drawAllApprox(Mat preprocessed)
 
     Scalar white(255, 255, 255);
     vector<vector<Point> > contours;
-    std::vector<cv::Point> approx;
+    std::vector<Point> approx;
 
     findContours(preprocessed.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
@@ -690,10 +690,10 @@ Mat drawAllApprox(Mat preprocessed)
 
         // Approximate contour with accuracy proportional
         // to the contour perimeter
-        cv::approxPolyDP(cv::Mat(contours[i]), approx, cv::arcLength(cv::Mat(contours[i]), true) * 0.1, true);
+        approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true) * 0.1, true);
 
         // Skip small or non-convex objects
-        if (std::fabs(cv::contourArea(contours[i])) < 100 || !cv::isContourConvex(approx))
+        if (std::fabs(contourArea(contours[i])) < 100 || !isContourConvex(approx))
             continue;
 
         std::vector<vector<Point> > approx_contour(1, approx);
@@ -707,7 +707,7 @@ Mat drawAllApprox(Mat preprocessed, Mat origial)
 
     Scalar white(255, 255, 255);
     vector<vector<Point> > contours;
-    std::vector<cv::Point> approx;
+    std::vector<Point> approx;
 
     findContours(preprocessed.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
@@ -716,10 +716,10 @@ Mat drawAllApprox(Mat preprocessed, Mat origial)
 
         // Approximate contour with accuracy proportional
         // to the contour perimeter
-        cv::approxPolyDP(cv::Mat(contours[i]), approx, cv::arcLength(cv::Mat(contours[i]), true) * 0.1, true);
+        approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true) * 0.1, true);
 
         // Skip small or non-convex objects
-        if (std::fabs(cv::contourArea(contours[i])) < 100 || !cv::isContourConvex(approx))
+        if (std::fabs(contourArea(contours[i])) < 100 || !isContourConvex(approx))
             continue;
 
         std::vector<vector<Point> > approx_contour(1, approx);
@@ -826,7 +826,7 @@ Mat deskew(Mat t){
     transform.at<float>(1,1) = 1;
     transform.at<float>(1,2) = 0;
     // cout << skew << endl;
-    warpAffine(t, t, transform, t.size(), cv::WARP_INVERSE_MAP);
+    warpAffine(t, t, transform, t.size(), WARP_INVERSE_MAP);
     return t;
 }
 
@@ -967,4 +967,34 @@ build_mlp_classifier(const fs::path data_filename, const fs::path persistence){
 
     test_and_save_classifier(model, data, responses, ntrain_samples, 0, persistence_str);
     return model;
+}
+
+Mat hog_feature(Mat input){
+
+    vector<float> ders;
+    vector<Point>locs;
+    
+    bool gamma_corr = true;
+    Size win_size(input.rows, input.cols); //using just one window
+    int c = 4;
+    Size block_size(c,c);
+    Size block_stride(c,c); //no overlapping blocks
+    Size cell_size(c,c);
+    int nOri = 15; //number of orientation bins
+
+    HOGDescriptor hog(win_size, block_size, block_stride, cell_size, nOri, 1, -1,
+                              HOGDescriptor::L2Hys, 0.2, gamma_corr, HOGDescriptor::DEFAULT_NLEVELS);
+
+    hog.compute(input,ders,Size(0,0),Size(0,0),locs);
+
+    Mat Hogfeat(1, ders.size(), CV_32FC1);
+
+    for(int i=0;i<ders.size();i++)
+    {
+        Hogfeat.at<float>(0,i)=ders.at(i);
+    }
+
+    // showImage(Hogfeat);
+
+    return Hogfeat;
 }
