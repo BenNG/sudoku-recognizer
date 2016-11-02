@@ -1,5 +1,4 @@
 #include "../hello.h"
-#include "../debug.h"
 #include "opencv.h"
 
 int main(int argc, char **argv)

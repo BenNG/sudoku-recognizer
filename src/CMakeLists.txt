@@ -13,9 +13,7 @@ endif()
 MESSAGE("OpenCV version : ${OpenCV_VERSION}")
 # MESSAGE("Tesseract version : ${Tesseract_VERSION}")
 
-add_library(Debug lib/debug.cpp lib/debug.h)
 add_library(opencv lib/utils/opencv.cpp lib/utils/opencv.h)
-add_library(mlp lib/mlp.cpp lib/mlp.h)
 # add_library(createDataForTraining lib/preTraining/createDataForTraining.cpp lib/preTraining/createDataForTraining.h)
 add_library(randomizeDataForTraining lib/preTraining/randomizeDataForTraining.cpp lib/preTraining/randomizeDataForTraining.h)
 add_library(featurizeDataForTraining lib/preTraining/featurizeDataForTraining.cpp lib/preTraining/featurizeDataForTraining.h)
@@ -30,39 +28,28 @@ add_executable( showExtracted lib/utils/showExtracted.cpp)
 add_executable( showCells lib/utils/showCells.cpp)
 add_executable( testKnn lib/utils/testKnn.cpp)
 
-target_link_libraries( Debug ${OpenCV_LIBS})
-
-target_link_libraries( opencv Debug)
-
 target_link_libraries( featurizeDataForTraining ${OpenCV_LIBS} )
 target_link_libraries( featurizeDataForTraining opencv )
 
 target_link_libraries( opencv ${OpenCV_LIBS})
-target_link_libraries( opencv Debug)
 
-target_link_libraries( showExtracted Debug )
-target_link_libraries( showExtracted mlp )
 target_link_libraries( showExtracted ${OpenCV_LIBS} )
 target_link_libraries( showExtracted opencv )
 target_link_libraries( showExtracted hello )
 
 target_link_libraries( showCells ${OpenCV_LIBS} )
 target_link_libraries( showCells hello )
-target_link_libraries( showCells Debug )
 target_link_libraries( showCells opencv )
 
 target_link_libraries( testKnn ${OpenCV_LIBS} )
 target_link_libraries( testKnn hello )
-target_link_libraries( testKnn Debug )
 target_link_libraries( testKnn opencv )
 
-target_link_libraries( mlp ${OpenCV_LIBS} )
 
 target_link_libraries( sudoku ${OpenCV_LIBS} )
 target_link_libraries( sudoku randomizeDataForTraining )
 # target_link_libraries( sudoku createDataForTraining )
 target_link_libraries( sudoku featurizeDataForTraining )
-target_link_libraries( sudoku mlp )
 target_link_libraries( sudoku opencv )
 
 if(Boost_FOUND)
@@ -73,13 +60,10 @@ if(Boost_FOUND)
     target_link_libraries(featurizeDataForTraining ${Boost_LIBRARIES})
     target_link_libraries(sudoku ${Boost_LIBRARIES} )
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
-    target_link_libraries( Debug ${Boost_LIBRARIES})
     target_link_libraries( opencv ${Boost_LIBRARIES})
 endif()
 
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
 # target_link_libraries( ${PROJECT_NAME} ${Tesseract_LIBRARIES})
-target_link_libraries( ${PROJECT_NAME} Debug )
 target_link_libraries( ${PROJECT_NAME} opencv )
-target_link_libraries( ${PROJECT_NAME} mlp )
 target_link_libraries( ${PROJECT_NAME} sudoku )
