@@ -46,18 +46,9 @@ int main(int argc, char **argv)
     sayHello("LouLou");
 
     string fullName;
-    Mat output, raw, preprocessed, sudoku;
+    Mat raw, sudoku;
 
-    int K = 1;
-    Mat response, dist;
-
-    string path_str("assets/puzzles/"); // by default
-    if (argc > 1)
-    {
-        path_str = argv[1];
-    }
-
-    fs::path p(getPath(path_str));
+    fs::path p(getPath("assets/puzzles/"));
 
     if (fs::is_directory(p))
     {
@@ -68,31 +59,14 @@ int main(int argc, char **argv)
         {
             fullName = dir_itr->path().string();
             cout << fullName << endl;
-
             raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
-
             sudoku = extractPuzzle(raw);
-
-            // sometimes the biggest area found is not correct, our puzzle is inside the extract image
-            // so we do it a second time to extract the biggest blob which is this time our puzzle
-            // this is the case for s6.jpg and s9.jpg for example
-
-            // Mat preprocessed2 = preprocess(sudoku.clone());
-            // vector<Point> biggestApprox2 = findBigestApprox(preprocessed2);
-            //
-            // if(!biggestApprox2.empty()){
-            //   sudoku = extractPuzzle(sudoku, biggestApprox2);
-            // }
-
-            // Mat sudoku2 = extractPuzzle(sudoku, biggestApprox2);
-            // output = drawAllApprox(preprocessed, raw);
-
             showImage(sudoku);
         }
     }
     else
     {
-        cout << "please give a folder as a parameter" << endl;
+        cout << "put your images in assets/images" << endl;
     }
 
     return 0;
