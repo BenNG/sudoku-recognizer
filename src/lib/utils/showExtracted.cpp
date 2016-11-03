@@ -42,7 +42,13 @@ using namespace boost;
 * */
 int main(int argc, char **argv)
 {
-
+    bool cells = false;
+    if (argc > 1)
+    {
+        if(argv[1] == "cells"){
+            cells = true;
+        }
+    }
     sayHello("LouLou");
 
     string fullName;
@@ -61,7 +67,19 @@ int main(int argc, char **argv)
             cout << fullName << endl;
             raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
             sudoku = extractPuzzle(raw);
-            showImage(sudoku);
+
+
+            for (int k = 0; k < 81; k++)
+            {
+                Mat roi = extractRoiFromCell(sudoku, k);
+
+                if (!roi.empty())
+                {
+                    Mat normalized = normalizeSize(roi, 28);
+                    showImage(normalized);
+                }
+            }
+
         }
     }
     else

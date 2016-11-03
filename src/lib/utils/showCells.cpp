@@ -19,15 +19,13 @@ namespace fs = boost::filesystem;
 
 int main(int argc, char **argv)
 {
+    std::stringstream ss;
     sayHello("LouLou");
 
     int K = 1;
     Mat response, dist, fin, fin2, roi;
-    string path_str("assets/puzzles/s0.jpg"); // by default 
-    if (argc > 1)
-    {
-        path_str = argv[1];
-    }
+    string path_str("assets/puzzles/s1.jpg"); // by default 
+ 
     fs::path p(getPath(path_str));
 
     if (fs::is_directory(p))
@@ -36,8 +34,10 @@ int main(int argc, char **argv)
     }
     else
     {
-        Ptr<ml::KNearest> knn = getKnn();
+        // Ptr<ml::KNearest> knn = getKnn();
         // testKnn(knn, true);
+
+        
         string fullName = p.string();
         Mat raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
         Mat sudoku = extractPuzzle(raw);
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
             if (!roi.empty())
             {
 
-
+                // showImage(roi);
                 // cout << "roi.type()" << roi.type() << endl;
 
                 // Mat normalized = normalizeSize(roi), dest;
@@ -75,30 +75,30 @@ int main(int argc, char **argv)
                 // int mid = size / 2;
 
 
-                cout << 20 % 5 << endl;
-
                 // Mat output = Mat::zeros(size, size, CV_8UC1);
                 // // normalized.copyTo(output(Rect((mid - sumI / (double)notZero), (mid - sumY / (double)notZero), normalized.cols, normalized.rows)));
                 // roi.copyTo(output(Rect(mid - roi.cols / 2, mid - roi.rows / 2, roi.cols, roi.rows)));
                 Mat normalized = normalizeSize(roi, 28);
-                cout << normalized.size() << endl;
-                hog_feature(normalized);
+                // cout << normalized.size() << endl;
+                // Mat hoged = hog_feature(normalized);
                 
-                // normalized.convertTo(normalized, CV_32F);
+                // hoged.convertTo(hoged, CV_32F);
 
-                // // output = deskew(output);
-                // // showImage(normalized);
+                // // // output = deskew(output);
+                // // // showImage(normalized);
 
-                // knn->findNearest(normalized.reshape(1, 1), K, noArray(), response, dist);
+                // knn->findNearest(hoged, K, noArray(), response, dist);
                 // cout << "response: " << response << endl;
                 // cout << "dist: " << dist << endl;
-                // showImage(normalized);
+                showImage(normalized);
+                // ss << "X";
             }
             else
             {
-                cout << "O" << endl;
+                ss << "0";
             }
         }
+            cout << ss.str() << endl;
     }
     return 0;
 }

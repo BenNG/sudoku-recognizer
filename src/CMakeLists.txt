@@ -2,7 +2,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 find_package( OpenCV 3.1.0 REQUIRED core text)
 # find_package( Tesseract REQUIRED ) # 3.05 is currently the latest version of the git repository.
-find_package(Boost 1.58 COMPONENTS system filesystem)
+find_package(Boost 1.58 COMPONENTS system filesystem program_options)
 
 include_directories( ${OpenCV_INCLUDE_DIRS})
 # include_directories(${Tesseract_INCLUDE_DIRS})
@@ -27,8 +27,11 @@ set(SOURCES main.cpp )
 
 add_executable( ${PROJECT_NAME} ${SOURCES} )
 add_executable( showExtracted lib/utils/showExtracted.cpp)
+add_executable( prepareData lib/utils/prepareData.cpp)
 add_executable( showCells lib/utils/showCells.cpp)
 add_executable( testKnn lib/utils/testKnn.cpp)
+
+target_link_libraries(prepareData opencv)
 
 target_link_libraries( featurizeDataForTraining ${OpenCV_LIBS} )
 target_link_libraries( featurizeDataForTraining opencv )
@@ -46,7 +49,6 @@ target_link_libraries( showCells opencv )
 target_link_libraries( testKnn ${OpenCV_LIBS} )
 target_link_libraries( testKnn hello )
 target_link_libraries( testKnn opencv )
-
 
 target_link_libraries( sudoku ${OpenCV_LIBS} )
 target_link_libraries( sudoku randomizeDataForTraining )

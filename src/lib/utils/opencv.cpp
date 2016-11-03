@@ -218,8 +218,10 @@ Mat extractRoiFromCell(Mat sudoku, int k)
 
     if (!rawRoi.empty())
     {
+        // threshold(rawRoi, thresholded, 125, 255, rawRoi.type());
         adaptiveThreshold(rawRoi, thresholded, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
         // fin 8bits (CV_8U)
+        // showImage(thresholded);
         cleaned = removeTinyVolume(thresholded, 90, Scalar(0, 0, 0));
         // fin2 8bits
         vector<double> v = findBiggestComponent(cleaned);
@@ -233,7 +235,6 @@ Mat extractRoiFromCell(Mat sudoku, int k)
         Rect rect(left, top, width, height);
         return cleaned(rect);
     }
-
     return output;
 }
 
@@ -297,8 +298,10 @@ vector<Mat> readMNIST(bool training)
     cout << "rows: " << numRows << endl;
     cout << "cols: " << numCols << endl;
 
-    Mat trainFeatures(numImages, size, CV_8UC1);
+    Mat rawFeatures(numImages, size, CV_8UC1);
+    Mat hogFeatures(numImages, 735, CV_8UC1);
     Mat trainLabels(1, numImages, CV_8UC1);
+    Mat raw, hoged;
 
     unsigned char *temp = new unsigned char[size];
     unsigned char tempClass = 0;
@@ -308,19 +311,27 @@ vector<Mat> readMNIST(bool training)
         fread((void *)(&tempClass), sizeof(unsigned char), 1, fp2);
 
         trainLabels.at<unsigned char>(0, i) = tempClass;
+        
         // feature creation
+        // create the binarize matrix
         for (int k = 0; k < size; k++)
         {
-            trainFeatures.at<unsigned char>(i, k) = temp[k];
+            rawFeatures.at<unsigned char>(i, k) = temp[k];
         }
+        raw = rawFeatures.row(i).reshape(1,28);
+        // showImage(raw);
+        hoged = hog_feature(raw);
+        hoged.copyTo(hogFeatures.row(i));
         // feature creation - end
     }
 
     // I don't know why I have to convert the matrices in float ...
-    trainFeatures.convertTo(trainFeatures, CV_32F);
+    rawFeatures.convertTo(rawFeatures, CV_32F);
+    hogFeatures.convertTo(hogFeatures, CV_32F);
     trainLabels.convertTo(trainLabels, CV_32F);
 
-    v[0] = trainFeatures;
+
+    v[0] = hogFeatures;
     v[1] = trainLabels;
     return v;
 }
@@ -997,4 +1008,141 @@ Mat hog_feature(Mat input){
     // showImage(Hogfeat);
 
     return Hogfeat;
+}
+
+// --------------------------------------------------------------------------
+// createDataForTraining
+
+void create_data_structure() {
+    fs::path data("data");
+    fs::path data1("data/1");
+    fs::path data2("data/2");
+    fs::path data3("data/3");
+    fs::path data4("data/4");
+    fs::path data5("data/5");
+    fs::path data6("data/6");
+    fs::path data7("data/7");
+    fs::path data8("data/8");
+    fs::path data9("data/9");
+
+    if (!fs::exists(data)) {
+        boost::filesystem::create_directories(data);
+        boost::filesystem::create_directories(data1);
+        boost::filesystem::create_directories(data2);
+        boost::filesystem::create_directories(data3);
+        boost::filesystem::create_directories(data4);
+        boost::filesystem::create_directories(data5);
+        boost::filesystem::create_directories(data6);
+        boost::filesystem::create_directories(data7);
+        boost::filesystem::create_directories(data8);
+        boost::filesystem::create_directories(data9);
+    } else {
+        if (!fs::exists(data1))
+            boost::filesystem::create_directories(data1);
+        if (!fs::exists(data2))
+            boost::filesystem::create_directories(data2);
+        if (!fs::exists(data3))
+            boost::filesystem::create_directories(data3);
+        if (!fs::exists(data4))
+            boost::filesystem::create_directories(data4);
+        if (!fs::exists(data5))
+            boost::filesystem::create_directories(data5);
+        if (!fs::exists(data6))
+            boost::filesystem::create_directories(data6);
+        if (!fs::exists(data7))
+            boost::filesystem::create_directories(data7);
+        if (!fs::exists(data8))
+            boost::filesystem::create_directories(data8);
+        if (!fs::exists(data9))
+            boost::filesystem::create_directories(data9);
+    }
+
+}
+
+std::string remove_extension(const std::string &filename) {
+    size_t lastdot = filename.find_last_of(".");
+    if (lastdot == std::string::npos) return filename;
+    return filename.substr(0, lastdot);
+}
+
+std::string uuid_first_part(const std::string &uuid) {
+    size_t first = uuid.find_first_of("-");
+    if (first == std::string::npos) return uuid;
+    return uuid.substr(0, first);
+}
+
+
+int createData() {
+
+    create_data_structure();
+
+    // if (!fs::exists(p)) {
+    //     std::cout << "\nIn order to train the classifier you need to have some pictures holding a sudoku puzzle in assets/puzzles : " << p << std::endl;
+    //     return 1;
+    // }
+
+    fs::path p(getPath("assets/puzzles/"));
+
+    string fullName;
+    Mat sudoku, raw;
+    if (fs::is_directory(p))
+    {
+        fs::directory_iterator end_iter;
+        for (fs::directory_iterator dir_itr(p);
+             dir_itr != end_iter;
+             ++dir_itr)
+        {
+            fullName = dir_itr->path().string();
+            cout << fullName << endl;
+
+            raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
+
+            sudoku = extractPuzzle(raw);
+            showImage(sudoku);
+            
+            for (int k = 0; k < 81; k++)
+            {
+                Mat roi = extractRoiFromCell(sudoku, k);
+
+                // cout << "cell: " << k << endl;
+
+                // if (!roi.empty())
+                // {
+
+                //     Mat normalized = normalizeSize(roi, 28);
+                //     // // cout << normalized.size() << endl;
+                //     // Mat hoged = hog_feature(normalized);
+                    
+                //     // hoged.convertTo(hoged, CV_32F);
+
+                //     // // // output = deskew(output);
+                //     // // // showImage(normalized);
+
+                //     // knn->findNearest(hoged, K, noArray(), response, dist);
+                //     // cout << "response: " << response << endl;
+                //     // cout << "dist: " << dist << endl;
+                //     // showImage(roi);
+                //     // ss << "X";
+                // }
+            }
+
+        }
+    }
+    else
+    {
+        cout << "please give a folder as a parameter" << endl;
+    }
+
+
+    // std::cout << "\n\n\nThe data needed to train the classifier was not found so we will create it." << std::endl;
+    // std::cout << "There are 3 steps to create these data" << std::endl;
+    // std::cout << "1st: extract each sudoku cells holding a number and save it in his corresponding folder e.g: '1' -> data/1" << std::endl;
+
+    // std::cout << "\n1st part done !" << std::endl;
+    // std::cout << "GO TO data/ !!!\n" << std::endl;
+    // std::cout << "You need to manually check if all the data are well classified in the data/X folder" << std::endl;
+    // std::cout << "Note that there are probably some pictures in data/ as well, you also have to manually classify these ones" << std::endl;
+    // std::cout << "When the data folder is empty (not data/X) you can continue\n" << std::endl;
+
+    return 0;
 }
