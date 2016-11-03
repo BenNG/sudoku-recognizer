@@ -23,12 +23,14 @@ typedef unsigned char BYTE;
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
 #include "boost/progress.hpp"
+#include <boost/program_options.hpp>
 
 #include "../hello.h"
 #include "opencv.h"
 
 #include <opencv2/opencv.hpp>
 
+namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 using namespace cv;
 using namespace cv::ml;
@@ -42,6 +44,48 @@ using namespace boost;
 * */
 int main(int argc, char **argv)
 {
+    bool showCell = false, showPuzzle = false;
+    int puzzleNumber, cellNumber;
+    stringstream ss;
+    ss << "assets/puzzles/";
+    po::options_description desc("Allowed options");
+    desc.add_options()
+        ("showPuzzle", "show puzzles")
+        ("showCell", "show cells")
+        ("puzzleNumber", po::value<int>(&puzzleNumber)->default_value(-1))
+        ("cellNumber", po::value<int>(&cellNumber)->default_value(-1))
+        ("puzzle", po::value<int>(&puzzleNumber)->default_value(-1))
+    ;
+
+    po::variables_map vm;        
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);    
+
+    if (vm.count("help")) {
+        cout << desc << "\n";
+        return 0;
+    }
+
+    if (vm.count("showCell")) {
+        showCell = true;
+    }
+
+    if (vm.count("showPuzzle")) {
+        showPuzzle = true;
+    }
+
+    if(puzzleNumber != -1){
+        ss << "s" << puzzleNumber << ".jpg";
+    }
+
+    if(!showPuzzle && !showCell){
+        showPuzzle = true;
+    }
+
+    cout << "cellNumber: " << cellNumber << endl;
+
+    fs::path p(getPath(ss.str()));
+
     bool cells = false;
     if (argc > 1)
     {
@@ -54,7 +98,6 @@ int main(int argc, char **argv)
     string fullName;
     Mat raw, sudoku;
 
-    fs::path p(getPath("assets/puzzles/"));
 
     if (fs::is_directory(p))
     {
@@ -68,23 +111,33 @@ int main(int argc, char **argv)
             raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
             sudoku = extractPuzzle(raw);
 
-
-            for (int k = 0; k < 81; k++)
-            {
-                Mat roi = extractRoiFromCell(sudoku, k);
-
-                if (!roi.empty())
-                {
-                    Mat normalized = normalizeSize(roi, 28);
-                    showImage(normalized);
+            if(showPuzzle){
+                showImage(sudoku);
+            }           
+            if(showCell || cellNumber != -1){
+                if(cellNumber != -1){
+                    showCells(sudoku, cellNumber);
+                }else{
+                    showCells(sudoku);
                 }
             }
-
         }
     }
     else
     {
-        cout << "put your images in assets/images" << endl;
+        cout << p << endl;
+        raw = imread(p.string(), CV_LOAD_IMAGE_GRAYSCALE);
+        sudoku = extractPuzzle(raw);
+        if(showPuzzle){
+            showImage(sudoku);
+        }        
+        if(showCell || cellNumber != -1){
+            if(cellNumber != -1){
+                showCells(sudoku, cellNumber);
+            }else{
+                showCells(sudoku);
+            }
+        }
     }
 
     return 0;

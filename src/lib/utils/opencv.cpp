@@ -219,7 +219,7 @@ Mat extractRoiFromCell(Mat sudoku, int k)
     if (!rawRoi.empty())
     {
         // threshold(rawRoi, thresholded, 125, 255, rawRoi.type());
-        adaptiveThreshold(rawRoi, thresholded, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 3, 1);
+        adaptiveThreshold(rawRoi, thresholded, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 9, 1);
         // fin 8bits (CV_8U)
         // showImage(thresholded);
         cleaned = removeTinyVolume(thresholded, 90, Scalar(0, 0, 0));
@@ -233,7 +233,13 @@ Mat extractRoiFromCell(Mat sudoku, int k)
         double x = v[4];
         double y = v[5];
         Rect rect(left, top, width, height);
-        return cleaned(rect);
+        Mat almostReady = cleaned(rect);
+
+        threshold(almostReady, output, 125, 255, almostReady.type());
+
+        return output;
+
+        // return cleaned(rect);
     }
     return output;
 }
@@ -839,6 +845,29 @@ Mat deskew(Mat t){
     // cout << skew << endl;
     warpAffine(t, t, transform, t.size(), WARP_INVERSE_MAP);
     return t;
+}
+
+void showCells(Mat sudoku){
+    Mat roi, normalized;
+    for (int k = 0; k < 81; k++)
+    {
+        roi = extractRoiFromCell(sudoku, k);
+        if (!roi.empty())
+        {
+            normalized = normalizeSize(roi, 28);
+            showImage(normalized);
+        }
+    }
+}
+
+void showCells(Mat sudoku, int cellNum){
+    Mat roi, normalized;
+    roi = extractRoiFromCell(sudoku, cellNum);
+    if (!roi.empty())
+    {
+        normalized = normalizeSize(roi, 28);
+        showImage(normalized);
+    }
 }
 
 // ---------------------------------------------------------------------

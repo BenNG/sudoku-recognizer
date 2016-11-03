@@ -65,6 +65,8 @@ fs::path getMyProjectRoot(fs::path p);
 fs::path getPath(fs::path p);
 Mat removeTinyVolume(Mat input, int area, Scalar color);
 Mat deskew(Mat in);
+void showCells(Mat sudoku);
+void showCells(Mat sudoku, int cellNum);
 // mlp
 template<typename T> static Ptr<T> load_classifier(const string& persistence);
 inline TermCriteria TC(int iters, double eps);
