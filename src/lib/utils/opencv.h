@@ -12,6 +12,7 @@
 #  define BOOST_SYSTEM_NO_DEPRECATED
 #endif
 
+#include <map>
 #include <opencv2/opencv.hpp>
 #include <opencv2/objdetect.hpp>
 #include "boost/filesystem.hpp"
@@ -36,6 +37,8 @@ Mat calculateLightPattern(Mat img);
 Mat ProjectedHistogram(Mat img, int t);
 Mat features(Mat in, int sizeData);
 Mat extractRoiFromCell(Mat sudoku, int k);
+Mat extractRoiFromCell(Mat sudoku, int k, bool debug);
+
 // mnist
 int readFlippedInteger(FILE *fp);
 vector<Mat> readMNIST(bool training);
@@ -65,8 +68,8 @@ fs::path getMyProjectRoot(fs::path p);
 fs::path getPath(fs::path p);
 Mat removeTinyVolume(Mat input, int area, Scalar color);
 Mat deskew(Mat in);
-void showCells(Mat sudoku);
-void showCells(Mat sudoku, int cellNum);
+void showCells(Mat sudoku, bool debug);
+void showCells(Mat sudoku, int cellNum, bool debug);
 // mlp
 template<typename T> static Ptr<T> load_classifier(const string& persistence);
 inline TermCriteria TC(int iters, double eps);
@@ -83,6 +86,8 @@ void create_data_structure();
 int createData();
 std::string uuid_first_part(const std::string &uuid);
 std::string remove_extension(const std::string &filename);
+
+std::map<int, std::map<int,int>> cellValues();
 #endif //UTILS_OPENCV_LIB
 
 

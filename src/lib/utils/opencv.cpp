@@ -209,7 +209,7 @@ Mat features(Mat in, int sizeData)
     return out;
 }
 
-Mat extractRoiFromCell(Mat sudoku, int k)
+Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
 {
     Mat rawCell, rawRoi, output, thresholded, cleaned;
 
@@ -218,17 +218,22 @@ Mat extractRoiFromCell(Mat sudoku, int k)
 
     if (!rawRoi.empty())
     {
-        // showImage(rawCell);
-        // showImage(rawRoi);
         // threshold(rawRoi, thresholded, 125, 255, rawRoi.type());
         adaptiveThreshold(rawRoi, thresholded, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 11, 1);
         // fin 8bits (CV_8U)
         // showImage(thresholded);
         // be careful here the 2nd param can delete tiny number like 1
-        cleaned = removeTinyVolume(thresholded, 80, Scalar(0, 0, 0));
+        cleaned = removeTinyVolume(thresholded.clone(), 75, Scalar(0, 0, 0));
         // fin2 8bits
         // showImage(cleaned);
         vector<double> v = findBiggestComponent(cleaned);
+
+        if(debug){
+            showImage(rawCell);
+            showImage(rawRoi);
+            showImage(thresholded);
+            showImage(cleaned);
+        }
 
         double left = v[0];
         double top = v[1];
@@ -246,6 +251,9 @@ Mat extractRoiFromCell(Mat sudoku, int k)
         // return cleaned(rect);
     }
     return output;
+}
+Mat extractRoiFromCell(Mat sudoku, int k){
+    return extractRoiFromCell(sudoku,k,false);
 }
 
 // ----------------------------------------------------------------------------------
@@ -851,27 +859,27 @@ Mat deskew(Mat t){
     return t;
 }
 
-void showCells(Mat sudoku){
+void showCells(Mat sudoku, bool debug){
     Mat roi, normalized;
     for (int k = 0; k < 81; k++)
     {
-        roi = extractRoiFromCell(sudoku, k);
+        roi = extractRoiFromCell(sudoku, k, debug);
         if (!roi.empty())
         {
             cout << k << endl;
             normalized = normalizeSize(roi, 28);
-            showImage(roi);
+            showImage(normalized);
         }
     }
 }
 
-void showCells(Mat sudoku, int cellNum){
+void showCells(Mat sudoku, int cellNum, bool debug){
     Mat roi, normalized;
-    roi = extractRoiFromCell(sudoku, cellNum);
+    roi = extractRoiFromCell(sudoku, cellNum, debug);
     if (!roi.empty())
     {
         normalized = normalizeSize(roi, 28);
-        showImage(roi);
+        showImage(normalized);
     }
 }
 
@@ -1179,4 +1187,74 @@ int createData() {
     // std::cout << "When the data folder is empty (not data/X) you can continue\n" << std::endl;
 
     return 0;
+}
+
+std::map<int, std::map<int,int>> cellValues(){
+    std::map<int, std::map<int,int>> map;
+    std::map<int, int> s0;
+    std::map<int, int> s1;
+    std::map<int, int> s2;
+    std::map<int, int> s3;
+    std::map<int, int> s4;
+    std::map<int, int> s5;
+    std::map<int, int> s6;
+    std::map<int, int> s7;
+    std::map<int, int> s8;
+    std::map<int, int> s9;
+    std::map<int, int> s10;
+    std::map<int, int> s11;
+    std::map<int, int> s12;
+    std::map<int, int> s13;
+    std::map<int, int> s14;
+    std::map<int, int> s15;
+    std::map<int, int> s16;
+    std::map<int, int> s17;
+    std::map<int, int> s18;
+    std::map<int, int> s19;
+    std::map<int, int> s20;
+    std::map<int, int> s21;
+    std::map<int, int> s22;
+    std::map<int, int> s23;
+    std::map<int, int> s24;
+    std::map<int, int> s25;
+    std::map<int, int> s26;
+    std::map<int, int> s27;
+    std::map<int, int> s28;
+    std::map<int, int> s29;
+    std::map<int, int> s30;
+    std::map<int, int> s31;
+    std::map<int, int> s32;
+    std::map<int, int> s33;
+    std::map<int, int> s34;
+    std::map<int, int> s35;
+ 
+    s0.insert(std::make_pair(3,6));
+    s0.insert(std::make_pair(5,4));
+    s0.insert(std::make_pair(6,7));
+    s0.insert(std::make_pair(9,7));
+    s0.insert(std::make_pair(11,6));
+    s0.insert(std::make_pair(17,9));
+    s0.insert(std::make_pair(23,5));
+    s0.insert(std::make_pair(25,8));
+    s0.insert(std::make_pair(28,7));
+    s0.insert(std::make_pair(31,2));
+    s0.insert(std::make_pair(34,9));
+    s0.insert(std::make_pair(35,3));
+    s0.insert(std::make_pair(36,8));
+    s0.insert(std::make_pair(44,5));
+    s0.insert(std::make_pair(45,4));
+    s0.insert(std::make_pair(46,3));
+    s0.insert(std::make_pair(49,1));
+    s0.insert(std::make_pair(52,7));
+    s0.insert(std::make_pair(55,5));
+    s0.insert(std::make_pair(57,2));
+    s0.insert(std::make_pair(63,3));
+    s0.insert(std::make_pair(69,2));
+    s0.insert(std::make_pair(71,8));
+    s0.insert(std::make_pair(74,2));
+    s0.insert(std::make_pair(75,3));
+    s0.insert(std::make_pair(77,1));
+
+    
+
 }

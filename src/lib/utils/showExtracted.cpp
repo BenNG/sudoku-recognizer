@@ -18,7 +18,7 @@ Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted a
 #define BOOST_SYSTEM_NO_DEPRECATED
 #endif
 
-typedef unsigned char BYTE;
+#include <map>
 
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
@@ -44,12 +44,16 @@ using namespace boost;
 * */
 int main(int argc, char **argv)
 {
-    bool showCell = false, showPuzzle = false;
+
+    std::map<int, std::map<int,int>> cellV(cellValues());
+
+    bool showCell = false, showPuzzle = false, debug = false;
     int puzzleNumber, cellNumber;
     stringstream ss;
     ss << "assets/puzzles/";
     po::options_description desc("Allowed options");
     desc.add_options()
+        ("debug", "debug")
         ("showPuzzle", "show puzzles")
         ("showCell", "show cells")
         ("puzzleNumber", po::value<int>(&puzzleNumber)->default_value(-1))
@@ -70,6 +74,10 @@ int main(int argc, char **argv)
         showCell = true;
     }
 
+    if (vm.count("debug")) {
+        debug = true;
+    }
+
     if (vm.count("showPuzzle")) {
         showPuzzle = true;
     }
@@ -79,7 +87,7 @@ int main(int argc, char **argv)
     }
 
     if(!showPuzzle && !showCell){
-        showPuzzle
+        showPuzzle = true;
     }
 
     cout << "cellNumber: " << cellNumber << endl;
@@ -116,9 +124,9 @@ int main(int argc, char **argv)
             }           
             if(showCell || cellNumber != -1){
                 if(cellNumber != -1){
-                    showCells(sudoku, cellNumber);
+                    showCells(sudoku, cellNumber, debug);
                 }else{
-                    showCells(sudoku);
+                    showCells(sudoku, debug);
                 }
             }
         }
@@ -133,9 +141,9 @@ int main(int argc, char **argv)
         }        
         if(showCell || cellNumber != -1){
             if(cellNumber != -1){
-                showCells(sudoku, cellNumber);
+                showCells(sudoku, cellNumber, debug);
             }else{
-                showCells(sudoku);
+                showCells(sudoku, debug);
             }
         }
     }
