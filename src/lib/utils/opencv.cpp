@@ -218,12 +218,16 @@ Mat extractRoiFromCell(Mat sudoku, int k)
 
     if (!rawRoi.empty())
     {
+        // showImage(rawCell);
+        // showImage(rawRoi);
         // threshold(rawRoi, thresholded, 125, 255, rawRoi.type());
-        adaptiveThreshold(rawRoi, thresholded, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 9, 1);
+        adaptiveThreshold(rawRoi, thresholded, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 11, 1);
         // fin 8bits (CV_8U)
         // showImage(thresholded);
-        cleaned = removeTinyVolume(thresholded, 90, Scalar(0, 0, 0));
+        // be careful here the 2nd param can delete tiny number like 1
+        cleaned = removeTinyVolume(thresholded, 80, Scalar(0, 0, 0));
         // fin2 8bits
+        // showImage(cleaned);
         vector<double> v = findBiggestComponent(cleaned);
 
         double left = v[0];
@@ -235,9 +239,9 @@ Mat extractRoiFromCell(Mat sudoku, int k)
         Rect rect(left, top, width, height);
         Mat almostReady = cleaned(rect);
 
-        threshold(almostReady, output, 125, 255, almostReady.type());
+        // threshold(almostReady, output, 125, 255, almostReady.type());
 
-        return output;
+        return almostReady;
 
         // return cleaned(rect);
     }
@@ -854,8 +858,9 @@ void showCells(Mat sudoku){
         roi = extractRoiFromCell(sudoku, k);
         if (!roi.empty())
         {
+            cout << k << endl;
             normalized = normalizeSize(roi, 28);
-            showImage(normalized);
+            showImage(roi);
         }
     }
 }
@@ -866,7 +871,7 @@ void showCells(Mat sudoku, int cellNum){
     if (!roi.empty())
     {
         normalized = normalizeSize(roi, 28);
-        showImage(normalized);
+        showImage(roi);
     }
 }
 

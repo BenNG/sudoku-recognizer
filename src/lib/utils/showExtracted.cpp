@@ -79,7 +79,7 @@ int main(int argc, char **argv)
     }
 
     if(!showPuzzle && !showCell){
-        showPuzzle = true;
+        showPuzzle
     }
 
     cout << "cellNumber: " << cellNumber << endl;
