@@ -47,6 +47,8 @@ int main(int argc, char **argv)
 
     std::map<int, std::map<int,int>> cellV(cellValues());
 
+    cout << cellV[0][3] << endl;
+
     bool showCell = false, showPuzzle = false, debug = false;
     int puzzleNumber, cellNumber;
     stringstream ss;
