@@ -1281,6 +1281,7 @@ std::map<int, std::map<int,int>> cellValues(){
     s1.insert(std::make_pair(26,2));
     s1.insert(std::make_pair(29,8));
     s1.insert(std::make_pair(30,3));
+    s1.insert(std::make_pair(33,7));
     s1.insert(std::make_pair(35,5));
     s1.insert(std::make_pair(37,7));
     s1.insert(std::make_pair(43,4));
@@ -1350,6 +1351,7 @@ std::map<int, std::map<int,int>> cellValues(){
     s6.insert(std::make_pair(25,8));
     s6.insert(std::make_pair(26,9));
     s6.insert(std::make_pair(28,5));
+    s6.insert(std::make_pair(30,1));
     s6.insert(std::make_pair(31,3));
     s6.insert(std::make_pair(33,9));
     s6.insert(std::make_pair(37,9));

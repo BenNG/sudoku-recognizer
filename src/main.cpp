@@ -32,14 +32,30 @@ using namespace boost;
  *
  * */
 int main(int argc, char **argv) {
+    Mat raw, sudoku;
 
     string imageName("./assets/puzzles/s0.jpg"); // by default
     if( argc > 1)
     {
         imageName = argv[1];
     }
-    string response(grab(imageName));
+    fs::path p(getPath(imageName));
 
-    cout << response << endl;
+    raw = imread(p.string(), CV_LOAD_IMAGE_GRAYSCALE);
+    sudoku = extractPuzzle(raw);
+    showImage(sudoku);
+    
+    Mat roi, normalized;
+    for (int k = 0; k < 81; k++)
+    {
+        roi = extractRoiFromCell(sudoku, k);
+        if (!roi.empty())
+        {
+            cout << k << endl;
+            normalized = normalizeSize(roi, 28);
+            showImage(normalized);
+        }
+    }
+
     return 0;
 }
