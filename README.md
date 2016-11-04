@@ -13,13 +13,14 @@ mkdir build && cd build && cmake .. && make && ./DisplayImage
 ```
 
 ## Actions
-* You can see each extrated puzzle by using:
+* You can see some extrated information
 ```
-cmake .. && make && src/showExtracted
-```
-* You can see each cell of a puzzle using:
-```
-cmake .. && make && src/showCells
+cmake .. && make && src/showExtracted # will show all extracted puzzles
+cmake .. && make && src/showExtracted --showCell  # will show all extracted cells
+cmake .. && make && src/showExtracted --puzzleNumber 33 # will show the extracted puzzle of `assets/puzzles/s33.jpg`
+cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell # will show all cells of `assets/puzzles/s33.jpg`
+cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10 # will show the cell index = 10 of `assets/puzzles/s33.jpg`
+cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10 --debug # will show the cell index = 10 of `assets/puzzles/s33.jpg` plus the process of extraction
 ``` 
 * The knn network can be tested using this:
 ```
