@@ -228,7 +228,8 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
         // showImage(cleaned);
         vector<double> v = findBiggestComponent(cleaned);
 
-        if(debug){
+        if (debug)
+        {
             showImage(rawCell);
             showImage(rawRoi);
             showImage(thresholded);
@@ -252,8 +253,9 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
     }
     return output;
 }
-Mat extractRoiFromCell(Mat sudoku, int k){
-    return extractRoiFromCell(sudoku,k,false);
+Mat extractRoiFromCell(Mat sudoku, int k)
+{
+    return extractRoiFromCell(sudoku, k, false);
 }
 
 // ----------------------------------------------------------------------------------
@@ -275,26 +277,30 @@ int readFlippedInteger(FILE *fp)
     return ret;
 }
 
-vector<Mat> readTrainingMNIST(){
+vector<Mat> readTrainingMNIST()
+{
     return readMNIST(true);
 }
 
-vector<Mat> readTestMNIST(){
+vector<Mat> readTestMNIST()
+{
     return readMNIST(false);
 }
 
 vector<Mat> readMNIST(bool training)
 {
     vector<Mat> v(2);
-    string feat_str, label_str; 
-    if(training){
+    string feat_str, label_str;
+    if (training)
+    {
         feat_str = "/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/train-images-idx3-ubyte";
         label_str = "/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/train-labels-idx1-ubyte";
-    }else{
+    }
+    else
+    {
         feat_str = "/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/t10k-images-idx3-ubyte";
         label_str = "/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/t10k-labels-idx1-ubyte";
     }
-
 
     FILE *fp = fopen(feat_str.c_str(), "rb");
     FILE *fp2 = fopen(label_str.c_str(), "rb");
@@ -329,14 +335,14 @@ vector<Mat> readMNIST(bool training)
         fread((void *)(&tempClass), sizeof(unsigned char), 1, fp2);
 
         trainLabels.at<unsigned char>(0, i) = tempClass;
-        
+
         // feature creation
         // create the binarize matrix
         for (int k = 0; k < size; k++)
         {
             rawFeatures.at<unsigned char>(i, k) = temp[k];
         }
-        raw = rawFeatures.row(i).reshape(1,28);
+        raw = rawFeatures.row(i).reshape(1, 28);
         // showImage(raw);
         hoged = hog_feature(raw);
         hoged.copyTo(hogFeatures.row(i));
@@ -348,7 +354,6 @@ vector<Mat> readMNIST(bool training)
     hogFeatures.convertTo(hogFeatures, CV_32F);
     trainLabels.convertTo(trainLabels, CV_32F);
 
-
     v[0] = hogFeatures;
     v[1] = trainLabels;
     return v;
@@ -357,14 +362,15 @@ vector<Mat> readMNIST(bool training)
 // ------------------------------------------------------------------------
 // PUZZLE
 
-Mat extractCell(Mat sudoku, int numCell) {
+Mat extractCell(Mat sudoku, int numCell)
+{
     Mat output = sudoku.clone();
     int y = sudoku.cols;
     int x = sudoku.rows;
     int cx = x / 9;
     int cy = y / 9;
 
-//    cout << "cell size is :" << cx << " * " << cy << " = " << cx * cy << endl;
+    //    cout << "cell size is :" << cx << " * " << cy << " = " << cx * cy << endl;
 
     Rect rect = Rect((numCell % 9) * cy, (numCell / 9) * cx, cy, cx);
     return output(rect);
@@ -412,7 +418,7 @@ vector<Point> findBigestApprox(Mat input)
 {
 
     int largest_area = 0;
-    vector<vector<Point> > contours;
+    vector<vector<Point>> contours;
     vector<Point> approx;
     vector<Point> biggestApprox;
 
@@ -548,16 +554,30 @@ Mat extractPuzzle(Mat original)
 // --------------------------------------------------------
 // KNN
 
-
 Ptr<ml::KNearest> getKnn()
 {
+    Mat features(1184, 784, CV_8UC1);
+    Mat labels(1, 1184, CV_8UC1);
+    fs::path raw_features_path(getPath("assets/raw-features.yml"));
     Ptr<ml::KNearest> knn(ml::KNearest::create());
 
-    vector<Mat> v = readTrainingMNIST();
-    Mat trainFeatures = v[0];
-    Mat trainLabels = v[1];
+    // vector<Mat> v = readTrainingMNIST();
+    // Mat trainFeatures = v[0];
+    // Mat trainLabels = v[1];
 
-    knn->train(trainFeatures, ml::ROW_SAMPLE, trainLabels);
+    cv::FileStorage raw_features(raw_features_path.string(), cv::FileStorage::READ);
+
+    if (raw_features.isOpened() == false)
+    {   throw "error, unable to open training classifications file, exiting program\n\n";                                                                                         // if the file was not opened successfully
+        // std::cout << "error, unable to open training classifications file, exiting program\n\n"; // show error message
+        // return (0);                                                                              // and exit program
+    }
+
+    raw_features["features"] >> features;
+    raw_features["labels"] >> labels;
+    raw_features.release();
+
+    knn->train(features, ml::ROW_SAMPLE, labels);
     return knn;
 }
 
@@ -630,10 +650,8 @@ void testKnn(Ptr<ml::KNearest> knn, bool debug)
     printf("Accuracy: %f ", (double)totalCorrect * 100 / (double)numImages);
 }
 
-
 // --------------------------------------------------------------------------------
 // debug
-
 
 int minuss(int i, int j)
 {
@@ -644,7 +662,7 @@ Mat drawAllContour(Mat preprocessed)
 {
     Mat output = Mat::zeros(preprocessed.rows, preprocessed.cols, preprocessed.type());
     Scalar white(255, 255, 255);
-    vector<vector<Point> > contours;
+    vector<vector<Point>> contours;
     findContours(preprocessed, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
     // cout << "contours : " << contours.size() << endl;
@@ -699,7 +717,7 @@ vector<double> findBiggestComponent(Mat input)
     int left = stats.at<int>(index, CC_STAT_LEFT);
     int top = stats.at<int>(index, CC_STAT_TOP);
 
-    vector<double> v = {left, top, width, height, centroids.at<double>(index,0), centroids.at<double>(index,1)};
+    vector<double> v = {left, top, width, height, centroids.at<double>(index, 0), centroids.at<double>(index, 1)};
 
     return v;
 }
@@ -709,7 +727,7 @@ Mat drawAllApprox(Mat preprocessed)
     Mat output = Mat::zeros(preprocessed.rows, preprocessed.cols, preprocessed.type());
 
     Scalar white(255, 255, 255);
-    vector<vector<Point> > contours;
+    vector<vector<Point>> contours;
     std::vector<Point> approx;
 
     findContours(preprocessed.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
@@ -725,7 +743,7 @@ Mat drawAllApprox(Mat preprocessed)
         if (std::fabs(contourArea(contours[i])) < 100 || !isContourConvex(approx))
             continue;
 
-        std::vector<vector<Point> > approx_contour(1, approx);
+        std::vector<vector<Point>> approx_contour(1, approx);
         drawContours(output, approx_contour, 0, white, 2, 8);
     }
     return output;
@@ -735,7 +753,7 @@ Mat drawAllApprox(Mat preprocessed, Mat origial)
     Mat output = origial.clone();
 
     Scalar white(255, 255, 255);
-    vector<vector<Point> > contours;
+    vector<vector<Point>> contours;
     std::vector<Point> approx;
 
     findContours(preprocessed.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
@@ -751,7 +769,7 @@ Mat drawAllApprox(Mat preprocessed, Mat origial)
         if (std::fabs(contourArea(contours[i])) < 100 || !isContourConvex(approx))
             continue;
 
-        std::vector<vector<Point> > approx_contour(1, approx);
+        std::vector<vector<Point>> approx_contour(1, approx);
         drawContours(output, approx_contour, 0, white, 2, 8);
     }
     return output;
@@ -829,7 +847,7 @@ Mat removeTinyVolume(Mat input, int area, Scalar color)
     Mat output = input.clone();
     Scalar black(0, 0, 0);
     Scalar white(255, 255, 255);
-    vector<vector<Point> > contours;
+    vector<vector<Point>> contours;
     findContours(input, contours, RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 
     // cout << "contours : " << contours.size() << endl;
@@ -844,22 +862,24 @@ Mat removeTinyVolume(Mat input, int area, Scalar color)
     return output;
 }
 
-Mat deskew(Mat t){
+Mat deskew(Mat t)
+{
     Moments m = moments(t, true);
-    double skew = m.mu11/(int)m.mu02;
-    Mat transform = Mat(2,3,CV_32F);
-    transform.at<float>(0,0) = 1;
-    transform.at<float>(0,1) = skew;
-    transform.at<float>(0,2) = -0.5*28*skew;
-    transform.at<float>(1,0) = 0;
-    transform.at<float>(1,1) = 1;
-    transform.at<float>(1,2) = 0;
+    double skew = m.mu11 / (int)m.mu02;
+    Mat transform = Mat(2, 3, CV_32F);
+    transform.at<float>(0, 0) = 1;
+    transform.at<float>(0, 1) = skew;
+    transform.at<float>(0, 2) = -0.5 * 28 * skew;
+    transform.at<float>(1, 0) = 0;
+    transform.at<float>(1, 1) = 1;
+    transform.at<float>(1, 2) = 0;
     // cout << skew << endl;
     warpAffine(t, t, transform, t.size(), WARP_INVERSE_MAP);
     return t;
 }
 
-void showCells(Mat sudoku, bool debug){
+void showCells(Mat sudoku, bool debug)
+{
     Mat roi, normalized;
     for (int k = 0; k < 81; k++)
     {
@@ -873,7 +893,8 @@ void showCells(Mat sudoku, bool debug){
     }
 }
 
-void showCells(Mat sudoku, int cellNum, bool debug){
+void showCells(Mat sudoku, int cellNum, bool debug)
+{
     Mat roi, normalized;
     roi = extractRoiFromCell(sudoku, cellNum, debug);
     if (!roi.empty())
@@ -886,13 +907,12 @@ void showCells(Mat sudoku, int cellNum, bool debug){
 // ---------------------------------------------------------------------
 // mlp
 
-
-template<typename T>
-static Ptr<T> load_classifier(const string& persistence)
+template <typename T>
+static Ptr<T> load_classifier(const string &persistence)
 {
     // load classifier from the specified file
-    Ptr<T> model = StatModel::load<T>( persistence );
-    if( model.empty() )
+    Ptr<T> model = StatModel::load<T>(persistence);
+    if (model.empty())
         cout << "Could not read the classifier " << persistence << endl;
     else
         cout << "The classifier " << persistence << " is loaded.\n";
@@ -900,50 +920,48 @@ static Ptr<T> load_classifier(const string& persistence)
     return model;
 }
 
-inline TermCriteria TC(int iters, double eps) {
+inline TermCriteria TC(int iters, double eps)
+{
     return TermCriteria(TermCriteria::MAX_ITER + (eps > 0 ? TermCriteria::EPS : 0), iters, eps);
 }
 
-
-static void test_and_save_classifier(const Ptr<StatModel>& model,
-                                     const Mat& data, const Mat& responses,
+static void test_and_save_classifier(const Ptr<StatModel> &model,
+                                     const Mat &data, const Mat &responses,
                                      int ntrain_samples, int rdelta,
-                                     const string& filename_to_save)
+                                     const string &filename_to_save)
 {
     int i, nsamples_all = data.rows;
     double train_hr = 0, test_hr = 0;
 
     // compute prediction error on train and test data
-    for( i = 0; i < nsamples_all; i++ )
+    for (i = 0; i < nsamples_all; i++)
     {
         Mat sample = data.row(i);
 
-        float r = model->predict( sample );
+        float r = model->predict(sample);
         r = std::abs(r + rdelta - responses.at<int>(i)) <= FLT_EPSILON ? 1.f : 0.f;
 
-        if( i < ntrain_samples )
+        if (i < ntrain_samples)
             train_hr += r;
         else
             test_hr += r;
     }
 
     test_hr /= nsamples_all - ntrain_samples;
-    train_hr = ntrain_samples > 0 ? train_hr/ntrain_samples : 1.;
+    train_hr = ntrain_samples > 0 ? train_hr / ntrain_samples : 1.;
 
-    printf( "Recognition rate: train = %.1f%%, test = %.1f%%\n",
-            train_hr*100., test_hr*100. );
+    printf("Recognition rate: train = %.1f%%, test = %.1f%%\n",
+           train_hr * 100., test_hr * 100.);
 
-    if( !filename_to_save.empty() )
+    if (!filename_to_save.empty())
     {
-        model->save( filename_to_save );
+        model->save(filename_to_save);
     }
 }
 
-
-
-
 Ptr<ANN_MLP>
-build_mlp_classifier(const fs::path data_filename, const fs::path persistence){
+build_mlp_classifier(const fs::path data_filename, const fs::path persistence)
+{
 
     const int class_count = 9;
     Mat data;
@@ -962,12 +980,13 @@ build_mlp_classifier(const fs::path data_filename, const fs::path persistence){
     Ptr<ANN_MLP> model;
 
     int nsamples_all = data.rows;
-    int ntrain_samples = (int)(nsamples_all*0.8);
+    int ntrain_samples = (int)(nsamples_all * 0.8);
 
-//    boost::filesystem::path persistence_path(persistence);
+    //    boost::filesystem::path persistence_path(persistence);
     string persistence_str = persistence.string();
     // Create or load MLP classifier
-    if (boost::filesystem::exists(persistence)) {
+    if (boost::filesystem::exists(persistence))
+    {
         return load_classifier<ANN_MLP>(persistence_str);
     }
     else
@@ -983,17 +1002,18 @@ build_mlp_classifier(const fs::path data_filename, const fs::path persistence){
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         Mat train_data = data.rowRange(0, ntrain_samples);
-        Mat train_responses = Mat::zeros( ntrain_samples, class_count, CV_32F );
+        Mat train_responses = Mat::zeros(ntrain_samples, class_count, CV_32F);
 
         // 1. unroll the responses
-//        cout << "Unrolling the responses...\n";
-        for (int i = 0; i < ntrain_samples; i++) {
+        //        cout << "Unrolling the responses...\n";
+        for (int i = 0; i < ntrain_samples; i++)
+        {
             train_responses.at<float>(i, responses.at<int>(i)) = 1.f;
         }
 
         // 2. train classifier
         int layer_sz[] = {data.cols, 100, 100, class_count};
-        int nlayers = (int) (sizeof(layer_sz) / sizeof(layer_sz[0]));
+        int nlayers = (int)(sizeof(layer_sz) / sizeof(layer_sz[0]));
         Mat layer_sizes(1, nlayers, CV_32S, layer_sz);
 
 #if 1
@@ -1012,7 +1032,7 @@ build_mlp_classifier(const fs::path data_filename, const fs::path persistence){
         model = ANN_MLP::create();
         model->setLayerSizes(layer_sizes);
         model->setActivationFunction(ANN_MLP::SIGMOID_SYM, 0, 0);
-        model->setTermCriteria(TC(max_iter,0));
+        model->setTermCriteria(TC(max_iter, 0));
         model->setTrainMethod(method, method_param);
         model->train(tdata);
         cout << endl;
@@ -1022,29 +1042,30 @@ build_mlp_classifier(const fs::path data_filename, const fs::path persistence){
     return model;
 }
 
-Mat hog_feature(Mat input){
+Mat hog_feature(Mat input)
+{
 
     vector<float> ders;
-    vector<Point>locs;
-    
+    vector<Point> locs;
+
     bool gamma_corr = true;
     Size win_size(input.rows, input.cols); //using just one window
     int c = 4;
-    Size block_size(c,c);
-    Size block_stride(c,c); //no overlapping blocks
-    Size cell_size(c,c);
+    Size block_size(c, c);
+    Size block_stride(c, c); //no overlapping blocks
+    Size cell_size(c, c);
     int nOri = 15; //number of orientation bins
 
     HOGDescriptor hog(win_size, block_size, block_stride, cell_size, nOri, 1, -1,
-                              HOGDescriptor::L2Hys, 0.2, gamma_corr, HOGDescriptor::DEFAULT_NLEVELS);
+                      HOGDescriptor::L2Hys, 0.2, gamma_corr, HOGDescriptor::DEFAULT_NLEVELS);
 
-    hog.compute(input,ders,Size(0,0),Size(0,0),locs);
+    hog.compute(input, ders, Size(0, 0), Size(0, 0), locs);
 
     Mat Hogfeat(1, ders.size(), CV_32FC1);
 
-    for(int i=0;i<ders.size();i++)
+    for (int i = 0; i < ders.size(); i++)
     {
-        Hogfeat.at<float>(0,i)=ders.at(i);
+        Hogfeat.at<float>(0, i) = ders.at(i);
     }
 
     // showImage(Hogfeat);
@@ -1055,7 +1076,8 @@ Mat hog_feature(Mat input){
 // --------------------------------------------------------------------------
 // createDataForTraining
 
-void create_data_structure() {
+void create_data_structure()
+{
     fs::path data("data");
     fs::path data1("data/1");
     fs::path data2("data/2");
@@ -1067,7 +1089,8 @@ void create_data_structure() {
     fs::path data8("data/8");
     fs::path data9("data/9");
 
-    if (!fs::exists(data)) {
+    if (!fs::exists(data))
+    {
         boost::filesystem::create_directories(data);
         boost::filesystem::create_directories(data1);
         boost::filesystem::create_directories(data2);
@@ -1078,7 +1101,9 @@ void create_data_structure() {
         boost::filesystem::create_directories(data7);
         boost::filesystem::create_directories(data8);
         boost::filesystem::create_directories(data9);
-    } else {
+    }
+    else
+    {
         if (!fs::exists(data1))
             boost::filesystem::create_directories(data1);
         if (!fs::exists(data2))
@@ -1098,23 +1123,26 @@ void create_data_structure() {
         if (!fs::exists(data9))
             boost::filesystem::create_directories(data9);
     }
-
 }
 
-std::string remove_extension(const std::string &filename) {
+std::string remove_extension(const std::string &filename)
+{
     size_t lastdot = filename.find_last_of(".");
-    if (lastdot == std::string::npos) return filename;
+    if (lastdot == std::string::npos)
+        return filename;
     return filename.substr(0, lastdot);
 }
 
-std::string uuid_first_part(const std::string &uuid) {
+std::string uuid_first_part(const std::string &uuid)
+{
     size_t first = uuid.find_first_of("-");
-    if (first == std::string::npos) return uuid;
+    if (first == std::string::npos)
+        return uuid;
     return uuid.substr(0, first);
 }
 
-
-int createData() {
+int createData()
+{
 
     create_data_structure();
 
@@ -1141,7 +1169,7 @@ int createData() {
 
             sudoku = extractPuzzle(raw);
             showImage(sudoku);
-            
+
             for (int k = 0; k < 81; k++)
             {
                 Mat roi = extractRoiFromCell(sudoku, k);
@@ -1154,7 +1182,7 @@ int createData() {
                 //     Mat normalized = normalizeSize(roi, 28);
                 //     // // cout << normalized.size() << endl;
                 //     // Mat hoged = hog_feature(normalized);
-                    
+
                 //     // hoged.convertTo(hoged, CV_32F);
 
                 //     // // // output = deskew(output);
@@ -1167,14 +1195,12 @@ int createData() {
                 //     // ss << "X";
                 // }
             }
-
         }
     }
     else
     {
         cout << "please give a folder as a parameter" << endl;
     }
-
 
     // std::cout << "\n\n\nThe data needed to train the classifier was not found so we will create it." << std::endl;
     // std::cout << "There are 3 steps to create these data" << std::endl;
@@ -1189,13 +1215,15 @@ int createData() {
     return 0;
 }
 
-std::map<int, std::map<int,int>> cellValues(){
-    std::map<int, std::map<int,int>> map;
+// data created manually
+std::map<int, std::map<int, int>> cellValues()
+{
+    std::map<int, std::map<int, int>> map;
     std::map<int, int> s0;
 
     std::map<int, int> s1;
     std::map<int, int> s2;
-    
+
     std::map<int, int> s3;
     std::map<int, int> s4;
     std::map<int, int> s5;
@@ -1211,563 +1239,555 @@ std::map<int, std::map<int,int>> cellValues(){
     std::map<int, int> s12;
     std::map<int, int> s13;
     std::map<int, int> s14;
-    
+
     std::map<int, int> s15;
     std::map<int, int> s16;
     std::map<int, int> s17;
-    
+
     std::map<int, int> s18;
     std::map<int, int> s19;
     std::map<int, int> s20;
-    
+
     std::map<int, int> s21;
     std::map<int, int> s22;
     std::map<int, int> s23;
-    
+
     std::map<int, int> s24;
     std::map<int, int> s25;
     std::map<int, int> s26;
-    
+
     std::map<int, int> s27;
     std::map<int, int> s28;
     std::map<int, int> s29;
-    
+
     std::map<int, int> s30;
     std::map<int, int> s31;
     std::map<int, int> s32;
-    
+
     std::map<int, int> s33;
     std::map<int, int> s34;
     std::map<int, int> s35;
- 
-    s0.insert(std::make_pair(3,6));
-    s0.insert(std::make_pair(5,4));
-    s0.insert(std::make_pair(6,7));
-    s0.insert(std::make_pair(9,7));
-    s0.insert(std::make_pair(11,6));
-    s0.insert(std::make_pair(17,9));
-    s0.insert(std::make_pair(23,5));
-    s0.insert(std::make_pair(25,8));
-    s0.insert(std::make_pair(28,7));
-    s0.insert(std::make_pair(31,2));
-    s0.insert(std::make_pair(34,9));
-    s0.insert(std::make_pair(35,3));
-    s0.insert(std::make_pair(36,8));
-    s0.insert(std::make_pair(44,5));
-    s0.insert(std::make_pair(45,4));
-    s0.insert(std::make_pair(46,3));
-    s0.insert(std::make_pair(49,1));
-    s0.insert(std::make_pair(52,7));
-    s0.insert(std::make_pair(55,5));
-    s0.insert(std::make_pair(57,2));
-    s0.insert(std::make_pair(63,3));
-    s0.insert(std::make_pair(69,2));
-    s0.insert(std::make_pair(71,8));
-    s0.insert(std::make_pair(74,2));
-    s0.insert(std::make_pair(75,3));
-    s0.insert(std::make_pair(77,1));
 
-    s1.insert(std::make_pair(2,7));
-    s1.insert(std::make_pair(3,6));
-    s1.insert(std::make_pair(4,2));
-    s1.insert(std::make_pair(7,5));
-    s1.insert(std::make_pair(8,8));
-    s1.insert(std::make_pair(10,1));
-    s1.insert(std::make_pair(11,4));
-    s1.insert(std::make_pair(13,9));
-    s1.insert(std::make_pair(17,6));
-    s1.insert(std::make_pair(20,6));
-    s1.insert(std::make_pair(23,3));
-    s1.insert(std::make_pair(26,2));
-    s1.insert(std::make_pair(29,8));
-    s1.insert(std::make_pair(30,3));
-    s1.insert(std::make_pair(33,7));
-    s1.insert(std::make_pair(35,5));
-    s1.insert(std::make_pair(37,7));
-    s1.insert(std::make_pair(43,4));
-    s1.insert(std::make_pair(45,3));
-    s1.insert(std::make_pair(47,9));
-    s1.insert(std::make_pair(50,4));
-    s1.insert(std::make_pair(51,6));
-    s1.insert(std::make_pair(54,7));
-    s1.insert(std::make_pair(57,4));
-    s1.insert(std::make_pair(60,1));
-    s1.insert(std::make_pair(63,1));
-    s1.insert(std::make_pair(67,8));
-    s1.insert(std::make_pair(69,2));
-    s1.insert(std::make_pair(70,6));
-    s1.insert(std::make_pair(72,8));
-    s1.insert(std::make_pair(73,9));
-    s1.insert(std::make_pair(76,6));
-    s1.insert(std::make_pair(77,7));
-    s1.insert(std::make_pair(78,5));
+    s0.insert(std::make_pair(3, 6));
+    s0.insert(std::make_pair(5, 4));
+    s0.insert(std::make_pair(6, 7));
+    s0.insert(std::make_pair(9, 7));
+    s0.insert(std::make_pair(11, 6));
+    s0.insert(std::make_pair(17, 9));
+    s0.insert(std::make_pair(23, 5));
+    s0.insert(std::make_pair(25, 8));
+    s0.insert(std::make_pair(28, 7));
+    s0.insert(std::make_pair(31, 2));
+    s0.insert(std::make_pair(34, 9));
+    s0.insert(std::make_pair(35, 3));
+    s0.insert(std::make_pair(36, 8));
+    s0.insert(std::make_pair(44, 5));
+    s0.insert(std::make_pair(45, 4));
+    s0.insert(std::make_pair(46, 3));
+    s0.insert(std::make_pair(49, 1));
+    s0.insert(std::make_pair(52, 7));
+    s0.insert(std::make_pair(55, 5));
+    s0.insert(std::make_pair(57, 2));
+    s0.insert(std::make_pair(63, 3));
+    s0.insert(std::make_pair(69, 2));
+    s0.insert(std::make_pair(71, 8));
+    s0.insert(std::make_pair(74, 2));
+    s0.insert(std::make_pair(75, 3));
+    s0.insert(std::make_pair(77, 1));
+
+    s1.insert(std::make_pair(2, 7));
+    s1.insert(std::make_pair(3, 6));
+    s1.insert(std::make_pair(4, 2));
+    s1.insert(std::make_pair(7, 5));
+    s1.insert(std::make_pair(8, 8));
+    s1.insert(std::make_pair(10, 1));
+    s1.insert(std::make_pair(11, 4));
+    s1.insert(std::make_pair(13, 9));
+    s1.insert(std::make_pair(17, 6));
+    s1.insert(std::make_pair(20, 6));
+    s1.insert(std::make_pair(23, 3));
+    s1.insert(std::make_pair(26, 2));
+    s1.insert(std::make_pair(29, 8));
+    s1.insert(std::make_pair(30, 3));
+    s1.insert(std::make_pair(33, 7));
+    s1.insert(std::make_pair(35, 5));
+    s1.insert(std::make_pair(37, 7));
+    s1.insert(std::make_pair(43, 4));
+    s1.insert(std::make_pair(45, 3));
+    s1.insert(std::make_pair(47, 9));
+    s1.insert(std::make_pair(50, 4));
+    s1.insert(std::make_pair(51, 6));
+    s1.insert(std::make_pair(54, 7));
+    s1.insert(std::make_pair(57, 4));
+    s1.insert(std::make_pair(60, 1));
+    s1.insert(std::make_pair(63, 1));
+    s1.insert(std::make_pair(67, 8));
+    s1.insert(std::make_pair(69, 2));
+    s1.insert(std::make_pair(70, 6));
+    s1.insert(std::make_pair(72, 8));
+    s1.insert(std::make_pair(73, 9));
+    s1.insert(std::make_pair(76, 6));
+    s1.insert(std::make_pair(77, 7));
+    s1.insert(std::make_pair(78, 5));
 
     s2 = s1;
 
-    s3.insert(std::make_pair(0,6));
-    s3.insert(std::make_pair(5,4));
-    s3.insert(std::make_pair(6,1));
-    s3.insert(std::make_pair(12,9));
-    s3.insert(std::make_pair(15,5));
-    s3.insert(std::make_pair(17,8));
-    s3.insert(std::make_pair(18,5));
-    s3.insert(std::make_pair(19,8));
-    s3.insert(std::make_pair(24,7));
-    s3.insert(std::make_pair(25,4));
-    s3.insert(std::make_pair(28,9));
-    s3.insert(std::make_pair(30,7));
-    s3.insert(std::make_pair(31,1));
-    s3.insert(std::make_pair(33,8));
-    s3.insert(std::make_pair(40,4));
-    s3.insert(std::make_pair(47,5));
-    s3.insert(std::make_pair(49,9));
-    s3.insert(std::make_pair(50,8));
-    s3.insert(std::make_pair(52,3));
-    s3.insert(std::make_pair(55,7));
-    s3.insert(std::make_pair(56,8));
-    s3.insert(std::make_pair(61,2));
-    s3.insert(std::make_pair(62,1));
-    s3.insert(std::make_pair(63,4));
-    s3.insert(std::make_pair(65,2));
-    s3.insert(std::make_pair(68,7));
-    s3.insert(std::make_pair(74,6));
-    s3.insert(std::make_pair(75,8));
-    s3.insert(std::make_pair(80,5));
+    s3.insert(std::make_pair(0, 6));
+    s3.insert(std::make_pair(5, 4));
+    s3.insert(std::make_pair(6, 1));
+    s3.insert(std::make_pair(12, 9));
+    s3.insert(std::make_pair(15, 5));
+    s3.insert(std::make_pair(17, 8));
+    s3.insert(std::make_pair(18, 5));
+    s3.insert(std::make_pair(19, 8));
+    s3.insert(std::make_pair(24, 7));
+    s3.insert(std::make_pair(25, 4));
+    s3.insert(std::make_pair(28, 9));
+    s3.insert(std::make_pair(30, 7));
+    s3.insert(std::make_pair(31, 1));
+    s3.insert(std::make_pair(33, 8));
+    s3.insert(std::make_pair(40, 4));
+    s3.insert(std::make_pair(47, 5));
+    s3.insert(std::make_pair(49, 9));
+    s3.insert(std::make_pair(50, 8));
+    s3.insert(std::make_pair(52, 3));
+    s3.insert(std::make_pair(55, 7));
+    s3.insert(std::make_pair(56, 8));
+    s3.insert(std::make_pair(61, 2));
+    s3.insert(std::make_pair(62, 1));
+    s3.insert(std::make_pair(63, 4));
+    s3.insert(std::make_pair(65, 2));
+    s3.insert(std::make_pair(68, 7));
+    s3.insert(std::make_pair(74, 6));
+    s3.insert(std::make_pair(75, 8));
+    s3.insert(std::make_pair(80, 5));
 
     s4 = s3;
     s5 = s3;
 
-    s6.insert(std::make_pair(2,6));
-    s6.insert(std::make_pair(3,4));
-    s6.insert(std::make_pair(6,7));
-    s6.insert(std::make_pair(7,5));
-    s6.insert(std::make_pair(11,5));
-    s6.insert(std::make_pair(13,8));
-    s6.insert(std::make_pair(14,2));
-    s6.insert(std::make_pair(16,6));
-    s6.insert(std::make_pair(20,7));
-    s6.insert(std::make_pair(21,3));
-    s6.insert(std::make_pair(23,6));
-    s6.insert(std::make_pair(25,8));
-    s6.insert(std::make_pair(26,9));
-    s6.insert(std::make_pair(28,5));
-    s6.insert(std::make_pair(30,1));
-    s6.insert(std::make_pair(31,3));
-    s6.insert(std::make_pair(33,9));
-    s6.insert(std::make_pair(37,9));
-    s6.insert(std::make_pair(38,3));
-    s6.insert(std::make_pair(42,8));
-    s6.insert(std::make_pair(43,4));
-    s6.insert(std::make_pair(47,2));
-    s6.insert(std::make_pair(49,4));
-    s6.insert(std::make_pair(50,8));
-    s6.insert(std::make_pair(52,7));
-    s6.insert(std::make_pair(54,5));
-    s6.insert(std::make_pair(55,8));
-    s6.insert(std::make_pair(57,2));
-    s6.insert(std::make_pair(59,9));
-    s6.insert(std::make_pair(60,6));
-    s6.insert(std::make_pair(64,7));
-    s6.insert(std::make_pair(66,8));
-    s6.insert(std::make_pair(67,6));
-    s6.insert(std::make_pair(69,2));
-    s6.insert(std::make_pair(73,2));
-    s6.insert(std::make_pair(74,9));
-    s6.insert(std::make_pair(77,3));
-    s6.insert(std::make_pair(78,4));
+    s6.insert(std::make_pair(2, 6));
+    s6.insert(std::make_pair(3, 4));
+    s6.insert(std::make_pair(6, 7));
+    s6.insert(std::make_pair(7, 5));
+    s6.insert(std::make_pair(11, 5));
+    s6.insert(std::make_pair(13, 8));
+    s6.insert(std::make_pair(14, 2));
+    s6.insert(std::make_pair(16, 6));
+    s6.insert(std::make_pair(20, 7));
+    s6.insert(std::make_pair(21, 3));
+    s6.insert(std::make_pair(23, 6));
+    s6.insert(std::make_pair(25, 8));
+    s6.insert(std::make_pair(26, 9));
+    s6.insert(std::make_pair(28, 5));
+    s6.insert(std::make_pair(30, 1));
+    s6.insert(std::make_pair(31, 3));
+    s6.insert(std::make_pair(33, 9));
+    s6.insert(std::make_pair(37, 9));
+    s6.insert(std::make_pair(38, 3));
+    s6.insert(std::make_pair(42, 8));
+    s6.insert(std::make_pair(43, 4));
+    s6.insert(std::make_pair(47, 2));
+    s6.insert(std::make_pair(49, 4));
+    s6.insert(std::make_pair(50, 8));
+    s6.insert(std::make_pair(52, 7));
+    s6.insert(std::make_pair(54, 5));
+    s6.insert(std::make_pair(55, 8));
+    s6.insert(std::make_pair(57, 2));
+    s6.insert(std::make_pair(59, 9));
+    s6.insert(std::make_pair(60, 6));
+    s6.insert(std::make_pair(64, 7));
+    s6.insert(std::make_pair(66, 8));
+    s6.insert(std::make_pair(67, 6));
+    s6.insert(std::make_pair(69, 2));
+    s6.insert(std::make_pair(73, 2));
+    s6.insert(std::make_pair(74, 9));
+    s6.insert(std::make_pair(77, 3));
+    s6.insert(std::make_pair(78, 4));
 
     s7 = s6;
     s8 = s6;
 
-    s9.insert(std::make_pair(1,8));
-    s9.insert(std::make_pair(4,1));
-    s9.insert(std::make_pair(7,4));
-    s9.insert(std::make_pair(11,2));
-    s9.insert(std::make_pair(13,8));
-    s9.insert(std::make_pair(14,3));
-    s9.insert(std::make_pair(17,1));
-    s9.insert(std::make_pair(19,6));
-    s9.insert(std::make_pair(21,2));
-    s9.insert(std::make_pair(26,3));
-    s9.insert(std::make_pair(31,9));
-    s9.insert(std::make_pair(32,4));
-    s9.insert(std::make_pair(33,3));
-    s9.insert(std::make_pair(34,5));
-    s9.insert(std::make_pair(36,8));
-    s9.insert(std::make_pair(38,9));
-    s9.insert(std::make_pair(42,7));
-    s9.insert(std::make_pair(44,4));
-    s9.insert(std::make_pair(46,1));
-    s9.insert(std::make_pair(47,5));
-    s9.insert(std::make_pair(48,3));
-    s9.insert(std::make_pair(49,7));
-    s9.insert(std::make_pair(54,3));
-    s9.insert(std::make_pair(59,2));
-    s9.insert(std::make_pair(61,7));
-    s9.insert(std::make_pair(63,2));
-    s9.insert(std::make_pair(66,7));
-    s9.insert(std::make_pair(67,3));
-    s9.insert(std::make_pair(69,6));
-    s9.insert(std::make_pair(73,9));
-    s9.insert(std::make_pair(76,6));
-    s9.insert(std::make_pair(79,3));
+    s9.insert(std::make_pair(1, 8));
+    s9.insert(std::make_pair(4, 1));
+    s9.insert(std::make_pair(7, 4));
+    s9.insert(std::make_pair(11, 2));
+    s9.insert(std::make_pair(13, 8));
+    s9.insert(std::make_pair(14, 3));
+    s9.insert(std::make_pair(17, 1));
+    s9.insert(std::make_pair(19, 6));
+    s9.insert(std::make_pair(21, 2));
+    s9.insert(std::make_pair(26, 3));
+    s9.insert(std::make_pair(31, 9));
+    s9.insert(std::make_pair(32, 4));
+    s9.insert(std::make_pair(33, 3));
+    s9.insert(std::make_pair(34, 5));
+    s9.insert(std::make_pair(36, 8));
+    s9.insert(std::make_pair(38, 9));
+    s9.insert(std::make_pair(42, 7));
+    s9.insert(std::make_pair(44, 4));
+    s9.insert(std::make_pair(46, 1));
+    s9.insert(std::make_pair(47, 5));
+    s9.insert(std::make_pair(48, 3));
+    s9.insert(std::make_pair(49, 7));
+    s9.insert(std::make_pair(54, 3));
+    s9.insert(std::make_pair(59, 2));
+    s9.insert(std::make_pair(61, 7));
+    s9.insert(std::make_pair(63, 2));
+    s9.insert(std::make_pair(66, 7));
+    s9.insert(std::make_pair(67, 3));
+    s9.insert(std::make_pair(69, 6));
+    s9.insert(std::make_pair(73, 9));
+    s9.insert(std::make_pair(76, 6));
+    s9.insert(std::make_pair(79, 3));
 
     s10 = s9;
     s11 = s9;
 
-
-    s12.insert(std::make_pair(3,6));
-    s12.insert(std::make_pair(4,5));
-    s12.insert(std::make_pair(5,2));
-    s12.insert(std::make_pair(7,9));
-    s12.insert(std::make_pair(9,6));
-    s12.insert(std::make_pair(10,4));
-    s12.insert(std::make_pair(13,7));
-    s12.insert(std::make_pair(15,5));
-    s12.insert(std::make_pair(17,1));
-    s12.insert(std::make_pair(22,3));
-    s12.insert(std::make_pair(24,7));
-    s12.insert(std::make_pair(25,8));
-    s12.insert(std::make_pair(27,9));
-    s12.insert(std::make_pair(29,8));
-    s12.insert(std::make_pair(31,4));
-    s12.insert(std::make_pair(36,1));
-    s12.insert(std::make_pair(38,4));
-    s12.insert(std::make_pair(39,2));
-    s12.insert(std::make_pair(41,7));
-    s12.insert(std::make_pair(42,9));
-    s12.insert(std::make_pair(44,8));
-    s12.insert(std::make_pair(49,9));
-    s12.insert(std::make_pair(51,6));
-    s12.insert(std::make_pair(53,5));
-    s12.insert(std::make_pair(55,3));
-    s12.insert(std::make_pair(56,9));
-    s12.insert(std::make_pair(58,2));
-    s12.insert(std::make_pair(63,8));
-    s12.insert(std::make_pair(65,6));
-    s12.insert(std::make_pair(67,1));
-    s12.insert(std::make_pair(70,5));
-    s12.insert(std::make_pair(71,9));
-    s12.insert(std::make_pair(73,1));
-    s12.insert(std::make_pair(75,9));
-    s12.insert(std::make_pair(76,8));
-    s12.insert(std::make_pair(77,4));
+    s12.insert(std::make_pair(3, 6));
+    s12.insert(std::make_pair(4, 5));
+    s12.insert(std::make_pair(5, 2));
+    s12.insert(std::make_pair(7, 9));
+    s12.insert(std::make_pair(9, 6));
+    s12.insert(std::make_pair(10, 4));
+    s12.insert(std::make_pair(13, 7));
+    s12.insert(std::make_pair(15, 5));
+    s12.insert(std::make_pair(17, 1));
+    s12.insert(std::make_pair(22, 3));
+    s12.insert(std::make_pair(24, 7));
+    s12.insert(std::make_pair(25, 8));
+    s12.insert(std::make_pair(27, 9));
+    s12.insert(std::make_pair(29, 8));
+    s12.insert(std::make_pair(31, 4));
+    s12.insert(std::make_pair(36, 1));
+    s12.insert(std::make_pair(38, 4));
+    s12.insert(std::make_pair(39, 2));
+    s12.insert(std::make_pair(41, 7));
+    s12.insert(std::make_pair(42, 9));
+    s12.insert(std::make_pair(44, 8));
+    s12.insert(std::make_pair(49, 9));
+    s12.insert(std::make_pair(51, 6));
+    s12.insert(std::make_pair(53, 5));
+    s12.insert(std::make_pair(55, 3));
+    s12.insert(std::make_pair(56, 9));
+    s12.insert(std::make_pair(58, 2));
+    s12.insert(std::make_pair(63, 8));
+    s12.insert(std::make_pair(65, 6));
+    s12.insert(std::make_pair(67, 1));
+    s12.insert(std::make_pair(70, 5));
+    s12.insert(std::make_pair(71, 9));
+    s12.insert(std::make_pair(73, 1));
+    s12.insert(std::make_pair(75, 9));
+    s12.insert(std::make_pair(76, 8));
+    s12.insert(std::make_pair(77, 4));
 
     s13 = s12;
     s14 = s12;
 
-    s15.insert(std::make_pair(2,9));
-    s15.insert(std::make_pair(3,1));
-    s15.insert(std::make_pair(7,5));
-    s15.insert(std::make_pair(8,6));
-    s15.insert(std::make_pair(13,6));
-    s15.insert(std::make_pair(17,3));
-    s15.insert(std::make_pair(20,5));
-    s15.insert(std::make_pair(21,3));
-    s15.insert(std::make_pair(24,9));
-    s15.insert(std::make_pair(26,4));
-    s15.insert(std::make_pair(28,3));
-    s15.insert(std::make_pair(30,7));
-    s15.insert(std::make_pair(31,5));
-    s15.insert(std::make_pair(36,5));
-    s15.insert(std::make_pair(37,2));
-    s15.insert(std::make_pair(39,8));
-    s15.insert(std::make_pair(41,6));
-    s15.insert(std::make_pair(43,9));
-    s15.insert(std::make_pair(44,7));
-    s15.insert(std::make_pair(49,1));
-    s15.insert(std::make_pair(50,2));
-    s15.insert(std::make_pair(52,8));
-    s15.insert(std::make_pair(54,6));
-    s15.insert(std::make_pair(56,1));
-    s15.insert(std::make_pair(59,3));
-    s15.insert(std::make_pair(60,5));
-    s15.insert(std::make_pair(63,8));
-    s15.insert(std::make_pair(67,7));
-    s15.insert(std::make_pair(72,7));
-    s15.insert(std::make_pair(73,4));
-    s15.insert(std::make_pair(77,8));
-    s15.insert(std::make_pair(78,6));
+    s15.insert(std::make_pair(2, 9));
+    s15.insert(std::make_pair(3, 1));
+    s15.insert(std::make_pair(7, 5));
+    s15.insert(std::make_pair(8, 6));
+    s15.insert(std::make_pair(13, 6));
+    s15.insert(std::make_pair(17, 3));
+    s15.insert(std::make_pair(20, 5));
+    s15.insert(std::make_pair(21, 3));
+    s15.insert(std::make_pair(24, 9));
+    s15.insert(std::make_pair(26, 4));
+    s15.insert(std::make_pair(28, 3));
+    s15.insert(std::make_pair(30, 7));
+    s15.insert(std::make_pair(31, 5));
+    s15.insert(std::make_pair(36, 5));
+    s15.insert(std::make_pair(37, 2));
+    s15.insert(std::make_pair(39, 8));
+    s15.insert(std::make_pair(41, 6));
+    s15.insert(std::make_pair(43, 9));
+    s15.insert(std::make_pair(44, 7));
+    s15.insert(std::make_pair(49, 1));
+    s15.insert(std::make_pair(50, 2));
+    s15.insert(std::make_pair(52, 8));
+    s15.insert(std::make_pair(54, 6));
+    s15.insert(std::make_pair(56, 1));
+    s15.insert(std::make_pair(59, 3));
+    s15.insert(std::make_pair(60, 5));
+    s15.insert(std::make_pair(63, 8));
+    s15.insert(std::make_pair(67, 7));
+    s15.insert(std::make_pair(72, 7));
+    s15.insert(std::make_pair(73, 4));
+    s15.insert(std::make_pair(77, 8));
+    s15.insert(std::make_pair(78, 6));
 
     s16 = s15;
     s17 = s15;
 
-
-
-    s18.insert(std::make_pair(0,1));
-    s18.insert(std::make_pair(3,9));
-    s18.insert(std::make_pair(4,7));
-    s18.insert(std::make_pair(5,4));
-    s18.insert(std::make_pair(7,8));
-    s18.insert(std::make_pair(9,9));
-    s18.insert(std::make_pair(10,7));
-    s18.insert(std::make_pair(14,6));
-    s18.insert(std::make_pair(18,3));
-    s18.insert(std::make_pair(23,5));
-    s18.insert(std::make_pair(25,2));
-    s18.insert(std::make_pair(26,7));
-    s18.insert(std::make_pair(29,7));
-    s18.insert(std::make_pair(30,6));
-    s18.insert(std::make_pair(32,2));
-    s18.insert(std::make_pair(40,5));
-    s18.insert(std::make_pair(48,8));
-    s18.insert(std::make_pair(50,3));
-    s18.insert(std::make_pair(51,1));
-    s18.insert(std::make_pair(54,6));
-    s18.insert(std::make_pair(55,9));
-    s18.insert(std::make_pair(57,5));
-    s18.insert(std::make_pair(62,8));
-    s18.insert(std::make_pair(66,2));
-    s18.insert(std::make_pair(70,9));
-    s18.insert(std::make_pair(71,5));
-    s18.insert(std::make_pair(73,2));
-    s18.insert(std::make_pair(75,4));
-    s18.insert(std::make_pair(76,9));
-    s18.insert(std::make_pair(77,8));
-    s18.insert(std::make_pair(80,6));
+    s18.insert(std::make_pair(0, 1));
+    s18.insert(std::make_pair(3, 9));
+    s18.insert(std::make_pair(4, 7));
+    s18.insert(std::make_pair(5, 4));
+    s18.insert(std::make_pair(7, 8));
+    s18.insert(std::make_pair(9, 9));
+    s18.insert(std::make_pair(10, 7));
+    s18.insert(std::make_pair(14, 6));
+    s18.insert(std::make_pair(18, 3));
+    s18.insert(std::make_pair(23, 5));
+    s18.insert(std::make_pair(25, 2));
+    s18.insert(std::make_pair(26, 7));
+    s18.insert(std::make_pair(29, 7));
+    s18.insert(std::make_pair(30, 6));
+    s18.insert(std::make_pair(32, 2));
+    s18.insert(std::make_pair(40, 5));
+    s18.insert(std::make_pair(48, 8));
+    s18.insert(std::make_pair(50, 3));
+    s18.insert(std::make_pair(51, 1));
+    s18.insert(std::make_pair(54, 6));
+    s18.insert(std::make_pair(55, 9));
+    s18.insert(std::make_pair(57, 5));
+    s18.insert(std::make_pair(62, 8));
+    s18.insert(std::make_pair(66, 2));
+    s18.insert(std::make_pair(70, 9));
+    s18.insert(std::make_pair(71, 5));
+    s18.insert(std::make_pair(73, 2));
+    s18.insert(std::make_pair(75, 4));
+    s18.insert(std::make_pair(76, 9));
+    s18.insert(std::make_pair(77, 8));
+    s18.insert(std::make_pair(80, 6));
 
     s19 = s18;
     s20 = s18;
 
-
-    s21.insert(std::make_pair(1,2));
-    s21.insert(std::make_pair(4,9));
-    s21.insert(std::make_pair(5,3));
-    s21.insert(std::make_pair(10,7));
-    s21.insert(std::make_pair(11,9));
-    s21.insert(std::make_pair(15,8));
-    s21.insert(std::make_pair(16,4));
-    s21.insert(std::make_pair(17,1));
-    s21.insert(std::make_pair(19,5));
-    s21.insert(std::make_pair(23,1));
-    s21.insert(std::make_pair(29,3));
-    s21.insert(std::make_pair(31,5));
-    s21.insert(std::make_pair(33,4));
-    s21.insert(std::make_pair(35,8));
-    s21.insert(std::make_pair(38,5));
-    s21.insert(std::make_pair(39,8));
-    s21.insert(std::make_pair(41,6));
-    s21.insert(std::make_pair(42,3));
-    s21.insert(std::make_pair(45,1));
-    s21.insert(std::make_pair(47,8));
-    s21.insert(std::make_pair(49,3));
-    s21.insert(std::make_pair(51,5));
-    s21.insert(std::make_pair(57,1));
-    s21.insert(std::make_pair(61,8));
-    s21.insert(std::make_pair(63,5));
-    s21.insert(std::make_pair(64,1));
-    s21.insert(std::make_pair(65,4));
-    s21.insert(std::make_pair(69,9));
-    s21.insert(std::make_pair(70,2));
-    s21.insert(std::make_pair(75,3));
-    s21.insert(std::make_pair(76,4));
-    s21.insert(std::make_pair(79,5));
+    s21.insert(std::make_pair(1, 2));
+    s21.insert(std::make_pair(4, 9));
+    s21.insert(std::make_pair(5, 3));
+    s21.insert(std::make_pair(10, 7));
+    s21.insert(std::make_pair(11, 9));
+    s21.insert(std::make_pair(15, 8));
+    s21.insert(std::make_pair(16, 4));
+    s21.insert(std::make_pair(17, 1));
+    s21.insert(std::make_pair(19, 5));
+    s21.insert(std::make_pair(23, 1));
+    s21.insert(std::make_pair(29, 3));
+    s21.insert(std::make_pair(31, 5));
+    s21.insert(std::make_pair(33, 4));
+    s21.insert(std::make_pair(35, 8));
+    s21.insert(std::make_pair(38, 5));
+    s21.insert(std::make_pair(39, 8));
+    s21.insert(std::make_pair(41, 6));
+    s21.insert(std::make_pair(42, 3));
+    s21.insert(std::make_pair(45, 1));
+    s21.insert(std::make_pair(47, 8));
+    s21.insert(std::make_pair(49, 3));
+    s21.insert(std::make_pair(51, 5));
+    s21.insert(std::make_pair(57, 1));
+    s21.insert(std::make_pair(61, 8));
+    s21.insert(std::make_pair(63, 5));
+    s21.insert(std::make_pair(64, 1));
+    s21.insert(std::make_pair(65, 4));
+    s21.insert(std::make_pair(69, 9));
+    s21.insert(std::make_pair(70, 2));
+    s21.insert(std::make_pair(75, 3));
+    s21.insert(std::make_pair(76, 4));
+    s21.insert(std::make_pair(79, 5));
 
     s22 = s21;
     s23 = s21;
 
-
-    s24.insert(std::make_pair(6,8));
-    s24.insert(std::make_pair(8,5));
-    s24.insert(std::make_pair(9,9));
-    s24.insert(std::make_pair(10,6));
-    s24.insert(std::make_pair(14,5));
-    s24.insert(std::make_pair(15,7));
-    s24.insert(std::make_pair(19,3));
-    s24.insert(std::make_pair(21,7));
-    s24.insert(std::make_pair(23,9));
-    s24.insert(std::make_pair(24,4));
-    s24.insert(std::make_pair(27,4));
-    s24.insert(std::make_pair(28,1));
-    s24.insert(std::make_pair(29,2));
-    s24.insert(std::make_pair(30,6));
-    s24.insert(std::make_pair(32,3));
-    s24.insert(std::make_pair(37,5));
-    s24.insert(std::make_pair(43,4));
-    s24.insert(std::make_pair(48,4));
-    s24.insert(std::make_pair(50,1));
-    s24.insert(std::make_pair(51,3));
-    s24.insert(std::make_pair(52,7));
-    s24.insert(std::make_pair(53,2));
-    s24.insert(std::make_pair(56,1));
-    s24.insert(std::make_pair(57,9));
-    s24.insert(std::make_pair(59,7));
-    s24.insert(std::make_pair(61,6));
-    s24.insert(std::make_pair(65,6));
-    s24.insert(std::make_pair(66,8));
-    s24.insert(std::make_pair(70,5));
-    s24.insert(std::make_pair(71,7));
-    s24.insert(std::make_pair(72,2));
-    s24.insert(std::make_pair(74,8));
+    s24.insert(std::make_pair(6, 8));
+    s24.insert(std::make_pair(8, 5));
+    s24.insert(std::make_pair(9, 9));
+    s24.insert(std::make_pair(10, 6));
+    s24.insert(std::make_pair(14, 5));
+    s24.insert(std::make_pair(15, 7));
+    s24.insert(std::make_pair(19, 3));
+    s24.insert(std::make_pair(21, 7));
+    s24.insert(std::make_pair(23, 9));
+    s24.insert(std::make_pair(24, 4));
+    s24.insert(std::make_pair(27, 4));
+    s24.insert(std::make_pair(28, 1));
+    s24.insert(std::make_pair(29, 2));
+    s24.insert(std::make_pair(30, 6));
+    s24.insert(std::make_pair(32, 3));
+    s24.insert(std::make_pair(37, 5));
+    s24.insert(std::make_pair(43, 4));
+    s24.insert(std::make_pair(48, 4));
+    s24.insert(std::make_pair(50, 1));
+    s24.insert(std::make_pair(51, 3));
+    s24.insert(std::make_pair(52, 7));
+    s24.insert(std::make_pair(53, 2));
+    s24.insert(std::make_pair(56, 1));
+    s24.insert(std::make_pair(57, 9));
+    s24.insert(std::make_pair(59, 7));
+    s24.insert(std::make_pair(61, 6));
+    s24.insert(std::make_pair(65, 6));
+    s24.insert(std::make_pair(66, 8));
+    s24.insert(std::make_pair(70, 5));
+    s24.insert(std::make_pair(71, 7));
+    s24.insert(std::make_pair(72, 2));
+    s24.insert(std::make_pair(74, 8));
 
     s25 = s24;
     s26 = s24;
 
-    s27.insert(std::make_pair(0,9));
-    s27.insert(std::make_pair(3,6));
-    s27.insert(std::make_pair(4,8));
-    s27.insert(std::make_pair(6,7));
-    s27.insert(std::make_pair(7,1));
-    s27.insert(std::make_pair(9,6));
-    s27.insert(std::make_pair(11,7));
-    s27.insert(std::make_pair(13,4));
-    s27.insert(std::make_pair(14,9));
-    s27.insert(std::make_pair(16,2));
-    s27.insert(std::make_pair(23,3));
-    s27.insert(std::make_pair(24,9));
-    s27.insert(std::make_pair(30,3));
-    s27.insert(std::make_pair(32,4));
-    s27.insert(std::make_pair(33,5));
-    s27.insert(std::make_pair(34,6));
-    s27.insert(std::make_pair(35,8));
-    s27.insert(std::make_pair(45,3));
-    s27.insert(std::make_pair(46,1));
-    s27.insert(std::make_pair(47,5));
-    s27.insert(std::make_pair(48,8));
-    s27.insert(std::make_pair(50,6));
-    s27.insert(std::make_pair(56,9));
-    s27.insert(std::make_pair(57,4));
-    s27.insert(std::make_pair(64,3));
-    s27.insert(std::make_pair(66,7));
-    s27.insert(std::make_pair(67,9));
-    s27.insert(std::make_pair(69,2));
-    s27.insert(std::make_pair(71,1));
-    s27.insert(std::make_pair(73,7));
-    s27.insert(std::make_pair(74,8));
-    s27.insert(std::make_pair(76,6));
-    s27.insert(std::make_pair(77,5));
-    s27.insert(std::make_pair(80,4));
+    s27.insert(std::make_pair(0, 9));
+    s27.insert(std::make_pair(3, 6));
+    s27.insert(std::make_pair(4, 8));
+    s27.insert(std::make_pair(6, 7));
+    s27.insert(std::make_pair(7, 1));
+    s27.insert(std::make_pair(9, 6));
+    s27.insert(std::make_pair(11, 7));
+    s27.insert(std::make_pair(13, 4));
+    s27.insert(std::make_pair(14, 9));
+    s27.insert(std::make_pair(16, 2));
+    s27.insert(std::make_pair(23, 3));
+    s27.insert(std::make_pair(24, 9));
+    s27.insert(std::make_pair(30, 3));
+    s27.insert(std::make_pair(32, 4));
+    s27.insert(std::make_pair(33, 5));
+    s27.insert(std::make_pair(34, 6));
+    s27.insert(std::make_pair(35, 8));
+    s27.insert(std::make_pair(45, 3));
+    s27.insert(std::make_pair(46, 1));
+    s27.insert(std::make_pair(47, 5));
+    s27.insert(std::make_pair(48, 8));
+    s27.insert(std::make_pair(50, 6));
+    s27.insert(std::make_pair(56, 9));
+    s27.insert(std::make_pair(57, 4));
+    s27.insert(std::make_pair(64, 3));
+    s27.insert(std::make_pair(66, 7));
+    s27.insert(std::make_pair(67, 9));
+    s27.insert(std::make_pair(69, 2));
+    s27.insert(std::make_pair(71, 1));
+    s27.insert(std::make_pair(73, 7));
+    s27.insert(std::make_pair(74, 8));
+    s27.insert(std::make_pair(76, 6));
+    s27.insert(std::make_pair(77, 5));
+    s27.insert(std::make_pair(80, 4));
 
     s28 = s27;
     s29 = s27;
 
-
-    
-    s30.insert(std::make_pair(4,8));
-    s30.insert(std::make_pair(7,5));
-    s30.insert(std::make_pair(8,7));
-    s30.insert(std::make_pair(9,7));
-    s30.insert(std::make_pair(12,9));
-    s30.insert(std::make_pair(13,1));
-    s30.insert(std::make_pair(14,5));
-    s30.insert(std::make_pair(17,3));
-    s30.insert(std::make_pair(19,3));
-    s30.insert(std::make_pair(23,7));
-    s30.insert(std::make_pair(24,9));
-    s30.insert(std::make_pair(25,1));
-    s30.insert(std::make_pair(31,7));
-    s30.insert(std::make_pair(32,2));
-    s30.insert(std::make_pair(33,6));
-    s30.insert(std::make_pair(36,3));
-    s30.insert(std::make_pair(37,1));
-    s30.insert(std::make_pair(43,2));
-    s30.insert(std::make_pair(44,5));
-    s30.insert(std::make_pair(47,6));
-    s30.insert(std::make_pair(48,4));
-    s30.insert(std::make_pair(49,5));
-    s30.insert(std::make_pair(55,9));
-    s30.insert(std::make_pair(56,5));
-    s30.insert(std::make_pair(57,1));
-    s30.insert(std::make_pair(61,7));
-    s30.insert(std::make_pair(63,6));
-    s30.insert(std::make_pair(66,5));
-    s30.insert(std::make_pair(67,3));
-    s30.insert(std::make_pair(68,9));
-    s30.insert(std::make_pair(71,4));
-    s30.insert(std::make_pair(72,1));
-    s30.insert(std::make_pair(73,8));
-    s30.insert(std::make_pair(76,6));
+    s30.insert(std::make_pair(4, 8));
+    s30.insert(std::make_pair(7, 5));
+    s30.insert(std::make_pair(8, 7));
+    s30.insert(std::make_pair(9, 7));
+    s30.insert(std::make_pair(12, 9));
+    s30.insert(std::make_pair(13, 1));
+    s30.insert(std::make_pair(14, 5));
+    s30.insert(std::make_pair(17, 3));
+    s30.insert(std::make_pair(19, 3));
+    s30.insert(std::make_pair(23, 7));
+    s30.insert(std::make_pair(24, 9));
+    s30.insert(std::make_pair(25, 1));
+    s30.insert(std::make_pair(31, 7));
+    s30.insert(std::make_pair(32, 2));
+    s30.insert(std::make_pair(33, 6));
+    s30.insert(std::make_pair(36, 3));
+    s30.insert(std::make_pair(37, 1));
+    s30.insert(std::make_pair(43, 2));
+    s30.insert(std::make_pair(44, 5));
+    s30.insert(std::make_pair(47, 6));
+    s30.insert(std::make_pair(48, 4));
+    s30.insert(std::make_pair(49, 5));
+    s30.insert(std::make_pair(55, 9));
+    s30.insert(std::make_pair(56, 5));
+    s30.insert(std::make_pair(57, 1));
+    s30.insert(std::make_pair(61, 7));
+    s30.insert(std::make_pair(63, 6));
+    s30.insert(std::make_pair(66, 5));
+    s30.insert(std::make_pair(67, 3));
+    s30.insert(std::make_pair(68, 9));
+    s30.insert(std::make_pair(71, 4));
+    s30.insert(std::make_pair(72, 1));
+    s30.insert(std::make_pair(73, 8));
+    s30.insert(std::make_pair(76, 6));
 
     s31 = s30;
     s32 = s30;
 
-
-    s33.insert(std::make_pair(2,8));
-    s33.insert(std::make_pair(5,7));
-    s33.insert(std::make_pair(6,2));
-    s33.insert(std::make_pair(7,9));
-    s33.insert(std::make_pair(9,4));
-    s33.insert(std::make_pair(10,3));
-    s33.insert(std::make_pair(12,1));
-    s33.insert(std::make_pair(15,6));
-    s33.insert(std::make_pair(18,6));
-    s33.insert(std::make_pair(22,8));
-    s33.insert(std::make_pair(23,3));
-    s33.insert(std::make_pair(26,5));
-    s33.insert(std::make_pair(27,3));
-    s33.insert(std::make_pair(28,2));
-    s33.insert(std::make_pair(29,4));
-    s33.insert(std::make_pair(38,1));
-    s33.insert(std::make_pair(39,4));
-    s33.insert(std::make_pair(41,6));
-    s33.insert(std::make_pair(42,3));
-    s33.insert(std::make_pair(51,4));
-    s33.insert(std::make_pair(52,7));
-    s33.insert(std::make_pair(53,8));
-    s33.insert(std::make_pair(54,8));
-    s33.insert(std::make_pair(57,9));
-    s33.insert(std::make_pair(58,2));
-    s33.insert(std::make_pair(62,6));
-    s33.insert(std::make_pair(65,6));
-    s33.insert(std::make_pair(68,5));
-    s33.insert(std::make_pair(70,1));
-    s33.insert(std::make_pair(71,9));
-    s33.insert(std::make_pair(73,7));
-    s33.insert(std::make_pair(74,3));
-    s33.insert(std::make_pair(75,8));
-    s33.insert(std::make_pair(78,5));
+    s33.insert(std::make_pair(2, 8));
+    s33.insert(std::make_pair(5, 7));
+    s33.insert(std::make_pair(6, 2));
+    s33.insert(std::make_pair(7, 9));
+    s33.insert(std::make_pair(9, 4));
+    s33.insert(std::make_pair(10, 3));
+    s33.insert(std::make_pair(12, 1));
+    s33.insert(std::make_pair(15, 6));
+    s33.insert(std::make_pair(18, 6));
+    s33.insert(std::make_pair(22, 8));
+    s33.insert(std::make_pair(23, 3));
+    s33.insert(std::make_pair(26, 5));
+    s33.insert(std::make_pair(27, 3));
+    s33.insert(std::make_pair(28, 2));
+    s33.insert(std::make_pair(29, 4));
+    s33.insert(std::make_pair(38, 1));
+    s33.insert(std::make_pair(39, 4));
+    s33.insert(std::make_pair(41, 6));
+    s33.insert(std::make_pair(42, 3));
+    s33.insert(std::make_pair(51, 4));
+    s33.insert(std::make_pair(52, 7));
+    s33.insert(std::make_pair(53, 8));
+    s33.insert(std::make_pair(54, 8));
+    s33.insert(std::make_pair(57, 9));
+    s33.insert(std::make_pair(58, 2));
+    s33.insert(std::make_pair(62, 6));
+    s33.insert(std::make_pair(65, 6));
+    s33.insert(std::make_pair(68, 5));
+    s33.insert(std::make_pair(70, 1));
+    s33.insert(std::make_pair(71, 9));
+    s33.insert(std::make_pair(73, 7));
+    s33.insert(std::make_pair(74, 3));
+    s33.insert(std::make_pair(75, 8));
+    s33.insert(std::make_pair(78, 5));
 
     s34 = s33;
     s35 = s33;
 
-    map.insert(std::make_pair(0,s0));
+    map.insert(std::make_pair(0, s0));
 
-    map.insert(std::make_pair(1,s1));
-    map.insert(std::make_pair(2,s2));
+    map.insert(std::make_pair(1, s1));
+    map.insert(std::make_pair(2, s2));
 
-    map.insert(std::make_pair(3,s3));
-    map.insert(std::make_pair(4,s3));
-    map.insert(std::make_pair(5,s3));
+    map.insert(std::make_pair(3, s3));
+    map.insert(std::make_pair(4, s3));
+    map.insert(std::make_pair(5, s3));
 
-    map.insert(std::make_pair(6,s6));
-    map.insert(std::make_pair(7,s6));
-    map.insert(std::make_pair(8,s6));
-    
-    map.insert(std::make_pair(9,s9));
-    map.insert(std::make_pair(10,s10));
-    map.insert(std::make_pair(11,s11));
- 
-    map.insert(std::make_pair(12,s12));
-    map.insert(std::make_pair(13,s13));
-    map.insert(std::make_pair(14,s14));
- 
-    map.insert(std::make_pair(15,s15));
-    map.insert(std::make_pair(16,s16));
-    map.insert(std::make_pair(17,s17));
- 
-    map.insert(std::make_pair(18,s18));
-    map.insert(std::make_pair(19,s19));
-    map.insert(std::make_pair(20,s20));
- 
-    map.insert(std::make_pair(21,s21));
-    map.insert(std::make_pair(22,s22));
-    map.insert(std::make_pair(23,s23));
- 
-    map.insert(std::make_pair(24,s24));
-    map.insert(std::make_pair(25,s25));
-    map.insert(std::make_pair(26,s26));
- 
-    map.insert(std::make_pair(27,s27));
-    map.insert(std::make_pair(28,s28));
-    map.insert(std::make_pair(29,s29));
- 
-    map.insert(std::make_pair(30,s30));
-    map.insert(std::make_pair(31,s31));
-    map.insert(std::make_pair(32,s32));
- 
-    map.insert(std::make_pair(33,s33));
-    map.insert(std::make_pair(34,s34));
-    map.insert(std::make_pair(35,s35));
- 
+    map.insert(std::make_pair(6, s6));
+    map.insert(std::make_pair(7, s6));
+    map.insert(std::make_pair(8, s6));
+
+    map.insert(std::make_pair(9, s9));
+    map.insert(std::make_pair(10, s10));
+    map.insert(std::make_pair(11, s11));
+
+    map.insert(std::make_pair(12, s12));
+    map.insert(std::make_pair(13, s13));
+    map.insert(std::make_pair(14, s14));
+
+    map.insert(std::make_pair(15, s15));
+    map.insert(std::make_pair(16, s16));
+    map.insert(std::make_pair(17, s17));
+
+    map.insert(std::make_pair(18, s18));
+    map.insert(std::make_pair(19, s19));
+    map.insert(std::make_pair(20, s20));
+
+    map.insert(std::make_pair(21, s21));
+    map.insert(std::make_pair(22, s22));
+    map.insert(std::make_pair(23, s23));
+
+    map.insert(std::make_pair(24, s24));
+    map.insert(std::make_pair(25, s25));
+    map.insert(std::make_pair(26, s26));
+
+    map.insert(std::make_pair(27, s27));
+    map.insert(std::make_pair(28, s28));
+    map.insert(std::make_pair(29, s29));
+
+    map.insert(std::make_pair(30, s30));
+    map.insert(std::make_pair(31, s31));
+    map.insert(std::make_pair(32, s32));
+
+    map.insert(std::make_pair(33, s33));
+    map.insert(std::make_pair(34, s34));
+    map.insert(std::make_pair(35, s35));
+
     return map;
 }

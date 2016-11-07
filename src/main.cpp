@@ -52,7 +52,6 @@ int main(int argc, char **argv) {
         if (!roi.empty())
         {
             cout << k << endl;
-            normalized = normalizeSize(roi, 28);
             showImage(normalized);
         }
     }

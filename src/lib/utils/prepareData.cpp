@@ -3,34 +3,42 @@
 
 #include "opencv.h"
 
-using namespace std;    // Or using std::string;
+using namespace std; // Or using std::string;
+
+// -----------------------------------------------------------------
+// -----------------------------------------------------------------
+// ------------------- from s0 to s35 ------------------------------
+// -----------------------------------------------------------------
+// ---------- create both features and labels files here -----------
 
 int main(int argc, char **argv)
 {
 
-    Ptr<ml::KNearest> knn(ml::KNearest::create());
-    std::map<int, std::map<int,int>> cellV(cellValues());
+    // data to return
+    Mat features(1184, 784, CV_8UC1);
+    Mat labels(1, 1184, CV_8UC1);
+
+    // Ptr<ml::KNearest> knn(ml::KNearest::create());
+    std::map<int, std::map<int, int>> cellV(cellValues());
     int value;
-    
+
     string fullName;
     Mat raw, sudoku;
 
-    fs::path knn_trained_data(getPath("assets/knn-trained-data.yml"));
+    fs::path raw_features_path(getPath("assets/raw-features.yml"));
 
-    if (boost::filesystem::exists(knn_trained_data)) {
-        cout << knn_trained_data.string() << endl;
-        // knn->load(knn_trained_data.string());
+    // if (boost::filesystem::exists(knn_trained_data)) {
+    //     cout << knn_trained_data.string() << endl;
+    //     cv::FileStorage fsClassifications(knn_trained_data.string(), cv::FileStorage::READ);
 
-    }else{
-        
-    }
+    // }else{
+
+    // }
 
     int nbrOfCells = 0; // --> 1184
-
-    Mat features(1184, 784, CV_8UC1);
-    Mat labels(1, 1184, CV_8UC1);
     Mat roi, normalized;
-    for(int i = 0; i < 36 ; i++)    {
+    for (int i = 0; i < 36; i++)
+    {
         stringstream ss;
         ss << "assets/puzzles/s";
         ss << i;
@@ -52,30 +60,25 @@ int main(int argc, char **argv)
                 // cout << k << ":" << value << endl;
                 normalized = normalizeSize(roi, 28);
                 // featurize
-                Mat feat = normalized.reshape(1,1);
+                Mat feat = normalized.reshape(1, 1);
 
                 feat.copyTo(features.row(nbrOfCells));
-                labels.at<unsigned char>(0,nbrOfCells) = value;
+                labels.at<unsigned char>(0, nbrOfCells) = value;
 
                 // showImage(normalized);
                 nbrOfCells++;
-
             }
         }
     }
 
+    features.convertTo(features, CV_32F);
+    labels.convertTo(labels, CV_32F);
 
-            features.convertTo(features, CV_32F);
-            labels.convertTo(labels, CV_32F);
-            knn->train(features, ml::ROW_SAMPLE, labels);
-            knn->save(knn_trained_data.string());
-            int K = 1;
-            Mat response, dist, m;
-            knn->findNearest(features.row(1), K, noArray(), response, dist);
+    cv::FileStorage raw_features(raw_features_path.string(), cv::FileStorage::WRITE); // open the classifications file
 
-            cout << "response: " << response << endl;
-
-        // cout << nbrOfCells << endl;
+    raw_features << "features" << features;
+    raw_features << "labels" << labels;
+    raw_features.release();
 
     return 0;
 }
