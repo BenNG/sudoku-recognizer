@@ -45,7 +45,7 @@ using namespace boost;
 int main(int argc, char **argv)
 {
 
-    std::map<int, std::map<int,int>> cellV(cellValues());
+    std::map<int, std::map<int, int>> cellV(cellValues());
 
     cout << cellV[0][3] << endl;
 
@@ -54,41 +54,40 @@ int main(int argc, char **argv)
     stringstream ss;
     ss << "assets/puzzles/";
     po::options_description desc("Allowed options");
-    desc.add_options()
-        ("debug", "debug")
-        ("showPuzzle", "show puzzles")
-        ("showCell", "show cells")
-        ("puzzleNumber", po::value<int>(&puzzleNumber)->default_value(-1))
-        ("cellNumber", po::value<int>(&cellNumber)->default_value(-1))
-        ("puzzle", po::value<int>(&puzzleNumber)->default_value(-1))
-    ;
+    desc.add_options()("debug", "debug")("showPuzzle", "show puzzles")("showCell", "show cells")("puzzleNumber", po::value<int>(&puzzleNumber)->default_value(-1))("cellNumber", po::value<int>(&cellNumber)->default_value(-1))("puzzle", po::value<int>(&puzzleNumber)->default_value(-1));
 
-    po::variables_map vm;        
+    po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
-    po::notify(vm);    
+    po::notify(vm);
 
-    if (vm.count("help")) {
+    if (vm.count("help"))
+    {
         cout << desc << "\n";
         return 0;
     }
 
-    if (vm.count("showCell")) {
+    if (vm.count("showCell"))
+    {
         showCell = true;
     }
 
-    if (vm.count("debug")) {
+    if (vm.count("debug"))
+    {
         debug = true;
     }
 
-    if (vm.count("showPuzzle")) {
+    if (vm.count("showPuzzle"))
+    {
         showPuzzle = true;
     }
 
-    if(puzzleNumber != -1){
+    if (puzzleNumber != -1)
+    {
         ss << "s" << puzzleNumber << ".jpg";
     }
 
-    if(!showPuzzle && !showCell){
+    if (!showPuzzle && !showCell)
+    {
         showPuzzle = true;
     }
 
@@ -99,15 +98,15 @@ int main(int argc, char **argv)
     bool cells = false;
     if (argc > 1)
     {
-        if(argv[1] == "cells"){
+        if (argv[1] == "cells")
+        {
             cells = true;
         }
     }
     sayHello("LouLou");
 
     string fullName;
-    Mat raw, sudoku;
-
+    Mat raw, sudoku, roi;
 
     if (fs::is_directory(p))
     {
@@ -121,14 +120,36 @@ int main(int argc, char **argv)
             raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
             sudoku = extractPuzzle(raw);
 
-            if(showPuzzle){
+            if (showPuzzle)
+            {
                 showImage(sudoku);
-            }           
-            if(showCell || cellNumber != -1){
-                if(cellNumber != -1){
-                    showCells(sudoku, cellNumber, debug);
-                }else{
-                    showCells(sudoku, debug);
+            }
+            if (showCell || cellNumber != -1)
+            {
+                if (cellNumber != -1)
+                {
+
+                    roi = extractRoiFromCell(sudoku, cellNumber, debug);
+                    if (!roi.empty())
+                    {
+                        cout << cellNumber << endl;
+                        showImage(roi);
+                    }
+                }
+                else
+                {
+
+                    for (int k = 0; k < 81; k++)
+                    {
+                        roi = extractRoiFromCell(sudoku, k, debug);
+                        if (!roi.empty())
+                        {
+                            cout << k << endl;
+                            showImage(roi);
+                        }
+                    }
+
+                    // showCells(sudoku, debug);
                 }
             }
         }
@@ -138,14 +159,35 @@ int main(int argc, char **argv)
         cout << p << endl;
         raw = imread(p.string(), CV_LOAD_IMAGE_GRAYSCALE);
         sudoku = extractPuzzle(raw);
-        if(showPuzzle){
+        if (showPuzzle)
+        {
             showImage(sudoku);
-        }        
-        if(showCell || cellNumber != -1){
-            if(cellNumber != -1){
-                showCells(sudoku, cellNumber, debug);
-            }else{
-                showCells(sudoku, debug);
+        }
+        if (showCell || cellNumber != -1)
+        {
+            if (cellNumber != -1)
+            {
+
+                roi = extractRoiFromCell(sudoku, cellNumber, debug);
+                if (!roi.empty())
+                {
+                    cout << cellNumber << endl;
+                    showImage(roi);
+                }
+                // showCells(sudoku, cellNumber, debug);
+            }
+            else
+            {
+                for (int k = 0; k < 81; k++)
+                {
+                    roi = extractRoiFromCell(sudoku, k, debug);
+                    if (!roi.empty())
+                    {
+                        cout << k << endl;
+                        showImage(roi);
+                    }
+                }
+                // showCells(sudoku, debug);
             }
         }
     }

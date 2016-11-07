@@ -247,7 +247,7 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
 
         // threshold(almostReady, output, 125, 255, almostReady.type());
 
-        return almostReady;
+        return normalizeSize(almostReady, 28);
 
         // return cleaned(rect);
     }
@@ -880,27 +880,25 @@ Mat deskew(Mat t)
 
 void showCells(Mat sudoku, bool debug)
 {
-    Mat roi, normalized;
+    Mat roi;
     for (int k = 0; k < 81; k++)
     {
         roi = extractRoiFromCell(sudoku, k, debug);
         if (!roi.empty())
         {
             cout << k << endl;
-            normalized = normalizeSize(roi, 28);
-            showImage(normalized);
+            showImage(roi);
         }
     }
 }
 
 void showCells(Mat sudoku, int cellNum, bool debug)
 {
-    Mat roi, normalized;
+    Mat roi;
     roi = extractRoiFromCell(sudoku, cellNum, debug);
     if (!roi.empty())
     {
-        normalized = normalizeSize(roi, 28);
-        showImage(normalized);
+        showImage(roi);
     }
 }
 

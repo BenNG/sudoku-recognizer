@@ -58,9 +58,8 @@ int main(int argc, char **argv)
             {
                 value = cellV[i][k];
                 // cout << k << ":" << value << endl;
-                normalized = normalizeSize(roi, 28);
                 // featurize
-                Mat feat = normalized.reshape(1, 1);
+                Mat feat = roi.reshape(1, 1);
 
                 feat.copyTo(features.row(nbrOfCells));
                 labels.at<unsigned char>(0, nbrOfCells) = value;
