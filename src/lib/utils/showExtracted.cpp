@@ -45,9 +45,12 @@ using namespace boost;
 int main(int argc, char **argv)
 {
 
-    std::map<int, std::map<int, int>> cellV(cellValues());
+    int K = 1;
+    Mat response, dist, m;
 
-    cout << cellV[0][3] << endl;
+    Ptr<ml::KNearest> knn = getKnn();
+
+    std::map<int, std::map<int, int>> cellV(cellValues());
 
     bool showCell = false, showPuzzle = false, debug = false;
     int puzzleNumber, cellNumber;
@@ -91,9 +94,8 @@ int main(int argc, char **argv)
         showPuzzle = true;
     }
 
-    cout << "cellNumber: " << cellNumber << endl;
-
     fs::path p(getPath(ss.str()));
+
 
     bool cells = false;
     if (argc > 1)
@@ -116,6 +118,8 @@ int main(int argc, char **argv)
              ++dir_itr)
         {
             fullName = dir_itr->path().string();
+            int fileNumber = stoi(dir_itr->path().stem().string().substr(1));
+
             cout << fullName << endl;
             raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
             sudoku = extractPuzzle(raw);
@@ -132,7 +136,12 @@ int main(int argc, char **argv)
                     roi = extractRoiFromCell(sudoku, cellNumber, debug);
                     if (!roi.empty())
                     {
-                        cout << cellNumber << endl;
+
+                        cout << "cell index: " << cellNumber << endl;
+                        roi.convertTo(roi, CV_32F);
+
+                        knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
+                        cout << "resp: " << response << " expected: " << cellV[fileNumber][cellNumber] << endl;
                         showImage(roi);
                     }
                 }
@@ -144,12 +153,13 @@ int main(int argc, char **argv)
                         roi = extractRoiFromCell(sudoku, k, debug);
                         if (!roi.empty())
                         {
-                            cout << k << endl;
+                            cout << "cell index: " << k << endl;
+                            roi.convertTo(roi, CV_32F);
+                            knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
+                            cout << "resp: " << response << " expected: " << cellV[fileNumber][k] << endl;
                             showImage(roi);
                         }
                     }
-
-                    // showCells(sudoku, debug);
                 }
             }
         }
@@ -171,7 +181,11 @@ int main(int argc, char **argv)
                 roi = extractRoiFromCell(sudoku, cellNumber, debug);
                 if (!roi.empty())
                 {
-                    cout << cellNumber << endl;
+                    cout << "cell index: " << cellNumber << endl;
+                    roi.convertTo(roi, CV_32F);
+
+                    knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
+                    cout << "resp: " << response << " expected: " << cellV[puzzleNumber][cellNumber] << endl;
                     showImage(roi);
                 }
                 // showCells(sudoku, cellNumber, debug);
@@ -183,7 +197,11 @@ int main(int argc, char **argv)
                     roi = extractRoiFromCell(sudoku, k, debug);
                     if (!roi.empty())
                     {
-                        cout << k << endl;
+                        cout << "cell index: " << k << endl;
+                        roi.convertTo(roi, CV_32F);
+
+                        knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
+                        cout << "resp: " << response << " expected: " << cellV[puzzleNumber][k] << endl;
                         showImage(roi);
                     }
                 }
