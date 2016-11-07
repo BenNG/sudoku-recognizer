@@ -28,6 +28,11 @@ namespace fs = boost::filesystem;
 static const Size trainingPadding = Size(0, 0);
 static const Size winStride = Size(8, 8);
 
+// knn testing attributes
+static const int nbrOfCells = 1184;
+static const int percent = 0.9;
+
+
 // cells
 Mat normalizeSize(Mat in, int size);
 Mat extractNumber(Mat cell);
@@ -54,7 +59,7 @@ Mat extractPuzzle(Mat input);
 // knn
 int readFlippedInteger(FILE *fp);
 Ptr<ml::KNearest> getKnn();
-void testKnn(Ptr<ml::KNearest> knn, bool debug);
+void testKnn(Ptr<ml::KNearest> knn);
 // debug
 int minuss(int i, int j);
 Mat drawAllContour(Mat preprocessed);

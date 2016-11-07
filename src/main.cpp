@@ -2,10 +2,10 @@
 
 //  As an example program, we don't want to use any deprecated features
 #ifndef BOOST_FILESYSTEM_NO_DEPRECATED
-#  define BOOST_FILESYSTEM_NO_DEPRECATED
+#define BOOST_FILESYSTEM_NO_DEPRECATED
 #endif
 #ifndef BOOST_SYSTEM_NO_DEPRECATED
-#  define BOOST_SYSTEM_NO_DEPRECATED
+#define BOOST_SYSTEM_NO_DEPRECATED
 #endif
 
 #include "opencv2/text.hpp"
@@ -31,11 +31,16 @@ using namespace boost;
  * ----------------------------- Main ------------------------------------
  *
  * */
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     Mat raw, sudoku;
+    Ptr<ml::KNearest> knn = getKnn();
+    stringstream ss;
+    int K = 1;
+    Mat response, dist, m;
 
     string imageName("./assets/puzzles/s0.jpg"); // by default
-    if( argc > 1)
+    if (argc > 1)
     {
         imageName = argv[1];
     }
@@ -43,18 +48,28 @@ int main(int argc, char **argv) {
 
     raw = imread(p.string(), CV_LOAD_IMAGE_GRAYSCALE);
     sudoku = extractPuzzle(raw);
-    showImage(sudoku);
-    
-    Mat roi, normalized;
+
+    Mat roi;
     for (int k = 0; k < 81; k++)
     {
         roi = extractRoiFromCell(sudoku, k);
         if (!roi.empty())
         {
-            cout << k << endl;
-            showImage(normalized);
+            // cout << k << endl;
+            roi.convertTo(roi, CV_32F);
+            knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
+
+            // cout << "resp: " << response << endl;
+            ss << response.at<float>(0);
+            // showImage(roi);
+        }
+        else
+        {
+            ss << "0";
         }
     }
+
+    cout << ss.str() << endl;
 
     return 0;
 }

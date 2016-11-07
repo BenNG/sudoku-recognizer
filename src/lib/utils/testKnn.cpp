@@ -7,7 +7,7 @@ int main(int argc, char **argv)
 
 
     Ptr<ml::KNearest> knn = getKnn();
-    // testKnn(knn, false);
+    testKnn(knn);
 
     if (fs::is_directory(getPath("assets/puzzles/s0.jpg")))
     {

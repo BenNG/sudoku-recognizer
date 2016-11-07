@@ -556,8 +556,10 @@ Mat extractPuzzle(Mat original)
 
 Ptr<ml::KNearest> getKnn()
 {
-    Mat features(1184, 784, CV_8UC1);
-    Mat labels(1, 1184, CV_8UC1);
+    int trainingNbr = nbrOfCells * 0.9;
+    int testingNbr = nbrOfCells - trainingNbr;
+    Mat features(nbrOfCells, 784, CV_8UC1);
+    Mat labels(1, nbrOfCells, CV_8UC1);
     fs::path raw_features_path(getPath("assets/raw-features.yml"));
     Ptr<ml::KNearest> knn(ml::KNearest::create());
 
@@ -568,7 +570,8 @@ Ptr<ml::KNearest> getKnn()
     cv::FileStorage raw_features(raw_features_path.string(), cv::FileStorage::READ);
 
     if (raw_features.isOpened() == false)
-    {   throw "error, unable to open training classifications file, exiting program\n\n";                                                                                         // if the file was not opened successfully
+    {
+        throw "error, unable to open training classifications file, exiting program\n\n"; // if the file was not opened successfully
         // std::cout << "error, unable to open training classifications file, exiting program\n\n"; // show error message
         // return (0);                                                                              // and exit program
     }
@@ -577,78 +580,109 @@ Ptr<ml::KNearest> getKnn()
     raw_features["labels"] >> labels;
     raw_features.release();
 
-    knn->train(features, ml::ROW_SAMPLE, labels);
+    Mat sub_features = features(cv::Range(0, trainingNbr), cv::Range::all());
+    Mat sub_labels = labels(cv::Range::all(), cv::Range(0, trainingNbr));
+
+    knn->train(sub_features, ml::ROW_SAMPLE, sub_labels);
+
     return knn;
 }
 
 void testKnn(Ptr<ml::KNearest> knn)
 {
+
+    int trainingNbr = nbrOfCells * 0.9;
+    int testingNbr = nbrOfCells - trainingNbr;
+    Mat features(nbrOfCells, 784, CV_8UC1);
+    Mat labels(1, nbrOfCells, CV_8UC1);
+    fs::path raw_features_path(getPath("assets/raw-features.yml"));
     int totalCorrect = 0;
 
-    vector<Mat> v = readTestMNIST();
-    Mat testFeatures = v[0];
-    Mat expectedLabels = v[1];
+    cv::FileStorage raw_features(raw_features_path.string(), cv::FileStorage::READ);
 
-    int numImages = testFeatures.rows;
+    if (raw_features.isOpened() == false)
+    {
+        throw "error, unable to open training classifications file, exiting program\n\n"; // if the file was not opened successfully
+        // std::cout << "error, unable to open training classifications file, exiting program\n\n"; // show error message
+        // return (0);                                                                              // and exit program
+    }
+
+    raw_features["features"] >> features;
+    raw_features["labels"] >> labels;
+    raw_features.release();
+    // vector<Mat> v = readTestMNIST();
+    // Mat testFeatures = v[0];
+    // Mat expectedLabels = v[1];
+
+    Mat sub_features = features(cv::Range(nbrOfCells - trainingNbr, nbrOfCells - 1), cv::Range::all());
+    Mat sub_labels = labels(cv::Range::all(), cv::Range(nbrOfCells - trainingNbr, nbrOfCells - 1));
+
+
+    int numImages = nbrOfCells - trainingNbr;
 
     int K = 1;
     Mat response, dist, m;
 
-    for (int i = 0; i < numImages; i++)
+    for (int i = 0; i < testingNbr; i++)
     {
-        m = testFeatures.row(i);
+        m = sub_features.row(i);
         knn->findNearest(m, K, noArray(), response, dist);
 
-        if (expectedLabels.at<int>(0, i) == response.at<float>(0))
+        // cout << response << endl;
+        // cout << sub_labels.at<float>(0, i) << endl;
+        // showImage(m.reshape(1,28));
+
+
+        if (sub_labels.at<float>(0, i) == response.at<float>(0))
             totalCorrect++;
     }
 
     printf("Accuracy: %f ", (double)totalCorrect * 100 / (double)numImages);
 }
 
-void testKnn(Ptr<ml::KNearest> knn, bool debug)
-{
-    int totalCorrect = 0;
+// void testKnn(Ptr<ml::KNearest> knn, bool debug)
+// {
+//     int totalCorrect = 0;
 
-    vector<Mat> v = readTestMNIST();
-    Mat testFeatures = v[0];
-    Mat expectedLabels = v[1];
+//     vector<Mat> v = readTestMNIST();
+//     Mat testFeatures = v[0];
+//     Mat expectedLabels = v[1];
 
-    int numImages = testFeatures.rows;
+//     int numImages = testFeatures.rows;
 
-    int K = 1;
-    Mat response, dist, m;
+//     int K = 1;
+//     Mat response, dist, m;
 
-    for (int i = 0; i < numImages; i++)
-    {
+//     for (int i = 0; i < numImages; i++)
+//     {
 
-        if (debug && i % 1000 == 0 && i != 0)
-        {
-            cout << i << endl;
-        }
+//         if (debug && i % 1000 == 0 && i != 0)
+//         {
+//             cout << i << endl;
+//         }
 
-        m = testFeatures.row(i);
+//         m = testFeatures.row(i);
 
-        knn->findNearest(m, K, noArray(), response, dist);
+//         knn->findNearest(m, K, noArray(), response, dist);
 
-        if (debug)
-        {
-            cout << "response: " << response << endl;
-            cout << "dist: " << dist << endl;
-            Mat m2 = m.reshape(1, 28);
-            showImage(m2);
-            Mat m3 = m2.reshape(1, 1);
-            showImage(m3);
-        }
+//         if (debug)
+//         {
+//             cout << "response: " << response << endl;
+//             cout << "dist: " << dist << endl;
+//             Mat m2 = m.reshape(1, 28);
+//             showImage(m2);
+//             Mat m3 = m2.reshape(1, 1);
+//             showImage(m3);
+//         }
 
-        if (expectedLabels.at<int>(0, i) == response.at<float>(0))
-        {
-            totalCorrect++;
-        }
-    }
+//         if (expectedLabels.at<int>(0, i) == response.at<float>(0))
+//         {
+//             totalCorrect++;
+//         }
+//     }
 
-    printf("Accuracy: %f ", (double)totalCorrect * 100 / (double)numImages);
-}
+//     printf("Accuracy: %f ", (double)totalCorrect * 100 / (double)numImages);
+// }
 
 // --------------------------------------------------------------------------------
 // debug

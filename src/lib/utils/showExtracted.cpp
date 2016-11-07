@@ -96,15 +96,6 @@ int main(int argc, char **argv)
 
     fs::path p(getPath(ss.str()));
 
-
-    bool cells = false;
-    if (argc > 1)
-    {
-        if (argv[1] == "cells")
-        {
-            cells = true;
-        }
-    }
     sayHello("LouLou");
 
     string fullName;
@@ -128,6 +119,7 @@ int main(int argc, char **argv)
             {
                 showImage(sudoku);
             }
+            // all files - one cell
             if (showCell || cellNumber != -1)
             {
                 if (cellNumber != -1)
@@ -145,6 +137,7 @@ int main(int argc, char **argv)
                         showImage(roi);
                     }
                 }
+                // all files - all cell                
                 else
                 {
 
@@ -173,11 +166,11 @@ int main(int argc, char **argv)
         {
             showImage(sudoku);
         }
+        // one file - all cell
         if (showCell || cellNumber != -1)
         {
             if (cellNumber != -1)
             {
-
                 roi = extractRoiFromCell(sudoku, cellNumber, debug);
                 if (!roi.empty())
                 {
@@ -188,8 +181,8 @@ int main(int argc, char **argv)
                     cout << "resp: " << response << " expected: " << cellV[puzzleNumber][cellNumber] << endl;
                     showImage(roi);
                 }
-                // showCells(sudoku, cellNumber, debug);
             }
+            // one file - all cell
             else
             {
                 for (int k = 0; k < 81; k++)
@@ -205,10 +198,12 @@ int main(int argc, char **argv)
                         showImage(roi);
                     }
                 }
-                // showCells(sudoku, debug);
             }
         }
     }
+
+
+    
 
     return 0;
 }
