@@ -91,6 +91,9 @@ void create_data_structure();
 int createData();
 std::string uuid_first_part(const std::string &uuid);
 std::string remove_extension(const std::string &filename);
+// sudoku
+string grab(string filePath);
+
 
 std::map<int, std::map<int,int>> cellValues();
 #endif //UTILS_OPENCV_LIB

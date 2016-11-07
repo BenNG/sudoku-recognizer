@@ -1823,3 +1823,14 @@ std::map<int, std::map<int, int>> cellValues()
 
     return map;
 }
+
+// ---------------------------------------------------------------------------------------
+// sudoku
+
+// give file path from the root of the project
+string grab(string filePath){
+    fs::path image_path(getPath(filePath));
+
+    return image_path.string();
+}
+

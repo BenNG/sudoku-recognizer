@@ -3,91 +3,96 @@
 /**
  * this function do too much things need to refact some day
  * */
-string grab(string fileName){
+string grab(string filePath){
 
-    fs::path image_path(getPath(fileName));
+    // fs::path image_path(getPath(filePath));
 
-    string image_path_str = image_path.string();
+    // string image_path_str = image_path.string();
 
-//    cout << image_path_str << endl;
+    // cout << image_path_str << endl;
 
-    Mat image = imread(image_path_str, 0); // Read the file
+    // Mat image = imread(image_path_str, 0); // Read the file
 
-    if( image.empty() )                      // Check for invalid input
-    {
-        cout <<  "Could not open or find the image" << std::endl;
-        return "";
-    }
+    // showImage(image);
 
-    int cellValue;
-    Mat cellFeatured;
-    std::stringstream response;
+//     if( image.empty() )                      // Check for invalid input
+//     {
+//         cout <<  "Could not open or find the image" << std::endl;
+//         return "";
+//     }
 
-    string message;
-    fs::path featured(getPath("assets/featuredDataForTraining.xml"));
-    fs::path trained_data(getPath("assets/trained_data"));
-//
-//    cout << featured << endl;
-//    cout << trained_data << endl;
+//     int cellValue;
+//     Mat cellFeatured;
+//     std::stringstream response;
 
-
-
-    if (!fs::exists(featured) && !fs::exists(trained_data)) {
-        // createData();
-
-        cout << "Go clean the data folder !! say 'ok' when you are ready "  << endl;
-        cin >> message;
-        if(message == "ok"){
-            std::cout << "2nd: randomize the file because we will use 80% of the data and 20% to test the network" << std::endl;
-            // randomizeData();
-            std::cout << "3rd: extract feature for each cell and save it in featuredDataForTraining.xml" << std::endl;
-            // featurizeData();
-        }
-    }
-
-    Ptr<ANN_MLP> model = build_mlp_classifier(featured, trained_data);
-
-    // Mat preprocessed = preprocess(image.clone());
-    // vector<Point> biggestApprox = findBigestApprox(preprocessed);
-    Mat sudoku = extractPuzzle(image);
+//     string message;
+//     fs::path featured(getPath("assets/featuredDataForTraining.xml"));
+//     fs::path trained_data(getPath("assets/trained_data"));
+// //
+// //    cout << featured << endl;
+// //    cout << trained_data << endl;
 
 
-    for (unsigned i = 0; i < 81; i++) {
-        Mat cell = extractCell(sudoku, i), prepared_cell;
-        prepared_cell = prepareCell(cell);
-        Mat roi = extractNumber(prepared_cell);
 
-        if (roi.empty()) {
-            response << "0";
-        } else {
-            cellFeatured = features(roi, 15);
-            cellValue = model->predict(cellFeatured);
-            // cout << "r:" << cellValue + 1 << endl;
-            response << cellValue + 1;
-            // showImage(roi);
-        }
-    }
+//     if (!fs::exists(featured) && !fs::exists(trained_data)) {
+//         // createData();
 
-    Mat data;
-    Mat responses;
+//         cout << "Go clean the data folder !! say 'ok' when you are ready "  << endl;
+//         cin >> message;
+//         if(message == "ok"){
+//             std::cout << "2nd: randomize the file because we will use 80% of the data and 20% to test the network" << std::endl;
+//             // randomizeData();
+//             std::cout << "3rd: extract feature for each cell and save it in featuredDataForTraining.xml" << std::endl;
+//             // featurizeData();
+//         }
+//     }
 
-    // fn
-    FileStorage fs;
-    fs.open("../assets/featuredDataForTraining.xml", FileStorage::READ);
-    // trainingDataf5;
-    // trainingDataf10;
-    // trainingDataf15;
-    // trainingDataf20;
-    fs["trainingDataf15"] >> data;
-    fs["classes"] >> responses;
-    // fn - end
+//     Ptr<ANN_MLP> model = build_mlp_classifier(featured, trained_data);
 
-    // // manual test
-    // Mat sample = data.row(100);
-    // float r = model->predict(sample);
-    // cout << "r:" << r << endl;
+//     // Mat preprocessed = preprocess(image.clone());
+//     // vector<Point> biggestApprox = findBigestApprox(preprocessed);
+//     Mat sudoku = extractPuzzle(image);
 
-    string resp = response.str();
-    showImage(sudoku);
-    return resp;
+
+//     for (unsigned i = 0; i < 81; i++) {
+//         Mat cell = extractCell(sudoku, i), prepared_cell;
+//         prepared_cell = prepareCell(cell);
+//         Mat roi = extractNumber(prepared_cell);
+
+//         if (roi.empty()) {
+//             response << "0";
+//         } else {
+//             cellFeatured = features(roi, 15);
+//             cellValue = model->predict(cellFeatured);
+//             // cout << "r:" << cellValue + 1 << endl;
+//             response << cellValue + 1;
+//             // showImage(roi);
+//         }
+//     }
+
+//     Mat data;
+//     Mat responses;
+
+//     // fn
+//     FileStorage fs;
+//     fs.open("../assets/featuredDataForTraining.xml", FileStorage::READ);
+//     // trainingDataf5;
+//     // trainingDataf10;
+//     // trainingDataf15;
+//     // trainingDataf20;
+//     fs["trainingDataf15"] >> data;
+//     fs["classes"] >> responses;
+//     // fn - end
+
+//     // // manual test
+//     // Mat sample = data.row(100);
+//     // float r = model->predict(sample);
+//     // cout << "r:" << r << endl;
+
+//     string resp = response.str();
+//     showImage(sudoku);
+//     return resp;
+    string g = "filePath"; 
+
+    return g;
 }

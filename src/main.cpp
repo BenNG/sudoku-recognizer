@@ -17,7 +17,6 @@
 #include "lib/utils/opencv.h"
 #include "lib/preTraining/randomizeDataForTraining.h"
 #include "lib/preTraining/featurizeDataForTraining.h"
-#include "lib/utils/sudoku.h"
 #include <opencv2/opencv.hpp>
 
 namespace fs = boost::filesystem;
@@ -39,37 +38,41 @@ int main(int argc, char **argv)
     int K = 1;
     Mat response, dist, m;
 
-    string imageName("./assets/puzzles/s0.jpg"); // by default
+
+    string filePath("assets/puzzles/s0.jpg"); // by default
     if (argc > 1)
     {
-        imageName = argv[1];
-    }
-    fs::path p(getPath(imageName));
-
-    raw = imread(p.string(), CV_LOAD_IMAGE_GRAYSCALE);
-    sudoku = extractPuzzle(raw);
-
-    Mat roi;
-    for (int k = 0; k < 81; k++)
-    {
-        roi = extractRoiFromCell(sudoku, k);
-        if (!roi.empty())
-        {
-            // cout << k << endl;
-            roi.convertTo(roi, CV_32F);
-            knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
-
-            // cout << "resp: " << response << endl;
-            ss << response.at<float>(0);
-            // showImage(roi);
-        }
-        else
-        {
-            ss << "0";
-        }
+        filePath = argv[1];
     }
 
-    cout << ss.str() << endl;
+    string resp = grab(filePath);
+
+    // cout << resp << endl;
+
+    // raw = imread(p.string(), CV_LOAD_IMAGE_GRAYSCALE);
+    // sudoku = extractPuzzle(raw);
+
+    // Mat roi;
+    // for (int k = 0; k < 81; k++)
+    // {
+    //     roi = extractRoiFromCell(sudoku, k);
+    //     if (!roi.empty())
+    //     {
+    //         // cout << k << endl;
+    //         roi.convertTo(roi, CV_32F);
+    //         knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
+
+    //         // cout << "resp: " << response << endl;
+    //         ss << response.at<float>(0);
+    //         // showImage(roi);
+    //     }
+    //     else
+    //     {
+    //         ss << "0";
+    //     }
+    // }
+
+    // cout << resp << endl;
 
     return 0;
 }
