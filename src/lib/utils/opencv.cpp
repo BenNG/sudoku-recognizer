@@ -83,7 +83,11 @@ Mat normalizeSize(Mat in, int size)
 Mat extractNumber(Mat input)
 {
 
+
     Mat cell = prepareCell(input);
+    Mat temp = removeTinyVolume(cell.clone(), 75, Scalar(0, 0, 0));
+
+    // showImage(temp);
 
     int cell_height = cell.rows;
     int cell_width = cell.cols;
@@ -124,14 +128,15 @@ Mat extractNumber(Mat input)
         int boundingArea = width * height;
         if (width > width_threshold)
         {
+            // cout << "width > to width_threshold -> skip " << width << endl;
 
             continue; // drop long horizontal line
         }else{
             // cout << "width: " << width << endl;
-            // cout << "width_threshold: " << width_threshold << endl;
         }
-        if (height > height_threshold)
+        if (height < 8 || height > height_threshold)
         {
+            // cout << "height > height_threshold -> skip " << width << endl;
 
             continue; // drop long vetical line
         }else{
@@ -147,10 +152,11 @@ Mat extractNumber(Mat input)
         {
             // cout << "boundingArea: " << boundingArea << endl;
         }
-        if (area < 106)
+        if (area < 105)
         {
-            // cout << "area: " << area << endl;
             continue; // area of the connected object
+        }else{
+            // cout << "area: " << area << endl;
         }
 
         // should be the number here
@@ -246,7 +252,6 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
 
     if (!rawRoi.empty())
     {
-
         // threshold(rawRoi, thresholded, 125, 255, rawRoi.type());
         adaptiveThreshold(rawRoi, thresholded, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 11, 1);
         // fin 8bits (CV_8U)
@@ -1869,6 +1874,7 @@ string grab(string filePath_str, Ptr<ml::KNearest> knn)
         roi = extractRoiFromCell(sudoku, k);
         if (!roi.empty())
         {
+            // showImage(roi);
             roi.convertTo(roi, CV_32F);
             knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
             ss << response.at<float>(0);
