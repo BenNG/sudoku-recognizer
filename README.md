@@ -37,3 +37,6 @@ cmake .. && make && src/testKnn
 * Artificial neural network - Multilayer perceptron
   * This Artificial neural network (ann) need to be trained, either featuredDataForTraining.xml or trained_data is needed to work properly. If both the files don't exist, the system will created and use featuredDataForTraining.xml to create trained_data and after the system will use trained_data to predict.
 * prepareData creates "assets/raw-features.yml" and getKnn uses it
+* unrecognize cell ? play with:
+  * width_threshold
+  * height_threshold

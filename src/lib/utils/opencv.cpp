@@ -90,7 +90,7 @@ Mat extractNumber(Mat input)
 
     // setting parameters for long lines filtering
     // that means if a line is longer than 77% of the cell it's droped
-    float percent = 0.23;
+    float percent = 0.27;
     float width_threshold = cell_width - cell_width * percent;
     float height_threshold = cell_height - cell_height * percent;
 
@@ -123,14 +123,33 @@ Mat extractNumber(Mat input)
         // filtering
         int boundingArea = width * height;
         if (width > width_threshold)
+        {
+
             continue; // drop long horizontal line
+        }else{
+            // cout << "width: " << width << endl;
+            // cout << "width_threshold: " << width_threshold << endl;
+        }
         if (height > height_threshold)
+        {
+
             continue; // drop long vetical line
-        if (boundingArea < 220 || boundingArea > 900){
+        }else{
+            // cout << "height: " << height << endl;
+            // cout << "height_threshold: " << height_threshold << endl;
+
+        }
+        if (boundingArea < 220 || boundingArea > 900)
+        {
             continue;
         }
-        if (area < 110){
-            // cout << area << endl;
+        else
+        {
+            // cout << "boundingArea: " << boundingArea << endl;
+        }
+        if (area < 106)
+        {
+            // cout << "area: " << area << endl;
             continue; // area of the connected object
         }
 
