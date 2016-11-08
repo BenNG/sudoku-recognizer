@@ -1,11 +1,9 @@
 set(CMAKE_CXX_STANDARD 11)
 
 find_package( OpenCV 3.1.0 REQUIRED core text)
-# find_package( Tesseract REQUIRED ) # 3.05 is currently the latest version of the git repository.
 find_package(Boost 1.58 COMPONENTS system filesystem program_options)
 
 include_directories( ${OpenCV_INCLUDE_DIRS})
-# include_directories(${Tesseract_INCLUDE_DIRS})
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
 endif()
@@ -13,16 +11,10 @@ endif()
 set(OpenCV_LIBS opencv_core opencv_objdetect)
 
 MESSAGE("OpenCV version : ${OpenCV_VERSION}")
-# MESSAGE("Tesseract version : ${Tesseract_VERSION}")
 
 add_library(opencv lib/utils/opencv.cpp lib/utils/opencv.h)
-# add_library(createDataForTraining lib/preTraining/createDataForTraining.cpp lib/preTraining/createDataForTraining.h)
-add_library(randomizeDataForTraining lib/preTraining/randomizeDataForTraining.cpp lib/preTraining/randomizeDataForTraining.h)
-add_library(featurizeDataForTraining lib/preTraining/featurizeDataForTraining.cpp lib/preTraining/featurizeDataForTraining.h)
-add_library(sudoku lib/utils/sudoku.cpp lib/utils/sudoku.h)
 add_library(hello lib/hello.cpp lib/hello.h)
 
-#Can manually add the sources using the set command as follows:
 set(SOURCES main.cpp )
 
 add_executable( ${PROJECT_NAME} ${SOURCES} )
@@ -32,9 +24,6 @@ add_executable( showCells lib/utils/showCells.cpp)
 add_executable( testKnn lib/utils/testKnn.cpp)
 
 target_link_libraries(prepareData opencv)
-
-target_link_libraries( featurizeDataForTraining ${OpenCV_LIBS} )
-target_link_libraries( featurizeDataForTraining opencv )
 
 target_link_libraries( opencv ${OpenCV_LIBS})
 
@@ -50,24 +39,13 @@ target_link_libraries( testKnn ${OpenCV_LIBS} )
 target_link_libraries( testKnn hello )
 target_link_libraries( testKnn opencv )
 
-#target_link_libraries( sudoku ${OpenCV_LIBS} )
-#target_link_libraries( sudoku randomizeDataForTraining )
-# target_link_libraries( sudoku createDataForTraining )
-#target_link_libraries( sudoku featurizeDataForTraining )
-#target_link_libraries( sudoku opencv )
 
 if(Boost_FOUND)
     target_link_libraries(showExtracted ${Boost_LIBRARIES} )
     target_link_libraries(showCells ${Boost_LIBRARIES} )
-    # target_link_libraries(createDataForTraining ${Boost_LIBRARIES})
-    target_link_libraries(randomizeDataForTraining ${Boost_LIBRARIES})
-    target_link_libraries(featurizeDataForTraining ${Boost_LIBRARIES})
-    #target_link_libraries(sudoku ${Boost_LIBRARIES} )
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
     target_link_libraries( opencv ${Boost_LIBRARIES})
 endif()
 
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
-# target_link_libraries( ${PROJECT_NAME} ${Tesseract_LIBRARIES})
 target_link_libraries( ${PROJECT_NAME} opencv )
-#target_link_libraries( ${PROJECT_NAME} sudoku )

@@ -126,10 +126,13 @@ Mat extractNumber(Mat input)
             continue; // drop long horizontal line
         if (height > height_threshold)
             continue; // drop long vetical line
-        if (boundingArea < 220 || boundingArea > 900)
+        if (boundingArea < 220 || boundingArea > 900){
             continue;
-        if (area < 110)
+        }
+        if (area < 110){
+            // cout << area << endl;
             continue; // area of the connected object
+        }
 
         // should be the number here
         // Mat mask= labels==i;
@@ -216,8 +219,15 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
     rawCell = extractCell(sudoku, k);
     rawRoi = extractNumber(rawCell);
 
+    if (debug)
+    {
+        showImage(rawCell);
+        showImage(rawRoi);
+    }
+
     if (!rawRoi.empty())
     {
+
         // threshold(rawRoi, thresholded, 125, 255, rawRoi.type());
         adaptiveThreshold(rawRoi, thresholded, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 11, 1);
         // fin 8bits (CV_8U)
@@ -230,8 +240,6 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
 
         if (debug)
         {
-            showImage(rawCell);
-            showImage(rawRoi);
             showImage(thresholded);
             showImage(cleaned);
         }
@@ -617,7 +625,6 @@ void testKnn(Ptr<ml::KNearest> knn)
     Mat sub_features = features(cv::Range(nbrOfCells - trainingNbr, nbrOfCells - 1), cv::Range::all());
     Mat sub_labels = labels(cv::Range::all(), cv::Range(nbrOfCells - trainingNbr, nbrOfCells - 1));
 
-
     int numImages = nbrOfCells - trainingNbr;
 
     int K = 1;
@@ -631,7 +638,6 @@ void testKnn(Ptr<ml::KNearest> knn)
         // cout << response << endl;
         // cout << sub_labels.at<float>(0, i) << endl;
         // showImage(m.reshape(1,28));
-
 
         if (sub_labels.at<float>(0, i) == response.at<float>(0))
             totalCorrect++;
@@ -1828,9 +1834,31 @@ std::map<int, std::map<int, int>> cellValues()
 // sudoku
 
 // give file path from the root of the project
-string grab(string filePath){
-    fs::path image_path(getPath(filePath));
+string grab(string filePath_str, Ptr<ml::KNearest> knn)
+{
+    // Ptr<ml::KNearest> knn = getKnn();
+    fs::path filePath(getPath(filePath_str));
+    Mat raw, sudoku, roi, response, dist;
+    stringstream ss;
+    int K = 1;
 
-    return image_path.string();
+    raw = imread(filePath.string(), CV_LOAD_IMAGE_GRAYSCALE);
+    sudoku = extractPuzzle(raw);
+
+    for (int k = 0; k < 81; k++)
+    {
+        roi = extractRoiFromCell(sudoku, k);
+        if (!roi.empty())
+        {
+            roi.convertTo(roi, CV_32F);
+            knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
+            ss << response.at<float>(0);
+        }
+        else
+        {
+            ss << "0";
+        }
+    }
+
+    return ss.str();
 }
-

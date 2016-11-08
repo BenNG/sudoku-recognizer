@@ -92,10 +92,10 @@ int createData();
 std::string uuid_first_part(const std::string &uuid);
 std::string remove_extension(const std::string &filename);
 // sudoku
-string grab(string filePath);
+string grab(string filePath_str, Ptr<ml::KNearest> knn);
 
 
-std::map<int, std::map<int,int>> cellValues();
+std::map<int, std::map<int,int> > cellValues();
 #endif //UTILS_OPENCV_LIB
 
 

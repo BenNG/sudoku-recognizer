@@ -123,8 +123,7 @@ int main(int argc, char **argv)
             if (showCell || cellNumber != -1)
             {
                 if (cellNumber != -1)
-                {
-
+                {                    
                     roi = extractRoiFromCell(sudoku, cellNumber, debug);
                     if (!roi.empty())
                     {
