@@ -255,7 +255,7 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
 
         // threshold(almostReady, output, 125, 255, almostReady.type());
 
-        return normalizeSize(almostReady, 28);
+        return normalizeSize(almostReady, normalizedSizeForCell);
 
         // return cleaned(rect);
     }
@@ -566,7 +566,7 @@ Ptr<ml::KNearest> getKnn()
 {
     int trainingNbr = nbrOfCells * 0.9;
     int testingNbr = nbrOfCells - trainingNbr;
-    Mat features(nbrOfCells, 784, CV_8UC1);
+    Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_8UC1);
     Mat labels(1, nbrOfCells, CV_8UC1);
     fs::path raw_features_path(getPath("assets/raw-features.yml"));
     Ptr<ml::KNearest> knn(ml::KNearest::create());
@@ -601,7 +601,7 @@ void testKnn(Ptr<ml::KNearest> knn)
 
     int trainingNbr = nbrOfCells * 0.9;
     int testingNbr = nbrOfCells - trainingNbr;
-    Mat features(nbrOfCells, 784, CV_8UC1);
+    Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_8UC1);
     Mat labels(1, nbrOfCells, CV_8UC1);
     fs::path raw_features_path(getPath("assets/raw-features.yml"));
     int totalCorrect = 0;

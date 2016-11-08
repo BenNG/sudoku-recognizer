@@ -15,8 +15,8 @@ int main(int argc, char **argv)
 {
 
     // data to return
-    Mat features(1184, 784, CV_8UC1);
-    Mat labels(1, 1184, CV_8UC1);
+    Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_8UC1);
+    Mat labels(1, nbrOfCells, CV_8UC1);
 
     // Ptr<ml::KNearest> knn(ml::KNearest::create());
     std::map<int, std::map<int, int>> cellV(cellValues());
@@ -26,14 +26,6 @@ int main(int argc, char **argv)
     Mat raw, sudoku;
 
     fs::path raw_features_path(getPath("assets/raw-features.yml"));
-
-    // if (boost::filesystem::exists(knn_trained_data)) {
-    //     cout << knn_trained_data.string() << endl;
-    //     cv::FileStorage fsClassifications(knn_trained_data.string(), cv::FileStorage::READ);
-
-    // }else{
-
-    // }
 
     int nbrOfCells = 0; // --> 1184
     Mat roi, normalized;

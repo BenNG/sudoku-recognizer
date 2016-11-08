@@ -34,6 +34,7 @@ static const int percent = 0.9;
 
 
 // cells
+static const int normalizedSizeForCell = 32;
 Mat normalizeSize(Mat in, int size);
 Mat extractNumber(Mat cell);
 Mat prepareCell(Mat cell);
