@@ -621,3 +621,51 @@ BOOST_AUTO_TEST_CASE(sudoku_s35)
     }
     BOOST_CHECK(b == true);
 };
+
+BOOST_AUTO_TEST_CASE(sudoku_s36)
+{
+    cout << "\nsudoku_s36" << endl;
+
+    const string actual = grab("assets/puzzles/s36.jpg", knn);
+    cout << actual << endl;
+    const string expected = "020093000079000841050001000003050408005806300108030500000100080514000920000340050";
+    cout << expected << endl;
+    bool b = compare(actual, expected);
+    if (b)
+    {
+        cout << "---------- OK ----------" << endl;
+    }
+    BOOST_CHECK(b == true);
+};
+
+BOOST_AUTO_TEST_CASE(sudoku_s37)
+{
+    cout << "\nsudoku_s37" << endl;
+
+    const string actual = grab("assets/puzzles/s37.jpg", knn);
+    cout << actual << endl;
+    const string expected = "020093000079000841050001000003050408005806300108030500000100080514000920000340050";
+    cout << expected << endl;
+    bool b = compare(actual, expected);
+    if (b)
+    {
+        cout << "---------- OK ----------" << endl;
+    }
+    BOOST_CHECK(b == true);
+};
+
+BOOST_AUTO_TEST_CASE(sudoku_s38)
+{
+    cout << "\nsudoku_s38" << endl;
+
+    const string actual = grab("assets/puzzles/s38.jpg", knn);
+    cout << actual << endl;
+    const string expected = "020093000079000841050001000003050408005806300108030500000100080514000920000340050";
+    cout << expected << endl;
+    bool b = compare(actual, expected);
+    if (b)
+    {
+        cout << "---------- OK ----------" << endl;
+    }
+    BOOST_CHECK(b == true);
+};
