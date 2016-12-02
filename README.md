@@ -17,7 +17,19 @@ make
 src/sudokuRecognizer assets/puzzles/s1.jpg # this is path from the root of the project without dots or/and splash
 ```
 
-## Actions
+## Create the `assets/raw-features.yml` yourself
+If you did not add new puzzles, use the file provided in this project. Only use this command if you found that the knn is not accurate enough
+```
+cmake .. && make && src/prepareData
+```
+
+
+## Check if everything is OK
+```
+cmake .. && ctest -V
+```
+
+## Some actions
 * You can see some extrated information
 ```
 cmake .. && make && src/showExtracted # will show all extracted puzzles
@@ -33,15 +45,12 @@ cmake .. && make && src/testKnn
 ```
 > You can iterate over each picture by setting debug=true in the `testKnn` fn  
 
-## tips
+## Tips
 * add set(OpenCV_LIBS opencv_core opencv_objdetect) for HOGDescriptor
 * mkdir -p data/{1,2,3,4,5,6,7,8,9}
-* tesseract only use in dev ? for creating the cell in the data folder
+* prepareData creates "assets/raw-features.yml" and getKnn uses it
 * boost library
  * check is the /FindBoost.cmake the supported version
-* Artificial neural network - Multilayer perceptron
-  * This Artificial neural network (ann) need to be trained, either featuredDataForTraining.xml or trained_data is needed to work properly. If both the files don't exist, the system will created and use featuredDataForTraining.xml to create trained_data and after the system will use trained_data to predict.
-* prepareData creates "assets/raw-features.yml" and getKnn uses it
 * unrecognize cell ? play with:
   * width_threshold
   * height_threshold

@@ -592,7 +592,7 @@ Ptr<ml::KNearest> getKnn()
     int testingNbr = nbrOfCells - trainingNbr;
     Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_8UC1);
     Mat labels(1, nbrOfCells, CV_8UC1);
-    fs::path raw_features_path(getPath("assets/raw-features.yml"));
+    fs::path raw_features_path(getPath("assets/raw-features.yml")); // created by prepareData 
     Ptr<ml::KNearest> knn(ml::KNearest::create());
 
     // vector<Mat> v = readTrainingMNIST();

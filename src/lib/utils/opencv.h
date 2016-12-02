@@ -29,7 +29,7 @@ static const Size trainingPadding = Size(0, 0);
 static const Size winStride = Size(8, 8);
 
 // knn testing attributes
-static const int nbrOfCells = 1184;
+static const int nbrOfCells = 1186;
 static const int percent = 0.9;
 
 

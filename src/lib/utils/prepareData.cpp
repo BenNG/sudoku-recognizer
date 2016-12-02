@@ -27,10 +27,11 @@ int main(int argc, char **argv)
 
     fs::path raw_features_path(getPath("assets/raw-features.yml"));
 
-    int nbrOfCells = 0; // --> 1184
+    int incrCell = 0; // --> 1184
     Mat roi, normalized;
     for (int i = 0; i < 36; i++)
     {
+        // cout << i << endl;
         stringstream ss;
         ss << "assets/puzzles/s";
         ss << i;
@@ -43,6 +44,7 @@ int main(int argc, char **argv)
         raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
         sudoku = extractPuzzle(raw);
 
+
         for (int k = 0; k < 81; k++)
         {
             roi = extractRoiFromCell(sudoku, k);
@@ -53,11 +55,10 @@ int main(int argc, char **argv)
                 // featurize
                 Mat feat = roi.reshape(1, 1);
 
-                feat.copyTo(features.row(nbrOfCells));
-                labels.at<unsigned char>(0, nbrOfCells) = value;
+                feat.copyTo(features.row(incrCell));
+                labels.at<unsigned char>(0, incrCell) = value;
 
-                // showImage(normalized);
-                nbrOfCells++;
+                incrCell++;
             }
         }
     }

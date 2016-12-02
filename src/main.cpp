@@ -15,8 +15,6 @@
 #include "boost/progress.hpp"
 
 #include "lib/utils/opencv.h"
-#include "lib/preTraining/randomizeDataForTraining.h"
-#include "lib/preTraining/featurizeDataForTraining.h"
 #include <opencv2/opencv.hpp>
 
 namespace fs = boost::filesystem;
