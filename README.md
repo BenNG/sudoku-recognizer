@@ -2,14 +2,19 @@
 
 ## Requirement
 
-To run this project you need
+To run this project you need  
 * [CMake](https://cmake.org/)  
-* [OpenCV 3.1.0](http://opencv.org/downloads.html). This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful
+* [OpenCV 3.1.0](http://opencv.org/downloads.html). This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful  
+* [boost v1.58](http://www.boost.org/users/history/version_1_58_0.html)
+  * export BOOST_ROOT=/home/benng/Downloads/boost_1_58_0
 
 ## Get started
 At the root of the project:
 ```
-mkdir build && cd build && cmake .. && make && ./DisplayImage
+mkdir build && cd build
+cmake ..
+make
+src/sudokuRecognizer assets/puzzles/s1.jpg # this is path from the root of the project without dots or/and splash
 ```
 
 ## Actions
