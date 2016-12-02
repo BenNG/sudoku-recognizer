@@ -18,20 +18,22 @@ src/sudokuRecognizer assets/puzzles/s1.jpg # this is path from the root of the p
 ```
 
 ## Create the `assets/raw-features.yml` yourself
-If you did not add new puzzles, use the file provided in this project. Only use this command if you found that the knn is not accurate enough
 ```
-cmake .. && make && src/prepareData
+# In the build folder
+cmake .. && make && src/prepareData # create training data from s0 --> s35
 ```
 
-
-## Check if everything is OK
+## Run the test to see if everything is OK
 ```
+# In the build folder
 cmake .. && ctest -V
 ```
 
 ## Some actions
 * You can see some extrated information
 ```
+# In the build folder
+
 cmake .. && make && src/showExtracted # will show all extracted puzzles
 cmake .. && make && src/showExtracted --showCell  # will show all extracted cells
 cmake .. && make && src/showExtracted --puzzleNumber 33 # will show the extracted puzzle of `assets/puzzles/s33.jpg`
