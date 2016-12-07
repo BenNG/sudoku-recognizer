@@ -1,12 +1,11 @@
 # sudoku-recognizer
 
 ## Requirement
-
-To run this project you need  
 * [CMake](https://cmake.org/)  
-* [OpenCV 3.1.0](http://opencv.org/downloads.html). This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful  
-* [boost v1.58](http://www.boost.org/users/history/version_1_58_0.html)
-  * export BOOST_ROOT=/home/benng/Downloads/boost_1_58_0
+* [OpenCV 3.1.0](http://opencv.org/downloads.html)
+    * This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful  
+* [boost v1.58](http://www.boost.org/users/history/version_1_58_0.html)  
+    * export BOOST_ROOT=/home/benng/Downloads/boost_1_58_0
 
 ## Get started
 At the root of the project:
@@ -14,13 +13,7 @@ At the root of the project:
 mkdir build && cd build
 cmake ..
 make
-src/sudokuRecognizer assets/puzzles/s1.jpg # this is path from the root of the project without dots or/and splash
-```
-
-## Create the `assets/raw-features.yml` yourself
-```
-# In the build folder
-cmake .. && make && src/prepareData # create training data from s0 --> s35
+src/sudokuRecognizer assets/puzzles/s1.jpg # this is path from the root of the project without dots or/and splashes
 ```
 
 ## Run the test to see if everything is OK
@@ -40,7 +33,14 @@ cmake .. && make && src/showExtracted --puzzleNumber 33 # will show the extracte
 cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell # will show all cells of `assets/puzzles/s33.jpg`
 cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10 # will show the cell index = 10 of `assets/puzzles/s33.jpg`
 cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10 --debug # will show the cell index = 10 of `assets/puzzles/s33.jpg` plus the process of extraction
-``` 
+```
+
+## Create the `assets/raw-features.yml` yourself
+```
+# In the build folder
+cmake .. && make && src/prepareData # create training data from s0 --> s35
+```
+
 * The knn network can be tested using this:
 ```
 cmake .. && make && src/testKnn

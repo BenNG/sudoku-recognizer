@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
     int incrCell = 0; // --> 1184
     Mat roi, normalized;
-    for (int i = 0; i < 36; i++)
+    for (int i = 0; i <= lastTrainingPuzzle; i++)
     {
         // cout << i << endl;
         stringstream ss;
