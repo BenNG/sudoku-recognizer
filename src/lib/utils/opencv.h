@@ -97,7 +97,6 @@ Ptr<ANN_MLP> build_mlp_classifier(const fs::path data_filename, const fs::path p
 Mat hog_feature(Mat input);
 // createDataForTraining
 void create_data_structure();
-int createData();
 std::string uuid_first_part(const std::string &uuid);
 std::string remove_extension(const std::string &filename);
 // sudoku
