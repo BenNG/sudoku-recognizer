@@ -895,7 +895,7 @@ fs::path getMyProjectRoot(fs::path p)
     }
 }
 
-fs::path getPath(fs::path p)
+fs::path getPath(string p)
 {
     fs::path rootPath(getMyProjectRoot(getexepath()));
     return rootPath /= p;

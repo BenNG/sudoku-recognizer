@@ -79,7 +79,7 @@ void drawMarkers(Mat input, vector<Point> biggestApprox);
 Mat drawGrid(Mat input);
 void showImage(Mat img);
 fs::path getMyProjectRoot(fs::path p);
-fs::path getPath(fs::path p);
+fs::path getPath(string p);
 Mat removeTinyVolume(Mat input, int area, Scalar color);
 Mat deskew(Mat in);
 void showCells(Mat sudoku, bool debug);
