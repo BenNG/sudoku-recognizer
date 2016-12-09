@@ -22,6 +22,7 @@ add_executable( showExtracted lib/utils/showExtracted.cpp)
 add_executable( prepareData lib/utils/prepareData.cpp)
 add_executable( showCells lib/utils/showCells.cpp)
 add_executable( testKnn lib/utils/testKnn.cpp)
+add_executable( helloBin lib/utils/hello.cpp)
 
 target_link_libraries(prepareData opencv)
 
@@ -39,6 +40,7 @@ target_link_libraries( testKnn ${OpenCV_LIBS} )
 target_link_libraries( testKnn hello )
 target_link_libraries( testKnn opencv )
 
+target_link_libraries( helloBin hello )
 
 if(Boost_FOUND)
     target_link_libraries(showExtracted ${Boost_LIBRARIES} )
