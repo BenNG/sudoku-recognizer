@@ -3,7 +3,6 @@
 using namespace std; // Or using std::string;
 
 #include "../hello.h"
-
 #include <sys/stat.h>
 
 int isDirectory(const char *path)

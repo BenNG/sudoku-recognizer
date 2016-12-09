@@ -878,9 +878,9 @@ void showImage(Mat img)
     waitKey(0);
 }
 
-fs::path getMyProjectRoot(fs::path p)
+fs::path getMyProjectRoot(string p)
 {
-    string s = getMyProjectRoot(p.string(), "sudoku");
+    string s = getMyProjectRoot(p, "sudoku");
     fs::path r(s);
     return r;
 }

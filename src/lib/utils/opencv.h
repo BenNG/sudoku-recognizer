@@ -78,7 +78,7 @@ Mat drawAllApprox(Mat preprocessed, Mat original);
 void drawMarkers(Mat input, vector<Point> biggestApprox);
 Mat drawGrid(Mat input);
 void showImage(Mat img);
-fs::path getMyProjectRoot(fs::path p);
+fs::path getMyProjectRoot(string p);
 string getMyProjectRoot(string projectRootName, string path);
 fs::path getPath(string p);
 Mat removeTinyVolume(Mat input, int area, Scalar color);
