@@ -592,14 +592,14 @@ Ptr<ml::KNearest> getKnn()
     int testingNbr = nbrOfCells - trainingNbr;
     Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_8UC1);
     Mat labels(1, nbrOfCells, CV_8UC1);
-    fs::path raw_features_path(getPath("assets/raw-features.yml")); // created by prepareData 
+    string raw_features_path(getPath("assets/raw-features.yml")); // created by prepareData 
     Ptr<ml::KNearest> knn(ml::KNearest::create());
 
     // vector<Mat> v = readTrainingMNIST();
     // Mat trainFeatures = v[0];
     // Mat trainLabels = v[1];
 
-    cv::FileStorage raw_features(raw_features_path.string(), cv::FileStorage::READ);
+    cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
 
     if (raw_features.isOpened() == false)
     {
@@ -627,10 +627,10 @@ void testKnn(Ptr<ml::KNearest> knn)
     int testingNbr = nbrOfCells - trainingNbr;
     Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_8UC1);
     Mat labels(1, nbrOfCells, CV_8UC1);
-    fs::path raw_features_path(getPath("assets/raw-features.yml"));
+    string raw_features_path(getPath("assets/raw-features.yml"));
     int totalCorrect = 0;
 
-    cv::FileStorage raw_features(raw_features_path.string(), cv::FileStorage::READ);
+    cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
 
     if (raw_features.isOpened() == false)
     {
@@ -878,11 +878,9 @@ void showImage(Mat img)
     waitKey(0);
 }
 
-fs::path getMyProjectRoot(string p)
+string getMyProjectRoot(string p)
 {
-    string s = getMyProjectRoot(p, "sudoku");
-    fs::path r(s);
-    return r;
+    return getMyProjectRoot(p, "sudoku");
 }
 
 
@@ -903,16 +901,21 @@ string getMyProjectRoot(string path, string projectRootName)
         {
             throw "could not find project root (in function getMyProjectRoot)";
         }
-        return getMyProjectRoot(projectRootName, joinPath(strs));
+        return getMyProjectRoot(joinPath(strs), projectRootName);
     }
 }
 
 
 
-fs::path getPath(string p)
+string getPath(string p)
 {
-    fs::path rootPath(getMyProjectRoot(getexepath()));
-    return rootPath /= p;
+    stringstream ss;
+
+    ss << getMyProjectRoot(getexepath());
+    ss << "/";
+
+    ss << p;
+    return ss.str();
 }
 
 /**
@@ -1801,12 +1804,12 @@ std::map<int, std::map<int, int>> cellValues()
 string grab(string filePath_str, Ptr<ml::KNearest> knn)
 {
     // Ptr<ml::KNearest> knn = getKnn();
-    fs::path filePath(getPath(filePath_str));
+    string filePath(getPath(filePath_str));
     Mat raw, sudoku, roi, response, dist;
     stringstream ss;
     int K = 1;
 
-    raw = imread(filePath.string(), CV_LOAD_IMAGE_GRAYSCALE);
+    raw = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
     sudoku = extractPuzzle(raw);
 
     for (int k = 0; k < 81; k++)
@@ -1876,4 +1879,12 @@ string joinPath(vector<string> strs)
     }
 
     return ss.str();
+}
+
+int isDirectory(const char *path)
+{
+    struct stat statbuf;
+    if (stat(path, &statbuf) != 0)
+        return 0;
+    return S_ISDIR(statbuf.st_mode);
 }

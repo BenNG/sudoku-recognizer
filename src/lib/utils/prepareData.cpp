@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     string fullName;
     Mat raw, sudoku;
 
-    fs::path raw_features_path(getPath("assets/raw-features.yml"));
+    string raw_features_path(getPath("assets/raw-features.yml"));
 
     int incrCell = 0; // --> 1184
     Mat roi, normalized;
@@ -36,9 +36,8 @@ int main(int argc, char **argv)
         ss << "assets/puzzles/s";
         ss << i;
         ss << ".jpg";
-        fs::path p(getPath(ss.str()));
+        string fullName(getPath(ss.str()));
 
-        fullName = p.string();
         // cout << fullName << endl;
 
         raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
@@ -66,7 +65,7 @@ int main(int argc, char **argv)
     features.convertTo(features, CV_32F);
     labels.convertTo(labels, CV_32F);
 
-    cv::FileStorage raw_features(raw_features_path.string(), cv::FileStorage::WRITE); // open the classifications file
+    cv::FileStorage raw_features(raw_features_path, cv::FileStorage::WRITE); // open the classifications file
 
     raw_features << "features" << features;
     raw_features << "labels" << labels;

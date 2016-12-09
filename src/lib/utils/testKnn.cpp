@@ -3,13 +3,11 @@
 
 int main(int argc, char **argv)
 {
-    sayHello("LouLou");
-
-
     Ptr<ml::KNearest> knn = getKnn();
     testKnn(knn);
 
-    if (fs::is_directory(getPath("assets/puzzles/s0.jpg")))
+
+    if (isDirectory(getPath("assets/puzzles/s0.jpg").c_str()))
     {
         cout << "please give a file as a parameter" << endl;
     }else{

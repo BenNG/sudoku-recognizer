@@ -94,14 +94,14 @@ int main(int argc, char **argv)
         showPuzzle = true;
     }
 
-    fs::path p(getPath(ss.str()));
-
-    sayHello("LouLou");
+    string p(getPath(ss.str()));
 
     string fullName;
     Mat raw, sudoku, roi;
 
-    if (fs::is_directory(p))
+    
+
+    if (isDirectory(p.c_str()))
     {
         fs::directory_iterator end_iter;
         for (fs::directory_iterator dir_itr(p);
@@ -159,7 +159,7 @@ int main(int argc, char **argv)
     else
     {
         cout << p << endl;
-        raw = imread(p.string(), CV_LOAD_IMAGE_GRAYSCALE);
+        raw = imread(p, CV_LOAD_IMAGE_GRAYSCALE);
         sudoku = extractPuzzle(raw);
         if (showPuzzle)
         {
