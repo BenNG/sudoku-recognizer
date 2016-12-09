@@ -79,6 +79,7 @@ void drawMarkers(Mat input, vector<Point> biggestApprox);
 Mat drawGrid(Mat input);
 void showImage(Mat img);
 fs::path getMyProjectRoot(fs::path p);
+string getMyProjectRoot(string projectRootName, string path);
 fs::path getPath(string p);
 Mat removeTinyVolume(Mat input, int area, Scalar color);
 Mat deskew(Mat in);
@@ -103,7 +104,8 @@ std::string remove_extension(const std::string &filename);
 string grab(string filePath_str, Ptr<ml::KNearest> knn);
 // file system
 std::string getexepath();
-
+string joinPath(vector<string> strs);
+vector<string> splitPath(string path);
 
 std::map<int, std::map<int,int> > cellValues();
 #endif //UTILS_OPENCV_LIB

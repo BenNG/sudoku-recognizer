@@ -880,20 +880,34 @@ void showImage(Mat img)
 
 fs::path getMyProjectRoot(fs::path p)
 {
-    string projectRootFolderName = "sudoku";
-    if (p.filename() == projectRootFolderName)
+    string s = getMyProjectRoot(p.string(), "sudoku");
+    fs::path r(s);
+    return r;
+}
+
+
+string getMyProjectRoot(string path, string projectRootName)
+{
+    vector<string> strs(splitPath(path));
+
+    string last = strs[strs.size() - 1];
+    if (last == projectRootName)
     {
-        return p;
-    }
-    else if (p.filename() == "/")
-    {
-        throw "could not find project root (in function getMyProjectRoot)";
+        return path;
     }
     else
     {
-        return getMyProjectRoot(p.parent_path());
+        strs.pop_back();
+
+        if (strs.empty())
+        {
+            throw "could not find project root (in function getMyProjectRoot)";
+        }
+        return getMyProjectRoot(projectRootName, joinPath(strs));
     }
 }
+
+
 
 fs::path getPath(string p)
 {
@@ -1832,3 +1846,34 @@ std::string getexepath()
 }
 // Windows - end
 */
+
+vector<string> splitPath(string path)
+{
+    stringstream ss(path);
+    vector<string> result;
+
+    while (ss.good())
+    {
+        string substr;
+        getline(ss, substr, '/');
+        result.push_back(substr);
+    }
+
+    return result;
+}
+
+string joinPath(vector<string> strs)
+{
+    stringstream ss;
+
+    for (int i = 0; i < strs.size(); i++)
+    {
+        ss << strs[i];
+        if (i != strs.size() - 1)
+        {
+            ss << "/";
+        }
+    }
+
+    return ss.str();
+}

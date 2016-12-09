@@ -69,7 +69,7 @@ string getMyProjectRoot(string projectRootName, string path)
 int main(int argc, char **argv)
 {
     string projectRootFolderName = "sudoku";
-    // vector<string> strs(splitPath("/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/build"));
+    // vector<string> strs(splitPath("/keep/Repo/USELESS/_sandbox/cpp/stng-cpp/sudoku/build"));
 
     // for (int i = 0; i < strs.size(); i++)
     // {
