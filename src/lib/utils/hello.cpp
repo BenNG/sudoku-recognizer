@@ -4,6 +4,16 @@ using namespace std; // Or using std::string;
 
 #include "../hello.h"
 
+#include <sys/stat.h>
+
+int isDirectory(const char *path)
+{
+    struct stat statbuf;
+    if (stat(path, &statbuf) != 0)
+        return 0;
+    return S_ISDIR(statbuf.st_mode);
+}
+
 vector<string> splitPath(string path)
 {
     stringstream ss(path);
@@ -68,8 +78,18 @@ int main(int argc, char **argv)
 
     //     cout << joinPath(strs) << endl;
 
-    string result = getMyProjectRoot(projectRootFolderName, "/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/build");
-    cout << result << endl;
+    // string result = getMyProjectRoot(projectRootFolderName, "/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/build");
+    // cout << result << endl;
+
+    if (isDirectory("/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/build"))
+    {
+        cout << "dir" << endl;
+    }
+    else
+    {
+        cout << "file" << endl;
+    }
+
     return 0;
 }
 
