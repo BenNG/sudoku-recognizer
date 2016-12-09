@@ -897,7 +897,7 @@ fs::path getMyProjectRoot(fs::path p)
 
 fs::path getPath(fs::path p)
 {
-    fs::path rootPath(getMyProjectRoot(fs::current_path()));
+    fs::path rootPath(getMyProjectRoot(getexepath()));
     return rootPath /= p;
 }
 
@@ -1887,3 +1887,22 @@ string grab(string filePath_str, Ptr<ml::KNearest> knn)
 
     return ss.str();
 }
+
+string getexepath()
+{
+  char result[ PATH_MAX ];
+  ssize_t count = readlink( "/proc/self/exe", result, PATH_MAX );
+  return string( result, (count > 0) ? count : 0 );
+}
+/**
+// Windows
+#include <string>
+#include <windows.h>
+
+std::string getexepath()
+{
+  char result[ MAX_PATH ];
+  return std::string( result, GetModuleFileName( NULL, result, MAX_PATH ) );
+}
+// Windows - end
+*/

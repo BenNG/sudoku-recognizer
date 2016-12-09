@@ -19,6 +19,10 @@
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/path.hpp"
 
+#include <string>
+#include <limits.h>
+#include <unistd.h>
+
 using namespace cv;
 using namespace cv::ml;
 using namespace std;
@@ -98,6 +102,8 @@ std::string uuid_first_part(const std::string &uuid);
 std::string remove_extension(const std::string &filename);
 // sudoku
 string grab(string filePath_str, Ptr<ml::KNearest> knn);
+// file system
+std::string getexepath();
 
 
 std::map<int, std::map<int,int> > cellValues();
