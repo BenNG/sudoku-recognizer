@@ -878,12 +878,6 @@ void showImage(Mat img)
     waitKey(0);
 }
 
-string getMyProjectRoot(string p)
-{
-    return getMyProjectRoot(p, "sudoku");
-}
-
-
 string getMyProjectRoot(string path, string projectRootName)
 {
     vector<string> strs(splitPath(path));
@@ -911,9 +905,8 @@ string getPath(string p)
 {
     stringstream ss;
 
-    ss << getMyProjectRoot(getexepath());
+    ss << getMyProjectRoot(getexepath(), "sudoku");
     ss << "/";
-
     ss << p;
     return ss.str();
 }

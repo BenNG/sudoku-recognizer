@@ -91,20 +91,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-
-// fs::path getMyProjectRoot(fs::path p)
-// {
-//     string projectRootFolderName = "sudoku";
-//     if (p.filename() == projectRootFolderName)
-//     {
-//         return p;
-//     }
-//     else if (p.filename() == "/")
-//     {
-//         throw "could not find project root (in function getMyProjectRoot)";
-//     }
-//     else
-//     {
-//         return getMyProjectRoot(p.parent_path());
-//     }
-// }
