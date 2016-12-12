@@ -309,88 +309,6 @@ int readFlippedInteger(FILE *fp)
     return ret;
 }
 
-vector<Mat> readTrainingMNIST()
-{
-    return readMNIST(true);
-}
-
-vector<Mat> readTestMNIST()
-{
-    return readMNIST(false);
-}
-
-vector<Mat> readMNIST(bool training)
-{
-    vector<Mat> v(2);
-    string feat_str, label_str;
-    if (training)
-    {
-        feat_str = "/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/train-images-idx3-ubyte";
-        label_str = "/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/train-labels-idx1-ubyte";
-    }
-    else
-    {
-        feat_str = "/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/t10k-images-idx3-ubyte";
-        label_str = "/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/assets/t10k-labels-idx1-ubyte";
-    }
-
-    FILE *fp = fopen(feat_str.c_str(), "rb");
-    FILE *fp2 = fopen(label_str.c_str(), "rb");
-
-    if (!fp || !fp2)
-    {
-        cout << "can't open file" << endl;
-    }
-
-    int magicNumber = readFlippedInteger(fp);
-    int numImages = readFlippedInteger(fp);
-    int numRows = readFlippedInteger(fp);
-    int numCols = readFlippedInteger(fp);
-    fseek(fp2, 0x08, SEEK_SET);
-
-    int size = numRows * numCols;
-
-    cout << "size: " << size << endl;
-    cout << "rows: " << numRows << endl;
-    cout << "cols: " << numCols << endl;
-
-    Mat rawFeatures(numImages, size, CV_8UC1);
-    Mat hogFeatures(numImages, 735, CV_8UC1);
-    Mat trainLabels(1, numImages, CV_8UC1);
-    Mat raw, hoged;
-
-    unsigned char *temp = new unsigned char[size];
-    unsigned char tempClass = 0;
-    for (int i = 0; i < numImages; i++)
-    {
-        fread((void *)temp, size, 1, fp);
-        fread((void *)(&tempClass), sizeof(unsigned char), 1, fp2);
-
-        trainLabels.at<unsigned char>(0, i) = tempClass;
-
-        // feature creation
-        // create the binarize matrix
-        for (int k = 0; k < size; k++)
-        {
-            rawFeatures.at<unsigned char>(i, k) = temp[k];
-        }
-        raw = rawFeatures.row(i).reshape(1, 28);
-        // showImage(raw);
-        hoged = hog_feature(raw);
-        hoged.copyTo(hogFeatures.row(i));
-        // feature creation - end
-    }
-
-    // I don't know why I have to convert the matrices in float ...
-    rawFeatures.convertTo(rawFeatures, CV_32F);
-    hogFeatures.convertTo(hogFeatures, CV_32F);
-    trainLabels.convertTo(trainLabels, CV_32F);
-
-    v[0] = hogFeatures;
-    v[1] = trainLabels;
-    return v;
-}
-
 // ------------------------------------------------------------------------
 // PUZZLE
 
@@ -1031,187 +949,8 @@ static void test_and_save_classifier(const Ptr<StatModel> &model,
     }
 }
 
-Ptr<ANN_MLP>
-build_mlp_classifier(const fs::path data_filename, const fs::path persistence)
-{
-
-    const int class_count = 9;
-    Mat data;
-    Mat responses;
-
-    cout << boost::filesystem::current_path() << endl;
-
-    // fn
-    string data_filename_str = data_filename.string();
-    FileStorage fs;
-    fs.open(data_filename_str, FileStorage::READ);
-    fs["TrainingDataF15"] >> data;
-    fs["classes"] >> responses;
-    // fn - end
-
-    Ptr<ANN_MLP> model;
-
-    int nsamples_all = data.rows;
-    int ntrain_samples = (int)(nsamples_all * 0.8);
-
-    //    boost::filesystem::path persistence_path(persistence);
-    string persistence_str = persistence.string();
-    // Create or load MLP classifier
-    if (boost::filesystem::exists(persistence))
-    {
-        return load_classifier<ANN_MLP>(persistence_str);
-    }
-    else
-    {
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //
-        // MLP does not support categorical variables by explicitly.
-        // So, instead of the output class label, we will use
-        // a binary vector of <class_count> components for training and,
-        // therefore, MLP will give us a vector of "probabilities" at the
-        // prediction stage
-        //
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        Mat train_data = data.rowRange(0, ntrain_samples);
-        Mat train_responses = Mat::zeros(ntrain_samples, class_count, CV_32F);
-
-        // 1. unroll the responses
-        //        cout << "Unrolling the responses...\n";
-        for (int i = 0; i < ntrain_samples; i++)
-        {
-            train_responses.at<float>(i, responses.at<int>(i)) = 1.f;
-        }
-
-        // 2. train classifier
-        int layer_sz[] = {data.cols, 100, 100, class_count};
-        int nlayers = (int)(sizeof(layer_sz) / sizeof(layer_sz[0]));
-        Mat layer_sizes(1, nlayers, CV_32S, layer_sz);
-
-#if 1
-        int method = ANN_MLP::BACKPROP;
-        double method_param = 0.001;
-        int max_iter = 300;
-#else
-        int method = ANN_MLP::RPROP;
-        double method_param = 0.1;
-        int max_iter = 1000;
-#endif
-
-        Ptr<TrainData> tdata = TrainData::create(train_data, ROW_SAMPLE, train_responses);
-
-        cout << "Training the classifier (may take a few minutes)...\n";
-        model = ANN_MLP::create();
-        model->setLayerSizes(layer_sizes);
-        model->setActivationFunction(ANN_MLP::SIGMOID_SYM, 0, 0);
-        model->setTermCriteria(TC(max_iter, 0));
-        model->setTrainMethod(method, method_param);
-        model->train(tdata);
-        cout << endl;
-    }
-
-    test_and_save_classifier(model, data, responses, ntrain_samples, 0, persistence_str);
-    return model;
-}
-
-Mat hog_feature(Mat input)
-{
-
-    vector<float> ders;
-    vector<Point> locs;
-
-    bool gamma_corr = true;
-    Size win_size(input.rows, input.cols); //using just one window
-    int c = 4;
-    Size block_size(c, c);
-    Size block_stride(c, c); //no overlapping blocks
-    Size cell_size(c, c);
-    int nOri = 15; //number of orientation bins
-
-    HOGDescriptor hog(win_size, block_size, block_stride, cell_size, nOri, 1, -1,
-                      HOGDescriptor::L2Hys, 0.2, gamma_corr, HOGDescriptor::DEFAULT_NLEVELS);
-
-    hog.compute(input, ders, Size(0, 0), Size(0, 0), locs);
-
-    Mat Hogfeat(1, ders.size(), CV_32FC1);
-
-    for (int i = 0; i < ders.size(); i++)
-    {
-        Hogfeat.at<float>(0, i) = ders.at(i);
-    }
-
-    // showImage(Hogfeat);
-
-    return Hogfeat;
-}
-
 // --------------------------------------------------------------------------
 // createDataForTraining
-
-void create_data_structure()
-{
-    fs::path data("data");
-    fs::path data1("data/1");
-    fs::path data2("data/2");
-    fs::path data3("data/3");
-    fs::path data4("data/4");
-    fs::path data5("data/5");
-    fs::path data6("data/6");
-    fs::path data7("data/7");
-    fs::path data8("data/8");
-    fs::path data9("data/9");
-
-    if (!fs::exists(data))
-    {
-        boost::filesystem::create_directories(data);
-        boost::filesystem::create_directories(data1);
-        boost::filesystem::create_directories(data2);
-        boost::filesystem::create_directories(data3);
-        boost::filesystem::create_directories(data4);
-        boost::filesystem::create_directories(data5);
-        boost::filesystem::create_directories(data6);
-        boost::filesystem::create_directories(data7);
-        boost::filesystem::create_directories(data8);
-        boost::filesystem::create_directories(data9);
-    }
-    else
-    {
-        if (!fs::exists(data1))
-            boost::filesystem::create_directories(data1);
-        if (!fs::exists(data2))
-            boost::filesystem::create_directories(data2);
-        if (!fs::exists(data3))
-            boost::filesystem::create_directories(data3);
-        if (!fs::exists(data4))
-            boost::filesystem::create_directories(data4);
-        if (!fs::exists(data5))
-            boost::filesystem::create_directories(data5);
-        if (!fs::exists(data6))
-            boost::filesystem::create_directories(data6);
-        if (!fs::exists(data7))
-            boost::filesystem::create_directories(data7);
-        if (!fs::exists(data8))
-            boost::filesystem::create_directories(data8);
-        if (!fs::exists(data9))
-            boost::filesystem::create_directories(data9);
-    }
-}
-
-std::string remove_extension(const std::string &filename)
-{
-    size_t lastdot = filename.find_last_of(".");
-    if (lastdot == std::string::npos)
-        return filename;
-    return filename.substr(0, lastdot);
-}
-
-std::string uuid_first_part(const std::string &uuid)
-{
-    size_t first = uuid.find_first_of("-");
-    if (first == std::string::npos)
-        return uuid;
-    return uuid.substr(0, first);
-}
 
 // data created manually
 std::map<int, std::map<int, int>> cellValues()
@@ -1880,4 +1619,29 @@ int isDirectory(const char *path)
     if (stat(path, &statbuf) != 0)
         return 0;
     return S_ISDIR(statbuf.st_mode);
+}
+
+int getdir(string dir, vector<string> &files)
+{
+    DIR *dp;
+    struct dirent *dirp;
+    if ((dp = opendir(dir.c_str())) == NULL)
+    {
+        cout << "Error(" << errno << ") opening " << dir << endl;
+        return errno;
+    }
+
+    while ((dirp = readdir(dp)) != NULL)
+    {
+        files.push_back(string(dirp->d_name));
+    }
+    closedir(dp);
+    return 0;
+}
+
+int getNumberOfFilesInFolder(string dir)
+{
+    vector<string> files;
+    getdir(dir, files);
+    return files.size() - 2;
 }

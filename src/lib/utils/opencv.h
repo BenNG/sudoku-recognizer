@@ -15,19 +15,16 @@
 #include <map>
 #include <opencv2/opencv.hpp>
 #include <opencv2/objdetect.hpp>
-#include "boost/filesystem.hpp"
-#include "boost/filesystem/operations.hpp"
-#include "boost/filesystem/path.hpp"
 
 #include <string>
 #include <limits.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <dirent.h>
 
 using namespace cv;
 using namespace cv::ml;
 using namespace std;
-namespace fs = boost::filesystem;
 
 // Training
 static const int lastTrainingPuzzle = 35; // change this if you added some new pictures and you want to generate a new assets/raw-features.yml
@@ -56,9 +53,6 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug);
 
 // mnist
 int readFlippedInteger(FILE *fp);
-vector<Mat> readMNIST(bool training);
-vector<Mat> readTrainingMNIST();
-vector<Mat> readTestMNIST();
 // puzzle
 Mat extractCell(Mat sudoku, int numCell);
 // picture
@@ -93,13 +87,6 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
                                      int ntrain_samples, int rdelta,
                                      const string& filename_to_save);
 
-Ptr<ANN_MLP> build_mlp_classifier(const fs::path data_filename, const fs::path persistence);
-//hog
-Mat hog_feature(Mat input);
-// createDataForTraining
-void create_data_structure();
-std::string uuid_first_part(const std::string &uuid);
-std::string remove_extension(const std::string &filename);
 // sudoku
 string grab(string filePath_str, Ptr<ml::KNearest> knn);
 // file system
@@ -107,6 +94,8 @@ std::string getexepath();
 string joinPath(vector<string> strs);
 vector<string> splitPath(string path);
 int isDirectory(const char *path);
+int getNumberOfFilesInFolder(string dir);
+int getdir(string dir, vector<string> &files);
 
 std::map<int, std::map<int,int> > cellValues();
 #endif //UTILS_OPENCV_LIB

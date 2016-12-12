@@ -31,7 +31,6 @@ Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted a
 #include <opencv2/opencv.hpp>
 
 namespace po = boost::program_options;
-namespace fs = boost::filesystem;
 using namespace cv;
 using namespace cv::ml;
 using namespace std;
@@ -47,15 +46,20 @@ int main(int argc, char **argv)
 
     int K = 1;
     Mat response, dist, m;
-
+    // load knn with "assets/raw-features.yml"
     Ptr<ml::KNearest> knn = getKnn();
-
+    // get cells values manually grabbed
     std::map<int, std::map<int, int>> cellV(cellValues());
 
     bool showCell = false, showPuzzle = false, debug = false;
     int puzzleNumber, cellNumber;
     stringstream ss;
     ss << "assets/puzzles/";
+    
+    
+    
+    
+    
     po::options_description desc("Allowed options");
     desc.add_options()("debug", "debug")("showPuzzle", "show puzzles")("showCell", "show cells")("puzzleNumber", po::value<int>(&puzzleNumber)->default_value(-1))("cellNumber", po::value<int>(&cellNumber)->default_value(-1))("puzzle", po::value<int>(&puzzleNumber)->default_value(-1));
 
@@ -94,22 +98,25 @@ int main(int argc, char **argv)
         showPuzzle = true;
     }
 
+
+
     string p(getPath(ss.str()));
 
     string fullName;
     Mat raw, sudoku, roi;
 
-    
-
     if (isDirectory(p.c_str()))
     {
-        fs::directory_iterator end_iter;
-        for (fs::directory_iterator dir_itr(p);
-             dir_itr != end_iter;
-             ++dir_itr)
+        int num = getNumberOfFilesInFolder(p);
+        cout << num << endl;
+
+        for (int fileNumber = 0; fileNumber < num; fileNumber++)
         {
-            fullName = dir_itr->path().string();
-            int fileNumber = stoi(dir_itr->path().stem().string().substr(1));
+
+            stringstream ss;
+            ss << "assets/puzzles/";
+            ss << "s" << fileNumber << ".jpg";
+            fullName = getPath(ss.str());
 
             cout << fullName << endl;
             raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
@@ -123,7 +130,7 @@ int main(int argc, char **argv)
             if (showCell || cellNumber != -1)
             {
                 if (cellNumber != -1)
-                {                    
+                {
                     roi = extractRoiFromCell(sudoku, cellNumber, debug);
                     if (!roi.empty())
                     {
@@ -136,7 +143,7 @@ int main(int argc, char **argv)
                         showImage(roi);
                     }
                 }
-                // all files - all cell                
+                // all files - all cell
                 else
                 {
 
@@ -200,9 +207,6 @@ int main(int argc, char **argv)
             }
         }
     }
-
-
-    
 
     return 0;
 }

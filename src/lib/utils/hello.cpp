@@ -1,93 +1,49 @@
 #include <string>
 #include <vector>
 using namespace std; // Or using std::string;
-
 #include "../hello.h"
-#include <sys/stat.h>
+#include <dirent.h>
 
-int isDirectory(const char *path)
+int getdir(string dir, vector<string> &files)
 {
-    struct stat statbuf;
-    if (stat(path, &statbuf) != 0)
-        return 0;
-    return S_ISDIR(statbuf.st_mode);
+    DIR *dp;
+    struct dirent *dirp;
+    if ((dp = opendir(dir.c_str())) == NULL)
+    {
+        cout << "Error(" << errno << ") opening " << dir << endl;
+        return errno;
+    }
+
+    while ((dirp = readdir(dp)) != NULL)
+    {
+        files.push_back(string(dirp->d_name));
+    }
+    closedir(dp);
+    return 0;
 }
 
-vector<string> splitPath(string path)
+int getNumberOfFilesInFolder(string dir)
 {
-    stringstream ss(path);
-    vector<string> result;
-
-    while (ss.good())
-    {
-        string substr;
-        getline(ss, substr, '/');
-        result.push_back(substr);
-    }
-
-    return result;
-}
-
-string joinPath(vector<string> strs)
-{
-    stringstream ss;
-
-    for (int i = 0; i < strs.size(); i++)
-    {
-        ss << strs[i];
-        if (i != strs.size() - 1)
-        {
-            ss << "/";
-        }
-    }
-
-    return ss.str();
-}
-
-string getMyProjectRoot(string projectRootName, string path)
-{
-    vector<string> strs(splitPath(path));
-
-    string last = strs[strs.size() - 1];
-    if (last == projectRootName)
-    {
-        return path;
-    }
-    else
-    {
-        strs.pop_back();
-
-        if (strs.empty())
-        {
-            throw "could not find project root (in function getMyProjectRoot)";
-        }
-        return getMyProjectRoot(projectRootName, joinPath(strs));
-    }
+    vector<string> files;
+    getdir(dir, files);
+    return files.size() - 2;
 }
 
 int main(int argc, char **argv)
 {
-    string projectRootFolderName = "sudoku";
-    // vector<string> strs(splitPath("/keep/Repo/USELESS/_sandbox/cpp/stng-cpp/sudoku/build"));
+    sayHello("LouLou");
+    string dir = string("../assets/puzzles");
+    vector<string> files = vector<string>();
 
-    // for (int i = 0; i < strs.size(); i++)
+    int num = getNumberOfFilesInFolder(dir);
+
+
+
+    cout << num << endl;
+
+    // for (unsigned int i = 0; i < files.size(); i++)
     // {
-    //     cout << strs[i] << endl;
+    //     cout << files[i] << endl;
     // }
-
-    //     cout << joinPath(strs) << endl;
-
-    // string result = getMyProjectRoot(projectRootFolderName, "/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/build");
-    // cout << result << endl;
-
-    if (isDirectory("/keep/Repo/USELESS/_sandbox/cpp/learning-cpp/sudoku/build"))
-    {
-        cout << "dir" << endl;
-    }
-    else
-    {
-        cout << "file" << endl;
-    }
-
     return 0;
 }
