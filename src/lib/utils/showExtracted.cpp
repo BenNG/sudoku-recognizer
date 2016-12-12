@@ -1,40 +1,36 @@
 /**
-this file show the extrated sudoku for each file
-usage:
+    this file show the extrated sudoku for each file
+    usage:
 
-Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted
+    # will show all extracted puzzles
+    cmake .. && make && src/showExtracted
 
-Tesseract_DIR=/keep/Repo/tesseract/build cmake .. && make && src/showExtracted assets/puzzles/s15.jpg
+    # will show all extracted cells
+    cmake .. && make && src/showExtracted --showCell
 
+    # will show the extracted puzzle of `assets/puzzles/s33.jpg`
+    cmake .. && make && src/showExtracted --puzzleNumber 33
+
+    # will show all cells of `assets/puzzles/s33.jpg`
+    cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell
+
+    # will show the cell index = 10 of `assets/puzzles/s33.jpg`
+    cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10
+
+    # will show the cell index = 10 of `assets/puzzles/s33.jpg` plus the process of extraction
+    cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10 --debug
 */
 
-#define BOOST_FILESYSTEM_VERSION 3
-
-//  As an example program, we don't want to use any deprecated features
-#ifndef BOOST_FILESYSTEM_NO_DEPRECATED
-#define BOOST_FILESYSTEM_NO_DEPRECATED
-#endif
-#ifndef BOOST_SYSTEM_NO_DEPRECATED
-#define BOOST_SYSTEM_NO_DEPRECATED
-#endif
-
 #include <map>
-
-#include "boost/filesystem/operations.hpp"
-#include "boost/filesystem/path.hpp"
-#include "boost/progress.hpp"
-#include <boost/program_options.hpp>
 
 #include "../hello.h"
 #include "opencv.h"
 
 #include <opencv2/opencv.hpp>
 
-namespace po = boost::program_options;
 using namespace cv;
 using namespace cv::ml;
 using namespace std;
-using namespace boost;
 
 /**
 *
@@ -52,53 +48,40 @@ int main(int argc, char **argv)
     std::map<int, std::map<int, int>> cellV(cellValues());
 
     bool showCell = false, showPuzzle = false, debug = false;
-    int puzzleNumber, cellNumber;
+    int puzzleNumber = -1, cellNumber = -1;
     stringstream ss;
     ss << "assets/puzzles/";
-    
-    
-    
-    
-    
-    po::options_description desc("Allowed options");
-    desc.add_options()("debug", "debug")("showPuzzle", "show puzzles")("showCell", "show cells")("puzzleNumber", po::value<int>(&puzzleNumber)->default_value(-1))("cellNumber", po::value<int>(&cellNumber)->default_value(-1))("puzzle", po::value<int>(&puzzleNumber)->default_value(-1));
 
-    po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, desc), vm);
-    po::notify(vm);
-
-    if (vm.count("help"))
+    for (int i = 1; i < argc; i++)
     {
-        cout << desc << "\n";
-        return 0;
-    }
-
-    if (vm.count("showCell"))
-    {
-        showCell = true;
-    }
-
-    if (vm.count("debug"))
-    {
-        debug = true;
-    }
-
-    if (vm.count("showPuzzle"))
-    {
-        showPuzzle = true;
-    }
-
-    if (puzzleNumber != -1)
-    {
-        ss << "s" << puzzleNumber << ".jpg";
+        string arg = argv[i];
+        if (arg == "--showCell")
+        {
+            showCell = true;
+        }
+        if (arg == "--cellNumber")
+        {
+            cellNumber = stoi(argv[i + 1]);
+        }
+        if (arg == "--showPuzzle")
+        {
+            showPuzzle = true;
+        }
+        if (arg == "--puzzleNumber")
+        {
+            puzzleNumber = stoi(argv[i + 1]);
+            ss << "s" << argv[i + 1] << ".jpg";
+        }
+        if (arg == "--debug")
+        {
+            debug = true;
+        }
     }
 
     if (!showPuzzle && !showCell)
     {
         showPuzzle = true;
     }
-
-
 
     string p(getPath(ss.str()));
 
@@ -108,17 +91,13 @@ int main(int argc, char **argv)
     if (isDirectory(p.c_str()))
     {
         int num = getNumberOfFilesInFolder(p);
-        cout << num << endl;
-
         for (int fileNumber = 0; fileNumber < num; fileNumber++)
         {
-
             stringstream ss;
             ss << "assets/puzzles/";
             ss << "s" << fileNumber << ".jpg";
             fullName = getPath(ss.str());
 
-            cout << fullName << endl;
             raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
             sudoku = extractPuzzle(raw);
 
@@ -146,7 +125,6 @@ int main(int argc, char **argv)
                 // all files - all cell
                 else
                 {
-
                     for (int k = 0; k < 81; k++)
                     {
                         roi = extractRoiFromCell(sudoku, k, debug);

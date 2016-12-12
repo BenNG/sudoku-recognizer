@@ -2,48 +2,34 @@
 #include <vector>
 using namespace std; // Or using std::string;
 #include "../hello.h"
-#include <dirent.h>
 
-int getdir(string dir, vector<string> &files)
-{
-    DIR *dp;
-    struct dirent *dirp;
-    if ((dp = opendir(dir.c_str())) == NULL)
-    {
-        cout << "Error(" << errno << ") opening " << dir << endl;
-        return errno;
-    }
-
-    while ((dirp = readdir(dp)) != NULL)
-    {
-        files.push_back(string(dirp->d_name));
-    }
-    closedir(dp);
-    return 0;
-}
-
-int getNumberOfFilesInFolder(string dir)
-{
-    vector<string> files;
-    getdir(dir, files);
-    return files.size() - 2;
-}
-
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     sayHello("LouLou");
-    string dir = string("../assets/puzzles");
-    vector<string> files = vector<string>();
 
-    int num = getNumberOfFilesInFolder(dir);
+    bool showCell = false, showPuzzle = false, debug = false;
+    cout << "argc: " << argc << endl;
 
-
-
-    cout << num << endl;
-
-    // for (unsigned int i = 0; i < files.size(); i++)
+    // for (int i = 1; i < argc; i++)
     // {
-    //     cout << files[i] << endl;
+    //     string arg = argv[i];
+    //     if (arg == "--showCell")
+    //     {
+    //         showCell = true;
+    //     }
+    //     if (arg == "--showPuzzle")
+    //     {
+    //         showPuzzle = true;
+    //     }
+    //     if (arg == "--debug")
+    //     {
+    //         debug = true;
+    //     }
+    //     if (arg == "--puzzleNumber")
+    //     {
+    //         ss << "s" << argv[i + 1] << ".jpg";
+    //     }
     // }
+
     return 0;
 }
