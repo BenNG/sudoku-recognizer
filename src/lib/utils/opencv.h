@@ -1,17 +1,6 @@
 #ifndef UTILS_OPENCV_LIB
 #define UTILS_OPENCV_LIB
 
-
-#define BOOST_FILESYSTEM_VERSION 3
-
-//  As an example program, we don't want to use any deprecated features
-#ifndef BOOST_FILESYSTEM_NO_DEPRECATED
-#  define BOOST_FILESYSTEM_NO_DEPRECATED
-#endif
-#ifndef BOOST_SYSTEM_NO_DEPRECATED
-#  define BOOST_SYSTEM_NO_DEPRECATED
-#endif
-
 #include <map>
 #include <opencv2/opencv.hpp>
 #include <opencv2/objdetect.hpp>

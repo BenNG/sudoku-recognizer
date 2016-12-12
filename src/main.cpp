@@ -8,20 +8,12 @@
 #define BOOST_SYSTEM_NO_DEPRECATED
 #endif
 
-#include "opencv2/text.hpp"
-
-#include "boost/filesystem/operations.hpp"
-#include "boost/filesystem/path.hpp"
-#include "boost/progress.hpp"
-
 #include "lib/utils/opencv.h"
 #include <opencv2/opencv.hpp>
 
-namespace fs = boost::filesystem;
 using namespace cv;
 using namespace cv::ml;
 using namespace std;
-using namespace boost;
 
 /**
  *

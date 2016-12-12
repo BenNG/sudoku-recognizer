@@ -1,12 +1,8 @@
 set(CMAKE_CXX_STANDARD 11)
 
 find_package( OpenCV 3.1.0 REQUIRED core text)
-find_package(Boost 1.58 COMPONENTS system filesystem program_options)
 
 include_directories( ${OpenCV_INCLUDE_DIRS})
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-endif()
 
 set(OpenCV_LIBS opencv_core opencv_objdetect)
 
@@ -37,12 +33,6 @@ target_link_libraries( testKnn hello )
 target_link_libraries( testKnn opencv )
 
 target_link_libraries( helloBin hello )
-
-if(Boost_FOUND)
-    target_link_libraries(showExtracted ${Boost_LIBRARIES} )
-    target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
-    target_link_libraries( opencv ${Boost_LIBRARIES})
-endif()
 
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
 target_link_libraries( ${PROJECT_NAME} opencv )
