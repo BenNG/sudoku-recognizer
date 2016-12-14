@@ -1,5 +1,7 @@
 # sudoku-recognizer
 
+![ddd.gif](https://bitbucket.org/repo/njp6xM/images/4266970602-ddd.gif)
+
 ## Requirement
 * [CMake](https://cmake.org/)  
 * [OpenCV 3.1.0](http://opencv.org/downloads.html)
