@@ -74,3 +74,7 @@ cmake .. && make && src/testKnn
 * unrecognize cell ? play with:
   * width_threshold
   * height_threshold
+
+## Thank you for answering my questions
+* [Berak](http://answers.opencv.org/users/2130/berak/)
+* [Baptiste Wicht](https://github.com/wichtounet/)
