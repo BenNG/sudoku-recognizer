@@ -521,7 +521,7 @@ Ptr<ml::KNearest> getKnn()
 
     if (raw_features.isOpened() == false)
     {
-        throw "error, unable to open training classifications file, exiting program\n\n"; // if the file was not opened successfully
+        throw std::logic_error( "error, unable to open training classifications file, exiting program\n\n"); // if the file was not opened successfully
         // std::cout << "error, unable to open training classifications file, exiting program\n\n"; // show error message
         // return (0);                                                                              // and exit program
     }
@@ -552,7 +552,7 @@ void testKnn(Ptr<ml::KNearest> knn)
 
     if (raw_features.isOpened() == false)
     {
-        throw "error, unable to open training classifications file, exiting program\n\n"; // if the file was not opened successfully
+        throw std::logic_error("error, unable to open training classifications file, exiting program\n\n"); // if the file was not opened successfully
         // std::cout << "error, unable to open training classifications file, exiting program\n\n"; // show error message
         // return (0);                                                                              // and exit program
     }
@@ -667,7 +667,7 @@ vector<double> findBiggestComponent(Mat input)
 
     if (num_objects < 2)
     {
-        throw "No objects detected";
+        throw std::logic_error( "No objects detected");
     }
     else
     {
@@ -699,7 +699,7 @@ vector<double> findBiggestComponent(Mat input)
     int left = stats.at<int>(index, CC_STAT_LEFT);
     int top = stats.at<int>(index, CC_STAT_TOP);
 
-    vector<double> v = {left, top, width, height, centroids.at<double>(index, 0), centroids.at<double>(index, 1)};
+    vector<double> v = {(double)left, (double)top, (double)width, (double)height, centroids.at<double>(index, 0), centroids.at<double>(index, 1)};
 
     return v;
 }
@@ -811,7 +811,7 @@ string getMyProjectRoot(string path, string projectRootName)
 
         if (strs.empty())
         {
-            throw "could not find project root (in function getMyProjectRoot)";
+            throw std::logic_error("could not find project root (in function getMyProjectRoot)");
         }
         return getMyProjectRoot(joinPath(strs), projectRootName);
     }
@@ -1627,8 +1627,9 @@ int getdir(string dir, vector<string> &files)
     struct dirent *dirp;
     if ((dp = opendir(dir.c_str())) == NULL)
     {
-        cout << "Error(" << errno << ") opening " << dir << endl;
-        return errno;
+        stringstream ss("Error opening ");
+        ss << dir;
+        throw std::logic_error(ss.str());
     }
 
     while ((dirp = readdir(dp)) != NULL)

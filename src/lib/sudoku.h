@@ -25,7 +25,7 @@ static const Size winStride = Size(8, 8);
 
 // knn testing attributes
 static const int nbrOfCells = 1186;
-static const int percent = 0.9;
+static const double percent = 0.9;
 
 
 // cells
