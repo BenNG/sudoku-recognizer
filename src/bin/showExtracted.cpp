@@ -24,7 +24,7 @@
 #include <map>
 
 #include "../lib/hello.h"
-#include "../lib/opencv.h"
+#include "../lib/sudoku.h"
 
 #include <opencv2/opencv.hpp>
 

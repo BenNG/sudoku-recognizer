@@ -4,7 +4,7 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 #include <string>
-#include "../src/lib/opencv.h"
+#include "../src/lib/sudoku.h"
 
 using namespace std;
 using namespace cv;

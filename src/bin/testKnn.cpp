@@ -1,5 +1,5 @@
 #include "../lib/hello.h"
-#include "../lib/opencv.h"
+#include "../lib/sudoku.h"
 
 int main(int argc, char **argv)
 {

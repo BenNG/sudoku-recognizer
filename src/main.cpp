@@ -8,7 +8,7 @@
 #define BOOST_SYSTEM_NO_DEPRECATED
 #endif
 
-#include "lib/opencv.h"
+#include "lib/sudoku.h"
 #include <opencv2/opencv.hpp>
 
 using namespace cv;

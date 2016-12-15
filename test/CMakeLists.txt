@@ -9,6 +9,6 @@ target_include_directories(test_executable PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_compile_definitions(test_executable PRIVATE "BOOST_TEST_DYN_LINK=1")
 target_link_libraries(test_executable ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 target_link_libraries( test_executable ${OpenCV_LIBS} )
-target_link_libraries( test_executable opencv)
+target_link_libraries( test_executable sudoku)
 
 add_test(NAME test1 COMMAND test_executable)

@@ -1,4 +1,4 @@
-#include "opencv.h"
+#include "sudoku.h"
 
 /**
 * You will handle cells here a cell is a square that hold a number or not. A puzle has 81 cells
