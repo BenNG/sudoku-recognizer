@@ -823,7 +823,7 @@ string getPath(string p)
 {
     stringstream ss;
 
-    ss << getMyProjectRoot(getexepath(), "sudoku");
+    ss << getMyProjectRoot(getexepath(), "sudoku-recognizer");
     ss << "/";
     ss << p;
     return ss.str();

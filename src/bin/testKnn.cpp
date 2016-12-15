@@ -1,5 +1,5 @@
-#include "../hello.h"
-#include "opencv.h"
+#include "../lib/hello.h"
+#include "../lib/opencv.h"
 
 int main(int argc, char **argv)
 {

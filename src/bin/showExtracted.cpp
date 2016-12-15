@@ -23,8 +23,8 @@
 
 #include <map>
 
-#include "../hello.h"
-#include "opencv.h"
+#include "../lib/hello.h"
+#include "../lib/opencv.h"
 
 #include <opencv2/opencv.hpp>
 

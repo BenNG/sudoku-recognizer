@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 using namespace std; // Or using std::string;
-#include "../hello.h"
+#include "../lib/hello.h"
 
 int main(int argc, char *argv[])
 {

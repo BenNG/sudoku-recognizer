@@ -8,16 +8,16 @@ set(OpenCV_LIBS opencv_core opencv_objdetect)
 
 MESSAGE("OpenCV version : ${OpenCV_VERSION}")
 
-add_library(opencv lib/utils/opencv.cpp lib/utils/opencv.h)
-add_library(hello lib/hello.cpp lib/hello.h)
+add_library(opencv lib/opencv.cpp)
+add_library(hello lib/hello.cpp)
 
 set(SOURCES main.cpp )
 
 add_executable( ${PROJECT_NAME} ${SOURCES} )
-add_executable( showExtracted lib/utils/showExtracted.cpp)
-add_executable( prepareData lib/utils/prepareData.cpp)
-add_executable( testKnn lib/utils/testKnn.cpp)
-add_executable( helloBin lib/utils/hello.cpp)
+add_executable( showExtracted bin/showExtracted.cpp)
+add_executable( prepareData bin/prepareData.cpp)
+add_executable( testKnn bin/testKnn.cpp)
+add_executable( helloBin bin/hello.cpp)
 
 target_link_libraries(prepareData opencv)
 

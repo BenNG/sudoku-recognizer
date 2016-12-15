@@ -1,7 +1,7 @@
 #include <iostream>
 #include <regex>
 
-#include "opencv.h"
+#include "../lib/opencv.h"
 
 using namespace std; // Or using std::string;
 

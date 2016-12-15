@@ -4,7 +4,7 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 #include <string>
-#include "../src/lib/utils/opencv.h"
+#include "../src/lib/opencv.h"
 
 using namespace std;
 using namespace cv;
