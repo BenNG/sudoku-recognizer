@@ -32,7 +32,7 @@ target_link_libraries( testKnn ${OpenCV_LIBS} )
 target_link_libraries( testKnn hello )
 target_link_libraries( testKnn sudoku )
 
-target_link_libraries( helloBin hello )
+target_link_libraries( helloBin hello sudoku)
 
 target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} )
 target_link_libraries( ${PROJECT_NAME} sudoku )

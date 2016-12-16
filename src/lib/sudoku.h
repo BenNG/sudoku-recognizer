@@ -87,6 +87,12 @@ int getNumberOfFilesInFolder(string dir);
 int getdir(string dir, vector<string> &files);
 
 std::map<int, std::map<int,int> > cellValues();
+
+// debug for android
+string hello();
+
+
+
 #endif //UTILS_OPENCV_LIB
 
 

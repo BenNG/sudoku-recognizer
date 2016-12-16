@@ -1646,3 +1646,7 @@ int getNumberOfFilesInFolder(string dir)
     getdir(dir, files);
     return files.size() - 2;
 }
+
+string hello(){
+    return "hello";
+}
