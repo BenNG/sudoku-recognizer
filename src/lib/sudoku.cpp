@@ -83,7 +83,6 @@ Mat normalizeSize(Mat in, int size)
 Mat extractNumber(Mat input)
 {
 
-
     Mat cell = prepareCell(input);
     Mat temp = removeTinyVolume(cell.clone(), 75, Scalar(0, 0, 0));
 
@@ -131,7 +130,9 @@ Mat extractNumber(Mat input)
             // cout << "width > to width_threshold -> skip " << width << endl;
 
             continue; // drop long horizontal line
-        }else{
+        }
+        else
+        {
             // cout << "width: " << width << endl;
         }
         if (height < 8 || height > height_threshold)
@@ -139,10 +140,11 @@ Mat extractNumber(Mat input)
             // cout << "height > height_threshold -> skip " << width << endl;
 
             continue; // drop long vetical line
-        }else{
+        }
+        else
+        {
             // cout << "height: " << height << endl;
             // cout << "height_threshold: " << height_threshold << endl;
-
         }
         if (boundingArea < 220 || boundingArea > 900)
         {
@@ -155,7 +157,9 @@ Mat extractNumber(Mat input)
         if (area < 105)
         {
             continue; // area of the connected object
-        }else{
+        }
+        else
+        {
             // cout << "area: " << area << endl;
         }
 
@@ -510,7 +514,7 @@ Ptr<ml::KNearest> getKnn()
     int testingNbr = nbrOfCells - trainingNbr;
     Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_8UC1);
     Mat labels(1, nbrOfCells, CV_8UC1);
-    string raw_features_path(getPath("assets/raw-features.yml")); // created by prepareData 
+    string raw_features_path(getPath("assets/raw-features.yml")); // created by prepareData
     Ptr<ml::KNearest> knn(ml::KNearest::create());
 
     // vector<Mat> v = readTrainingMNIST();
@@ -521,7 +525,7 @@ Ptr<ml::KNearest> getKnn()
 
     if (raw_features.isOpened() == false)
     {
-        throw std::logic_error( "error, unable to open training classifications file, exiting program\n\n"); // if the file was not opened successfully
+        throw std::logic_error("error, unable to open training classifications file, exiting program\n\n"); // if the file was not opened successfully
         // std::cout << "error, unable to open training classifications file, exiting program\n\n"; // show error message
         // return (0);                                                                              // and exit program
     }
@@ -667,7 +671,7 @@ vector<double> findBiggestComponent(Mat input)
 
     if (num_objects < 2)
     {
-        throw std::logic_error( "No objects detected");
+        throw std::logic_error("No objects detected");
     }
     else
     {
@@ -816,8 +820,6 @@ string getMyProjectRoot(string path, string projectRootName)
         return getMyProjectRoot(joinPath(strs), projectRootName);
     }
 }
-
-
 
 string getPath(string p)
 {
@@ -1565,9 +1567,35 @@ string grab(string filePath_str, Ptr<ml::KNearest> knn)
 
 string getexepath()
 {
-  char result[ PATH_MAX ];
-  ssize_t count = readlink( "/proc/self/exe", result, PATH_MAX );
-  return string( result, (count > 0) ? count : 0 );
+
+    char *path = NULL;
+    int length, dirname_length;
+    int i;
+
+    length = wai_getExecutablePath(NULL, 0, &dirname_length);
+
+    if (length > 0)
+    {
+        path = (char *)malloc(length + 1);
+        if (!path)
+            abort();
+        wai_getExecutablePath(path, length, &dirname_length);
+        path[length] = '\0';
+
+        // printf("executable path: %s\n", path);
+        path[dirname_length] = '\0';
+        // printf("  dirname: %s\n", path);
+        // printf("  basename: %s\n", path + dirname_length + 1);
+        return path;
+        // free(path); // memory leak ?
+    }
+
+    cout << length << endl;
+
+    // char result[PATH_MAX];
+    // ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+    // return string(result, (count > 0) ? count : 0);
+
 }
 /**
 // Windows
@@ -1647,6 +1675,7 @@ int getNumberOfFilesInFolder(string dir)
     return files.size() - 2;
 }
 
-string hello(){
+string hello()
+{
     return "hello";
 }

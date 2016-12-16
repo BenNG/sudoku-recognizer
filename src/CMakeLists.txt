@@ -9,6 +9,7 @@ set(OpenCV_LIBS opencv_core opencv_objdetect)
 MESSAGE("OpenCV version : ${OpenCV_VERSION}")
 
 add_library(sudoku lib/sudoku.cpp)
+add_library(whereami lib/whereami.c lib/whereami.h)
 add_library(hello lib/hello.cpp)
 
 set(SOURCES main.cpp )
@@ -21,7 +22,7 @@ add_executable( helloBin bin/hello.cpp)
 
 target_link_libraries(prepareData sudoku)
 
-target_link_libraries( sudoku ${OpenCV_LIBS})
+target_link_libraries( sudoku ${OpenCV_LIBS} whereami)
 
 target_link_libraries( showExtracted ${OpenCV_LIBS} )
 target_link_libraries( showExtracted sudoku )

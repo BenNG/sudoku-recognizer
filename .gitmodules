@@ -1,0 +1,3 @@
+[submodule "src/lib/whereami"]
+	path = src/lib/whereami
+	url = git@github.com:gpakosz/whereami.git
