@@ -816,15 +816,15 @@ string getMyProjectRoot(string path, string projectRootName)
     }
 }
 
-string getPath(string p)
-{
-    stringstream ss;
+// string getPath(string p)
+// {
+//     stringstream ss;
 
-    ss << getMyProjectRoot(getexepath(), "sudoku-recognizer");
-    ss << "/";
-    ss << p;
-    return ss.str();
-}
+//     ss << getMyProjectRoot(getexepath(), "sudoku-recognizer");
+//     ss << "/";
+//     ss << p;
+//     return ss.str();
+// }
 
 /**
 * from time to time there are some tiny text around the puzzle and it kills the detection

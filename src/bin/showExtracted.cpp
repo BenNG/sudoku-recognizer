@@ -43,7 +43,7 @@ int main(int argc, char **argv)
     int K = 1;
     Mat response, dist, m;
     // load knn with "assets/raw-features.yml"
-    string raw_features_path(getPath("assets/raw-features.yml")); // created by prepareData
+    string raw_features_path("./../assets/raw-features.yml"); // created by prepareData
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
     
     Ptr<ml::KNearest> knn = getKnn(raw_features);
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
     bool showCell = false, showPuzzle = false, debug = false;
     int puzzleNumber = -1, cellNumber = -1;
     stringstream ss;
-    ss << "assets/puzzles/";
+    ss << "./../assets/puzzles/";
 
     for (int i = 1; i < argc; i++)
     {
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
         showPuzzle = true;
     }
 
-    string p(getPath(ss.str()));
+    string p(ss.str());
 
     string fullName;
     Mat raw, sudoku, roi;
@@ -97,9 +97,9 @@ int main(int argc, char **argv)
         for (int fileNumber = 0; fileNumber < num; fileNumber++)
         {
             stringstream ss;
-            ss << "assets/puzzles/";
+            ss << "./../assets/puzzles/";
             ss << "s" << fileNumber << ".jpg";
-            fullName = getPath(ss.str());
+            fullName = ss.str();
 
             raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
             sudoku = extractPuzzle(raw);
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        cout << p << endl;
+        // cout << p << endl;
         raw = imread(p, CV_LOAD_IMAGE_GRAYSCALE);
         sudoku = extractPuzzle(raw);
         if (showPuzzle)

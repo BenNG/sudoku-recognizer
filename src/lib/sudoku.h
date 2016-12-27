@@ -65,7 +65,7 @@ void drawMarkers(Mat input, vector<Point> biggestApprox);
 Mat drawGrid(Mat input);
 void showImage(Mat img);
 string getMyProjectRoot(string projectRootName, string path);
-string getPath(string p);
+// string getPath(string p);
 Mat removeTinyVolume(Mat input, int area, Scalar color);
 Mat deskew(Mat in);
 void showCells(Mat sudoku, bool debug);

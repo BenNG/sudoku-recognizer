@@ -20,7 +20,7 @@ At the root of the project:
 ```
 mkdir build && cd build
 # this is path from the root of the project without dots or/and splashes
-cmake .. && make && src/sudokuRecognizer assets/puzzles/s1.jpg
+cmake .. && make && src/sudokuRecognizer ./../assets/puzzles/s1.jpg
 ```
 
 ## Tools that can help you during the development process
