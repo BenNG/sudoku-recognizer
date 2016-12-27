@@ -1535,15 +1535,15 @@ std::map<int, std::map<int, int>> cellValues()
 // sudoku
 
 // give file path from the root of the project
-string grab(string filePath_str, Ptr<ml::KNearest> knn)
+string grab(Mat raw, Ptr<ml::KNearest> knn)
 {
     // Ptr<ml::KNearest> knn = getKnn();
-    string filePath(getPath(filePath_str));
-    Mat raw, sudoku, roi, response, dist;
+    // string filePath(getPath(filePath_str));
+    Mat sudoku, roi, response, dist;
     stringstream ss;
     int K = 1;
 
-    raw = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
+    // raw = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
     sudoku = extractPuzzle(raw);
 
     for (int k = 0; k < 81; k++)
