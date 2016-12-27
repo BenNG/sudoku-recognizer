@@ -1560,38 +1560,41 @@ string grab(Mat raw, Ptr<ml::KNearest> knn)
     return ss.str();
 }
 
-string getexepath()
-{
+// string getexepath()
+// {
 
-    char *path = NULL;
-    int length, dirname_length;
-    int i;
+//     char *path = NULL;
+//     int length, dirname_length;
+//     int i;
 
-    length = wai_getExecutablePath(NULL, 0, &dirname_length);
+//     length = wai_getExecutablePath(NULL, 0, &dirname_length);
 
-    if (length > 0)
-    {
-        path = (char *)malloc(length + 1);
-        if (!path)
-            abort();
-        wai_getExecutablePath(path, length, &dirname_length);
-        path[length] = '\0';
+//     if (length > 0)
+//     {
+//         path = (char *)malloc(length + 1);
+//         if (!path)
+//             abort();
+//         wai_getExecutablePath(path, length, &dirname_length);
+//         path[length] = '\0';
 
-        // printf("executable path: %s\n", path);
-        path[dirname_length] = '\0';
-        // printf("  dirname: %s\n", path);
-        // printf("  basename: %s\n", path + dirname_length + 1);
-        return path;
-        // free(path); // memory leak ?
-    }
+//         // printf("executable path: %s\n", path);
+//         path[dirname_length] = '\0';
+//         // printf("  dirname: %s\n", path);
+//         // printf("  basename: %s\n", path + dirname_length + 1);
+//         return path;
+//         // free(path); // memory leak ?
+//     }
 
-    cout << length << endl;
+//     cout << length << endl;
 
-    // char result[PATH_MAX];
-    // ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
-    // return string(result, (count > 0) ? count : 0);
-    return "";
-}
+//     // char result[PATH_MAX];
+//     // ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+//     // return string(result, (count > 0) ? count : 0);
+//     return "";
+// }
+
+
+
 /**
 // Windows
 #include <string>
