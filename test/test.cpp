@@ -8,7 +8,10 @@
 using namespace std;
 using namespace cv;
 
-Ptr<ml::KNearest> knn = getKnn();
+string raw_features_path(getPath("assets/raw-features.yml")); // created by prepareData
+cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
+
+Ptr<ml::KNearest> knn = getKnn(raw_features);
 
 bool compare(string actual, string expected)
 {

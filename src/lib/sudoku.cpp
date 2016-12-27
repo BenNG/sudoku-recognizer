@@ -508,20 +508,18 @@ Mat extractPuzzle(Mat original)
 // --------------------------------------------------------
 // KNN
 
-Ptr<ml::KNearest> getKnn()
+Ptr<ml::KNearest> getKnn(cv::FileStorage raw_features)
 {
     int trainingNbr = nbrOfCells * 0.9;
     int testingNbr = nbrOfCells - trainingNbr;
     Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_8UC1);
     Mat labels(1, nbrOfCells, CV_8UC1);
-    string raw_features_path(getPath("assets/raw-features.yml")); // created by prepareData
     Ptr<ml::KNearest> knn(ml::KNearest::create());
 
     // vector<Mat> v = readTrainingMNIST();
     // Mat trainFeatures = v[0];
     // Mat trainLabels = v[1];
 
-    cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
 
     if (raw_features.isOpened() == false)
     {
@@ -542,17 +540,14 @@ Ptr<ml::KNearest> getKnn()
     return knn;
 }
 
-void testKnn(Ptr<ml::KNearest> knn)
+void testKnn(Ptr<ml::KNearest> knn, cv::FileStorage raw_features)
 {
 
     int trainingNbr = nbrOfCells * 0.9;
     int testingNbr = nbrOfCells - trainingNbr;
     Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_8UC1);
     Mat labels(1, nbrOfCells, CV_8UC1);
-    string raw_features_path(getPath("assets/raw-features.yml"));
     int totalCorrect = 0;
-
-    cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
 
     if (raw_features.isOpened() == false)
     {

@@ -19,9 +19,8 @@ cmake .. && ctest -V
 At the root of the project:
 ```
 mkdir build && cd build
-cmake ..
-make
-src/sudokuRecognizer assets/puzzles/s1.jpg # this is path from the root of the project without dots or/and splashes
+# this is path from the root of the project without dots or/and splashes
+cmake .. && make && src/sudokuRecognizer assets/puzzles/s1.jpg
 ```
 
 ## Tools that can help you during the development process

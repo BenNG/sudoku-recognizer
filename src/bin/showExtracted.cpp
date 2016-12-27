@@ -43,7 +43,10 @@ int main(int argc, char **argv)
     int K = 1;
     Mat response, dist, m;
     // load knn with "assets/raw-features.yml"
-    Ptr<ml::KNearest> knn = getKnn();
+    string raw_features_path(getPath("assets/raw-features.yml")); // created by prepareData
+    cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
+    
+    Ptr<ml::KNearest> knn = getKnn(raw_features);
     // get cells values manually grabbed
     std::map<int, std::map<int, int>> cellV(cellValues());
 

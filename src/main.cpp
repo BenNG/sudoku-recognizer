@@ -12,9 +12,12 @@ using namespace std;
  * */
 int main(int argc, char **argv)
 {
-    Ptr<ml::KNearest> knn = getKnn();
+    string raw_features_path("./../assets/raw-features.yml"); // created by prepareData
+    cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
+
+    Ptr<ml::KNearest> knn = getKnn(raw_features);
  
-    string filePath("assets/puzzles/s0.jpg"); // by default
+    string filePath("./../assets/puzzles/s0.jpg"); // by default
     if (argc > 1)
     {
         filePath = argv[1];

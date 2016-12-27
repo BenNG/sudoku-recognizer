@@ -53,8 +53,8 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox);
 Mat extractPuzzle(Mat input);
 // knn
 int readFlippedInteger(FILE *fp);
-Ptr<ml::KNearest> getKnn();
-void testKnn(Ptr<ml::KNearest> knn);
+Ptr<ml::KNearest> getKnn(FileStorage raw_features);
+void testKnn(Ptr<ml::KNearest> knn, cv::FileStorage raw_features);
 // debug
 int minuss(int i, int j);
 Mat drawAllContour(Mat preprocessed);
