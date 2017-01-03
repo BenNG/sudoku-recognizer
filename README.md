@@ -7,26 +7,26 @@
 * [OpenCV 3.1.0](http://opencv.org/downloads.html)
     * This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful  
 
+## Useful information
+Note that all the commands have to be invoked in the `build` folder. The first time you have to create it.
+```
+mkdir build && cd build
+```
+
 ## Tests
 Once you have installed all the requirements, execute the tests to see if everything is OK
 ```
-# In the build folder
 cmake .. && ctest -V
 ```
 
-
 ## Parse one of the provided puzzle located in `assets/puzzles`
-At the root of the project:
 ```
-mkdir build && cd build
-# this is path from the root of the project without dots or/and splashes
 cmake .. && make && src/sudokuRecognizer ./../assets/puzzles/s1.jpg
 ```
 
 ## Tools that can help you during the development process
 ### Show all extracted puzzles located in `assets/puzzles`
 ```
-# In the build folder
 cmake .. && make && src/showExtracted
 ```
 
@@ -34,27 +34,41 @@ cmake .. && make && src/showExtracted
 
 ### Show all extracted cells for `assets/puzzles/s33.jpg`
 ```
-# In the build folder
-cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell # will show all cells of `assets/puzzles/s33.jpg`
+cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell
 ```
 
 ![fff.gif](https://bitbucket.org/repo/njp6xM/images/1253348601-fff.gif)
 
-### Other actions `assets/puzzles/s33.jpg`
-```
-# In the build folder
+### Other actions
 
-cmake .. && make && src/showExtracted # will show all extracted puzzles
-cmake .. && make && src/showExtracted --showCell  # will show all extracted cells
-cmake .. && make && src/showExtracted --puzzleNumber 33 # will show the extracted puzzle of `assets/puzzles/s33.jpg`
-cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10 # will show the cell index = 10 of `assets/puzzles/s33.jpg`
-cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10 --debug # will show the cell index = 10 of `assets/puzzles/s33.jpg` plus the process of extraction
+#### will show all extracted puzzles  
+```
+cmake .. && make && src/showExtracted  
 ```
 
+#### will show all extracted cells  
+```
+cmake .. && make && src/showExtracted --showCell  
+```
+
+#### will show the extracted puzzle: `assets/puzzles/s33.jpg`  
+```
+cmake .. && make && src/showExtracted --puzzleNumber 33  
+```
+
+#### will show the cell index: 10 of `assets/puzzles/s33.jpg`  
+```
+# useful in situation where only cell number 40 is wrong
+cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10  
+```
+
+#### will show the cell index: 10 of `assets/puzzles/s33.jpg` plus the process of extraction  
+```
+cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10 --debug  
+```
 
 ## Create the `assets/raw-features.yml` yourself
 ```
-# In the build folder
 cmake .. && make && src/prepareData # create training data from s0 --> s35
 ```
 
@@ -65,14 +79,15 @@ cmake .. && make && src/testKnn
 > You can iterate over each picture by setting debug=true in the `testKnn` fn  
 
 ## Tips
-* add set(OpenCV_LIBS opencv_core opencv_objdetect) for HOGDescriptor
-* mkdir -p data/{1,2,3,4,5,6,7,8,9}
-* prepareData creates "assets/raw-features.yml" and getKnn uses it
+* If you want to play with `HOGDescriptor` add set(OpenCV_LIBS opencv_core opencv_objdetect) (this is not used in the project anymore)
+* The function `prepareData` creates `assets/raw-features.yml` and getKnn uses it
 * boost library
- * check is the /FindBoost.cmake the supported version
+ * check is the /FindBoost.cmake the supported version (the lib is not used anymore because it is not possible to use it on android)
 * unrecognize cell ? play with:
   * width_threshold
   * height_threshold
+* Before the portage on android, I used a system for resolving the path of file that looked for the root of the project and join the path given but in a apk application
+  there are no path so I had to rewrite all and use relative paths
 
 ## Thank you for answering my questions
 * [Berak](http://answers.opencv.org/users/2130/berak/)
