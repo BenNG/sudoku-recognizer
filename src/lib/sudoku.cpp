@@ -78,7 +78,7 @@ Mat normalizeSize(Mat in, int size)
 }
 
 /**
-* extract the number and normelize the size
+* extract the number of the cell and normelize the size
 * */
 Mat extractNumber(Mat input)
 {

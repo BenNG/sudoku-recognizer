@@ -45,7 +45,7 @@ int main(int argc, char **argv)
     // load knn with "assets/raw-features.yml"
     string raw_features_path("./../assets/raw-features.yml"); // created by prepareData
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
-    
+
     Ptr<ml::KNearest> knn = getKnn(raw_features);
     // get cells values manually grabbed
     std::map<int, std::map<int, int>> cellV(cellValues());
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 
     string fullName;
     Mat raw, sudoku, roi;
-
+    // all files
     if (isDirectory(p.c_str()))
     {
         int num = getNumberOfFilesInFolder(p);
@@ -104,8 +104,36 @@ int main(int argc, char **argv)
             raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
             sudoku = extractPuzzle(raw);
 
+            int width = sudoku.cols;
+            int height = sudoku.rows;
+            cout << "width: " << width << endl;
+            cout << "height: " << height << endl;
             if (showPuzzle)
             {
+                for (int k = 0; k < 81; k++)
+                {
+                    roi = extractRoiFromCell(sudoku, k, debug);
+                    if (roi.empty())
+                    {
+
+                        int cell_width = sudoku.cols / 9;
+                        int cell_height = sudoku.rows / 9;
+                        int x_center = (k % 9) * cell_width + (cell_width / 2);
+                        int y_center = (k / 9) * cell_height + (cell_height / 2);
+
+                        cout << "(" << (k % 9) * cell_width + (cell_width / 2) << "," << (k / 9) * cell_height + (cell_height / 2)  << ")" << endl;
+                        // cout << "x_center: " << x_center << endl;
+                        // cout << "y_center: " << y_center << endl;
+                        // cout << "--------------------------------------------: " << endl;
+
+                        circle(sudoku, Point(x_center, y_center), 3, Scalar(0, 0, 255), FILLED, LINE_AA);
+
+                        // roi.convertTo(roi, CV_32F);
+                        // knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
+                        // cout << "resp: " << response << " expected: " << cellV[fileNumber][k] << endl;
+                        // showImage(roi);
+                    }
+                }
                 showImage(sudoku);
             }
             // all files - one cell
@@ -144,6 +172,7 @@ int main(int argc, char **argv)
             }
         }
     }
+    // one file
     else
     {
         // cout << p << endl;
