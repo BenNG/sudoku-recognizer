@@ -108,32 +108,10 @@ int main(int argc, char **argv)
             int height = sudoku.rows;
             cout << "width: " << width << endl;
             cout << "height: " << height << endl;
+
             if (showPuzzle)
             {
-                for (int k = 0; k < 81; k++)
-                {
-                    roi = extractRoiFromCell(sudoku, k, debug);
-                    if (roi.empty())
-                    {
-
-                        int cell_width = sudoku.cols / 9;
-                        int cell_height = sudoku.rows / 9;
-                        int x_center = (k % 9) * cell_width + (cell_width / 2);
-                        int y_center = (k / 9) * cell_height + (cell_height / 2);
-
-                        cout << "(" << (k % 9) * cell_width + (cell_width / 2) << "," << (k / 9) * cell_height + (cell_height / 2)  << ")" << endl;
-                        // cout << "x_center: " << x_center << endl;
-                        // cout << "y_center: " << y_center << endl;
-                        // cout << "--------------------------------------------: " << endl;
-
-                        circle(sudoku, Point(x_center, y_center), 3, Scalar(0, 0, 255), FILLED, LINE_AA);
-
-                        // roi.convertTo(roi, CV_32F);
-                        // knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
-                        // cout << "resp: " << response << " expected: " << cellV[fileNumber][k] << endl;
-                        // showImage(roi);
-                    }
-                }
+                sudoku = writeOnPuzzle(sudoku, "012345000000000000000000000000000000000000000000000000000000000000000000000000000");
                 showImage(sudoku);
             }
             // all files - one cell

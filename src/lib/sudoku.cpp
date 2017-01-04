@@ -427,13 +427,13 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
     ys[2] = biggestApprox.at(2);
     ys[3] = biggestApprox.at(3);
 
+    // extract top 2 top points
     std::sort(ys, ys + 4, sort_ys);
-
     tops[0] = ys[0];
     tops[1] = ys[1];
 
+    // in top 2, take the one the "lefter"
     std::sort(tops, tops + 2, sort_xs);
-
     tl = tops[0];
     tr = tops[1];
 
@@ -519,7 +519,6 @@ Ptr<ml::KNearest> getKnn(cv::FileStorage raw_features)
     // vector<Mat> v = readTrainingMNIST();
     // Mat trainFeatures = v[0];
     // Mat trainLabels = v[1];
-
 
     if (raw_features.isOpened() == false)
     {
@@ -1560,6 +1559,50 @@ string grab(Mat raw, Ptr<ml::KNearest> knn)
     return ss.str();
 }
 
+Mat writeOnPuzzle(Mat sudoku, string solution)
+{
+    cv::String sol(solution);
+    int width = sudoku.cols;
+    int height = sudoku.rows;
+    cout << "width: " << width << endl;
+    cout << "height: " << height << endl;
+
+    for (int k = 0; k < 81; k++)
+    {
+        Mat roi = extractRoiFromCell(sudoku, k);
+        if (roi.empty())
+        {
+
+            int cell_width = width / 9;
+            int cell_height = height / 9;
+            int x_center = (k % 9) * cell_width + ((cell_width) / 4);
+            int y_center = (k / 9) * cell_height + ((cell_height * 6) / 7);
+
+            cout << "(" << (k % 9) * cell_width + (cell_width / 2) << "," << (k / 9) * cell_height + (cell_height / 2) << ")" << endl;
+            // cout << "x_center: " << x_center << endl;
+            // cout << "y_center: " << y_center << endl;
+            cout << "--------------------------------------------: " << endl;
+            cout << sol[k] << endl;
+
+            // circle(sudoku, Point(x_center, y_center), 3, Scalar(0, 0, 255), FILLED, LINE_AA);
+
+            cv::putText(sudoku,
+                        sol.substr(k,1),
+                        cv::Point(x_center, y_center),  // Coordinates
+                        cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
+                        2.0,                            // Scale. 2.0 = 2x bigger
+                        cv::Scalar(0, 0, 0),            // Color
+                        2);                             // thickness
+
+            // roi.convertTo(roi, CV_32F);
+            // knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
+            // cout << "resp: " << response << " expected: " << cellV[fileNumber][k] << endl;
+            // showImage(roi);
+        }
+    }
+    return sudoku;
+}
+
 // string getexepath()
 // {
 
@@ -1592,8 +1635,6 @@ string grab(Mat raw, Ptr<ml::KNearest> knn)
 //     // return string(result, (count > 0) ? count : 0);
 //     return "";
 // }
-
-
 
 /**
 // Windows

@@ -80,6 +80,7 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
 
 // sudoku
 string grab(Mat image, Ptr<ml::KNearest> knn);
+Mat writeOnPuzzle(Mat image, string solution);
 // file system
 // std::string getexepath();
 string joinPath(vector<string> strs);
