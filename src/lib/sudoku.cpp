@@ -333,7 +333,7 @@ Mat extractCell(Mat sudoku, int numCell)
 // ------------------------------------------------------------------------
 // PICTURE
 
-Mat preprocess(Mat input)
+Mat preProcessOriginal(Mat input)
 {
     Mat outerBox = Mat(input.size(), CV_8UC1);
     GaussianBlur(input, input, Size(11, 11), 0);
@@ -398,54 +398,64 @@ vector<Point> findBigestApprox(Mat input)
     }
     return biggestApprox;
 }
-
-Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
+/**
+    return a vector with
+    0: tl
+    1: tr1
+    2: bl
+    3: br
+*/
+std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox)
 {
-    Mat outerBox = Mat(input.size(), CV_8UC1);
 
     Point2f tl;
     Point2f tr;
     Point2f bl;
     Point2f br;
 
-    Point2f xs[4];
-    Point2f ys[4];
+    std::vector<Point2f> points(4), tops(2), bottoms(2), src_p(4), dst_p(4);
 
-    Point2f tops[2];
-    Point2f bottoms[2];
-
-    Point2f src_p[4];
-    Point2f dst_p[4];
-
-    xs[0] = biggestApprox.at(0);
-    xs[1] = biggestApprox.at(1);
-    xs[2] = biggestApprox.at(2);
-    xs[3] = biggestApprox.at(3);
-
-    ys[0] = biggestApprox.at(0);
-    ys[1] = biggestApprox.at(1);
-    ys[2] = biggestApprox.at(2);
-    ys[3] = biggestApprox.at(3);
+    points[0] = biggestApprox[0];
+    points[1] = biggestApprox[1];
+    points[2] = biggestApprox[2];
+    points[3] = biggestApprox[3];
 
     // extract top 2 top points
-    std::sort(ys, ys + 4, sort_ys);
-    tops[0] = ys[0];
-    tops[1] = ys[1];
+    std::sort(points.begin(), points.end(), sort_ys);
+    tops[0] = points[0];
+    tops[1] = points[1];
 
     // in top 2, take the one the "lefter"
-    std::sort(tops, tops + 2, sort_xs);
+    std::sort(tops.begin(), tops.end(), sort_xs);
     tl = tops[0];
     tr = tops[1];
 
-    bottoms[0] = ys[2];
-    bottoms[1] = ys[3];
+    bottoms[0] = points[2];
+    bottoms[1] = points[3];
 
-    std::sort(bottoms, bottoms + 2, sort_xs);
+    std::sort(bottoms.begin(), bottoms.end(), sort_xs);
 
     bl = bottoms[0];
     br = bottoms[1];
 
-    //
+    // from points
+    src_p[0] = tl;
+    src_p[1] = tr;
+    src_p[2] = br;
+    src_p[3] = bl;
+
+    return src_p;
+}
+
+Mat extractPuzzle(Mat original, vector<Point> biggestApprox)
+{
+    // showImage(original);
+    Mat input = original.clone();
+    Mat sudoku, improved;
+    std::vector<Point2f> coordinates(4), dst_p(4);
+
+    coordinates = getSudokuCoordinates(input, biggestApprox);
+
     // cout << tl << endl;
     // cout << tr << endl;
     // cout << bl << endl;
@@ -457,33 +467,42 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
     float hw = w / 2.0f;
     float hh = h / 2.0f;
 
-    // from points
-    src_p[0] = tl;
-    src_p[1] = tr;
-    src_p[2] = br;
-    src_p[3] = bl;
-
     // to points
     dst_p[0] = Point2f(0.0f, 0.0f);
     dst_p[1] = Point2f(w, 0.0f);
     dst_p[2] = Point2f(w, h);
     dst_p[3] = Point2f(0.0f, h);
 
-    Mat dst_img;
-
     // create perspective transform matrix
-    Mat trans_mat33 = getPerspectiveTransform(src_p, dst_p); //CV_64F->double
-
+    Mat trans_mat33 = getPerspectiveTransform(coordinates, dst_p); //CV_64F->double
+    Mat inv_trans_mat33 = getPerspectiveTransform(dst_p, coordinates);
     // perspective transform operation using transform matrix
-    warpPerspective(input, outerBox, trans_mat33, input.size(), INTER_LINEAR);
-    return outerBox;
+    warpPerspective(input, sudoku, trans_mat33, input.size(), INTER_LINEAR);
+
+    sudoku = writeOnPuzzle(sudoku, "012345000000000000000000000000000000000000000000000000000000000000000000000000000");
+
+    invert(trans_mat33, inv_trans_mat33);
+    warpPerspective(sudoku, original, trans_mat33, input.size(), WARP_INVERSE_MAP, BORDER_TRANSPARENT);
+
+    showImage(original);
+
+
+
+    cout << "--------------------------" << endl;
+    cout << coordinates[0].x << endl;
+
+    // tt.copyTo(original(cv::Rect(0, 0,tt.cols, tt.rows)));
+
+    return input;
 }
 
 Mat extractPuzzle(Mat original)
 {
+
+    // biggest approx
     Mat outerBox = Mat(original.size(), CV_8UC1);
 
-    Mat preprocessed = preprocess(original.clone());
+    Mat preprocessed = preProcessOriginal(original.clone());
     vector<Point> biggestApprox = findBigestApprox(preprocessed);
 
     outerBox = extractPuzzle(original, biggestApprox);
@@ -493,7 +512,7 @@ Mat extractPuzzle(Mat original)
     // so we do it a second time to extract the biggest blob which is this time our puzzle
     // this is the case for s6.jpg and s9.jpg for example
 
-    Mat preprocessed2 = preprocess(outerBox.clone());
+    Mat preprocessed2 = preProcessOriginal(outerBox.clone());
     vector<Point> biggestApprox2 = findBigestApprox(preprocessed2);
 
     if (!biggestApprox2.empty())
@@ -1587,7 +1606,7 @@ Mat writeOnPuzzle(Mat sudoku, string solution)
             // circle(sudoku, Point(x_center, y_center), 3, Scalar(0, 0, 255), FILLED, LINE_AA);
 
             cv::putText(sudoku,
-                        sol.substr(k,1),
+                        sol.substr(k, 1),
                         cv::Point(x_center, y_center),  // Coordinates
                         cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
                         2.0,                            // Scale. 2.0 = 2x bigger

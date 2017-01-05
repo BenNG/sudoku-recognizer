@@ -111,7 +111,8 @@ int main(int argc, char **argv)
 
             if (showPuzzle)
             {
-                sudoku = writeOnPuzzle(sudoku, "012345000000000000000000000000000000000000000000000000000000000000000000000000000");
+                // sudoku = writeOnPuzzle(sudoku, "012345000000000000000000000000000000000000000000000000000000000000000000000000000");
+                
                 showImage(sudoku);
             }
             // all files - one cell
