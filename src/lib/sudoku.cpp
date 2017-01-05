@@ -399,69 +399,67 @@ vector<Point> findBigestApprox(Mat input)
     return biggestApprox;
 }
 
-Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
+/**
+    return a vector with
+    0: tl
+    1: tr1
+    2: bl
+    3: br
+*/
+std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox)
 {
-    Mat outerBox = Mat(input.size(), CV_8UC1);
 
     Point2f tl;
     Point2f tr;
     Point2f bl;
     Point2f br;
 
-    Point2f xs[4];
-    Point2f ys[4];
+    std::vector<Point2f> points(4), tops(2), bottoms(2), src_p(4), dst_p(4);
 
-    Point2f tops[2];
-    Point2f bottoms[2];
+    points[0] = biggestApprox[0];
+    points[1] = biggestApprox[1];
+    points[2] = biggestApprox[2];
+    points[3] = biggestApprox[3];
 
-    Point2f src_p[4];
-    Point2f dst_p[4];
+    // extract top 2 top points
+    std::sort(points.begin(), points.end(), sort_ys);
+    tops[0] = points[0];
+    tops[1] = points[1];
 
-    xs[0] = biggestApprox.at(0);
-    xs[1] = biggestApprox.at(1);
-    xs[2] = biggestApprox.at(2);
-    xs[3] = biggestApprox.at(3);
-
-    ys[0] = biggestApprox.at(0);
-    ys[1] = biggestApprox.at(1);
-    ys[2] = biggestApprox.at(2);
-    ys[3] = biggestApprox.at(3);
-
-    std::sort(ys, ys + 4, sort_ys);
-
-    tops[0] = ys[0];
-    tops[1] = ys[1];
-
-    std::sort(tops, tops + 2, sort_xs);
-
+    // in top 2, take the one the "lefter"
+    std::sort(tops.begin(), tops.end(), sort_xs);
     tl = tops[0];
     tr = tops[1];
 
-    bottoms[0] = ys[2];
-    bottoms[1] = ys[3];
+    bottoms[0] = points[2];
+    bottoms[1] = points[3];
 
-    std::sort(bottoms, bottoms + 2, sort_xs);
+    std::sort(bottoms.begin(), bottoms.end(), sort_xs);
 
     bl = bottoms[0];
     br = bottoms[1];
-
-    //
-    // cout << tl << endl;
-    // cout << tr << endl;
-    // cout << bl << endl;
-    // cout << br << endl;
-    // cout << "------------------------------------" << endl;
-
-    float w = (float)input.cols;
-    float h = (float)input.rows;
-    float hw = w / 2.0f;
-    float hh = h / 2.0f;
 
     // from points
     src_p[0] = tl;
     src_p[1] = tr;
     src_p[2] = br;
     src_p[3] = bl;
+
+    return src_p;
+}
+
+Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
+{
+    Mat outerBox = Mat(input.size(), CV_8UC1);
+
+    std::vector<Point2f> coordinates(4), dst_p(4);
+
+    coordinates = getSudokuCoordinates(input, biggestApprox);
+
+    float w = (float)input.cols;
+    float h = (float)input.rows;
+    float hw = w / 2.0f;
+    float hh = h / 2.0f;
 
     // to points
     dst_p[0] = Point2f(0.0f, 0.0f);
@@ -472,7 +470,7 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
     Mat dst_img;
 
     // create perspective transform matrix
-    Mat trans_mat33 = getPerspectiveTransform(src_p, dst_p); //CV_64F->double
+    Mat trans_mat33 = getPerspectiveTransform(coordinates, dst_p); //CV_64F->double
 
     // perspective transform operation using transform matrix
     warpPerspective(input, outerBox, trans_mat33, input.size(), INTER_LINEAR);
