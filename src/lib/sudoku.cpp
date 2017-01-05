@@ -367,6 +367,13 @@ struct str2
 *
 * Find the biggest contour in the image
 * note that it returns vector< vector<Point> > because it is more convenient to use drawContours after
+
+!!!
+Recursivity here is not a good idea as we are waiting for the bigestApprox relatively to the input
+  so if we call findBigestApprox again we will have the result to the first biggest approx found we will return it and apply it to the original
+  which is not the good image
+  !!!
+
 * */
 vector<Point> findBigestApprox(Mat input)
 {
@@ -491,7 +498,6 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox
     return src_p;
 }
 
-
 /**
 
 PRIVATE !!!
@@ -519,13 +525,12 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
     dst_p[2] = Point2f(w, h);
     dst_p[3] = Point2f(0.0f, h);
 
-
     // create perspective transform matrix
     Mat trans_mat33 = getPerspectiveTransform(coordinates, dst_p); //CV_64F->double
 
     // perspective transform operation using transform matrix
     warpPerspective(input, outerBox, trans_mat33, input.size(), INTER_LINEAR);
-    
+
     return outerBox;
 }
 
@@ -569,7 +574,6 @@ Ptr<ml::KNearest> getKnn(cv::FileStorage raw_features)
     // vector<Mat> v = readTrainingMNIST();
     // Mat trainFeatures = v[0];
     // Mat trainLabels = v[1];
-
 
     if (raw_features.isOpened() == false)
     {
@@ -1642,8 +1646,6 @@ string grab(Mat raw, Ptr<ml::KNearest> knn)
 //     // return string(result, (count > 0) ? count : 0);
 //     return "";
 // }
-
-
 
 /**
 // Windows
