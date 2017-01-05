@@ -400,6 +400,49 @@ vector<Point> findBigestApprox(Mat input)
 }
 
 /**
+Once the puzzle had been extracted, we wrote the solution on it
+*/
+Mat writeOnPuzzle(Mat puzzle, string solution)
+{
+    Mat sudoku = puzzle.clone();
+    cv::String sol(solution);
+    int width = sudoku.cols;
+    int height = sudoku.rows;
+    // cout << "width: " << width << endl;
+    // cout << "height: " << height << endl;
+
+    for (int k = 0; k < 81; k++)
+    {
+        Mat roi = extractRoiFromCell(sudoku, k);
+        if (roi.empty())
+        {
+
+            int cell_width = width / 9;
+            int cell_height = height / 9;
+            int x_center = (k % 9) * cell_width + ((cell_width) / 4);
+            int y_center = (k / 9) * cell_height + ((cell_height * 6) / 7);
+
+            // cout << "(" << (k % 9) * cell_width + (cell_width / 2) << "," << (k / 9) * cell_height + (cell_height / 2) << ")" << endl;
+            // cout << "x_center: " << x_center << endl;
+            // cout << "y_center: " << y_center << endl;
+            // cout << "--------------------------------------------: " << endl;
+            // cout << sol[k] << endl;
+
+            // circle(sudoku, Point(x_center, y_center), 3, Scalar(0, 0, 255), FILLED, LINE_AA);
+
+            cv::putText(sudoku,
+                        sol.substr(k, 1),
+                        cv::Point(x_center, y_center),  // Coordinates
+                        cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
+                        2.0,                            // Scale. 2.0 = 2x bigger
+                        cv::Scalar(0, 0, 0),            // Color
+                        2);                             // thickness
+        }
+    }
+    return sudoku;
+}
+
+/**
     return a vector with
     0: tl
     1: tr1
@@ -448,9 +491,18 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox
     return src_p;
 }
 
+
+/**
+
+PRIVATE !!!
+Do not call this function directly call 
+extractPuzzle(Mat input) instaed !
+
+*/
 Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
 {
     Mat outerBox = Mat(input.size(), CV_8UC1);
+    Mat dst_img;
 
     std::vector<Point2f> coordinates(4), dst_p(4);
 
@@ -467,13 +519,13 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
     dst_p[2] = Point2f(w, h);
     dst_p[3] = Point2f(0.0f, h);
 
-    Mat dst_img;
 
     // create perspective transform matrix
     Mat trans_mat33 = getPerspectiveTransform(coordinates, dst_p); //CV_64F->double
 
     // perspective transform operation using transform matrix
     warpPerspective(input, outerBox, trans_mat33, input.size(), INTER_LINEAR);
+    
     return outerBox;
 }
 
