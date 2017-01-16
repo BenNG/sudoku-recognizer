@@ -81,7 +81,7 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
                                      const string& filename_to_save);
 
 // sudoku
-string grab(Mat image, Ptr<ml::KNearest> knn);
+string grabNumbers(Mat image, Ptr<ml::KNearest> knn);
 // file system
 // std::string getexepath();
 string joinPath(vector<string> strs);

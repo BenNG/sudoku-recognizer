@@ -1584,7 +1584,7 @@ std::map<int, std::map<int, int>> cellValues()
 // sudoku
 
 // give file path from the root of the project
-string grab(Mat raw, Ptr<ml::KNearest> knn)
+string grabNumbers(Mat raw, Ptr<ml::KNearest> knn)
 {
     // Ptr<ml::KNearest> knn = getKnn();
     // string filePath(getPath(filePath_str));

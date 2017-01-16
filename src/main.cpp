@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    string resp = grab(image, knn);
+    string resp = grabNumbers(image, knn);
 
     cout << resp << endl;
 
