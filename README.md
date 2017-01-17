@@ -4,8 +4,7 @@
 
 ## Requirement
 * [CMake](https://cmake.org/)  
-* [OpenCV 3.1.0](http://opencv.org/downloads.html)
-    * This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful  
+* [OpenCV 3.1.0](http://opencv.org/downloads.html) (This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful  )
 
 ## Useful information
 Note that all the commands have to be invoked in the `build` folder. The first time you have to create it.
