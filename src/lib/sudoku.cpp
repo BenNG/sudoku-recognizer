@@ -841,7 +841,13 @@ Mat drawGrid(Mat input)
     }
     return output;
 }
-
+void showContour(Mat img, vector<Point> contour)
+{
+    Scalar white(255, 255, 255);
+    vector<vector<Point>> contours = {contour};
+    drawContours(img, contours, 0, white, 2, 8);
+    showImage(img);
+}
 void showImage(Mat img)
 {
     namedWindow("Display Image", WINDOW_AUTOSIZE);
