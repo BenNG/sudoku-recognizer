@@ -383,14 +383,14 @@ vector<Point> findBigestApprox(Mat input)
     vector<Point> approx;
     vector<Point> biggestApprox;
 
-    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
 
     for (int i = 0; i < contours.size(); i++)
     {
         // Approximate contour with accuracy proportional to the contour perimeter
         approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true) * 0.1, true);
         // Skip small or non-convex objects
-        if (std::fabs(contourArea(contours[i])) < 1200 || !isContourConvex(approx))
+        if (std::fabs(contourArea(contours[i])) < 10000 || !isContourConvex(approx))
             continue;
 
         if (approx.size() == 4)
@@ -398,6 +398,7 @@ vector<Point> findBigestApprox(Mat input)
             double a = contourArea(contours[i]);
             if (a > largest_area)
             {
+                // showContour(input.clone(), contours[i]);
                 largest_area = a;
                 biggestApprox = approx;
             }
@@ -843,6 +844,7 @@ Mat drawGrid(Mat input)
 }
 void showContour(Mat img, vector<Point> contour)
 {
+    cout << "contourArea : " << contourArea(contour) << endl;
     Scalar white(255, 255, 255);
     vector<vector<Point>> contours = {contour};
     drawContours(img, contours, 0, white, 2, 8);
