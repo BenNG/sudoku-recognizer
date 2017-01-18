@@ -1600,20 +1600,19 @@ std::map<int, std::map<int, int>> cellValues()
 // sudoku
 
 // give file path from the root of the project
-string grabNumbers(Mat raw, Ptr<ml::KNearest> knn)
+string grabNumbers(Mat extractedPuzzle, Ptr<ml::KNearest> knn)
 {
     // Ptr<ml::KNearest> knn = getKnn();
     // string filePath(getPath(filePath_str));
-    Mat sudoku, roi, response, dist;
+    Mat roi, response, dist;
     stringstream ss;
     int K = 1;
 
     // raw = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
-    sudoku = extractPuzzle(raw);
 
     for (int k = 0; k < 81; k++)
     {
-        roi = extractRoiFromCell(sudoku, k);
+        roi = extractRoiFromCell(extractedPuzzle, k);
         if (!roi.empty())
         {
             // showImage(roi);

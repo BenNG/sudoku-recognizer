@@ -25,7 +25,9 @@ int main(int argc, char **argv)
 
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    string resp = grabNumbers(image, knn);
+    Mat extractedPuzzle = extractPuzzle(image);
+
+    string resp = grabNumbers(extractedPuzzle, knn);
 
     cout << resp << endl;
 
