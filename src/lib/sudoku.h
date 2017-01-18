@@ -17,6 +17,12 @@ using namespace cv;
 using namespace cv::ml;
 using namespace std;
 
+struct extractionInformation {
+  Mat image;
+  Mat transformation;
+};
+
+
 // Training
 static const int lastTrainingPuzzle = 35; // change this if you added some new pictures and you want to generate a new assets/raw-features.yml
 
@@ -51,8 +57,8 @@ Mat preprocess(Mat input);
 vector<Point> findBigestApprox(Mat input);
 Mat writeOnPuzzle(Mat puzzle, string solution);
 std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox);
-Mat extractPuzzle(Mat input, vector<Point> biggestApprox);
-Mat extractPuzzle(Mat input);
+extractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox);
+extractionInformation extractPuzzle(Mat input);
 // knn
 int readFlippedInteger(FILE *fp);
 Ptr<ml::KNearest> getKnn(FileStorage raw_features);

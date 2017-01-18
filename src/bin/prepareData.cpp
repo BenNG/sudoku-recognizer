@@ -24,6 +24,7 @@ int main(int argc, char **argv)
 
     string fullName;
     Mat raw, sudoku;
+    extractionInformation extractInfo;
 
     string raw_features_path("./../../assets/raw-features.yml");
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::WRITE); // open the classifications file
@@ -40,8 +41,8 @@ int main(int argc, char **argv)
         string fullName(ss.str());
 
         raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
-        sudoku = extractPuzzle(raw);
-
+        extractInfo = extractPuzzle(raw);
+        Mat sudoku = extractInfo.image;
 
         for (int k = 0; k < 81; k++)
         {

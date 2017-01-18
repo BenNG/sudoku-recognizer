@@ -54,6 +54,8 @@ int main(int argc, char **argv)
     int puzzleNumber = -1, cellNumber = -1;
     stringstream ss;
     ss << "./../assets/puzzles/";
+    extractionInformation extractInfo;
+
 
     for (int i = 1; i < argc; i++)
     {
@@ -102,8 +104,8 @@ int main(int argc, char **argv)
             fullName = ss.str();
 
             raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
-            sudoku = extractPuzzle(raw);
-
+            extractInfo = extractPuzzle(raw);
+            sudoku = extractInfo.image;
             if (showPuzzle)
             {
                 showImage(sudoku);
@@ -148,7 +150,8 @@ int main(int argc, char **argv)
     {
         // cout << p << endl;
         raw = imread(p, CV_LOAD_IMAGE_GRAYSCALE);
-        sudoku = extractPuzzle(raw);
+        extractInfo = extractPuzzle(raw);
+        sudoku = extractInfo.image;
         if (showPuzzle)
         {
             showImage(sudoku);

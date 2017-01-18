@@ -514,8 +514,9 @@ Do not call this function directly call
 extractPuzzle(Mat input) instaed !
 
 */
-Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
+extractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox)
 {
+    extractionInformation extractInfo;
     Mat outerBox = Mat(input.size(), CV_8UC1);
     Mat dst_img;
 
@@ -540,18 +541,21 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
     // perspective transform operation using transform matrix
     warpPerspective(input, outerBox, trans_mat33, input.size(), INTER_LINEAR);
 
-    return outerBox;
+    extractInfo.image = outerBox;
+    return extractInfo;
 }
 
-Mat extractPuzzle(Mat original)
+extractionInformation extractPuzzle(Mat original)
 {
+    extractionInformation extractInfo, extractInfo2;
+
     Mat outerBox = Mat(original.size(), CV_8UC1);
 
     Mat preprocessed = preprocess(original.clone());
     vector<Point> biggestApprox = findBigestApprox(preprocessed);
 
-    outerBox = extractPuzzle(original, biggestApprox);
-
+    extractInfo = extractPuzzle(original, biggestApprox);
+    outerBox = extractInfo.image;
     // trick
     // sometimes the biggest area found is not correct, our puzzle is inside the extract image
     // so we do it a second time to extract the biggest blob which is this time our puzzle
@@ -562,11 +566,13 @@ Mat extractPuzzle(Mat original)
 
     if (!biggestApprox2.empty())
     {
-        outerBox = extractPuzzle(outerBox);
+        extractInfo2 = extractPuzzle(outerBox);
+        outerBox = extractInfo2.image;
     }
     // trick - end
+    extractInfo.image = outerBox;
 
-    return outerBox;
+    return extractInfo;
 }
 
 // --------------------------------------------------------
