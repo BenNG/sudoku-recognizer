@@ -12,7 +12,7 @@ using namespace std;
  * */
 int main(int argc, char **argv)
 {
-    extractionInformation extractInfo;
+    extractionInformation extractInfo, extractInfo2;
     string raw_features_path("./../assets/raw-features.yml"); // created by prepareData
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
 
@@ -26,10 +26,16 @@ int main(int argc, char **argv)
 
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractInfo = extractPuzzle(image);
+    vector<Point> bigestApprox = findBigestApprox(image);
+    extractInfo = extractPuzzle(image, bigestApprox);
     Mat extractedPuzzle = extractInfo.image;
+    showImage(extractedPuzzle);
 
-    string resp = grabNumbers(extractedPuzzle, knn);
+    Mat finalExtraction = recursiveExtraction(extractedPuzzle);
+    showImage(finalExtraction);
+
+
+    string resp = grabNumbers(finalExtraction, knn);
 
     cout << resp << endl;
 

@@ -384,8 +384,10 @@ Recursivity here is not a good idea as we are waiting for the bigestApprox relat
   !!!
 
 * */
-vector<Point> findBigestApprox(Mat input)
+vector<Point> findBigestApprox(Mat original)
 {
+
+    Mat input = preprocess(original.clone());
 
     int largest_area = 0;
     vector<vector<Point>> contours;
@@ -393,7 +395,7 @@ vector<Point> findBigestApprox(Mat input)
     vector<Point> approx;
     vector<Point> biggestApprox;
 
-    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
+    findContours(input.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
 
     for (int i = 0; i < contours.size(); i++)
     {
@@ -507,6 +509,25 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox
     return src_p;
 }
 
+Mat recursiveExtraction(Mat input)
+{
+    extractionInformation extractInfo;
+    vector<Point> bigestApprox;
+    Mat extractedPuzzle;
+
+    bigestApprox = findBigestApprox(input);
+    if (!bigestApprox.empty())
+    {
+        extractInfo = extractPuzzle(input, bigestApprox);
+        extractedPuzzle = extractInfo.image;
+        return recursiveExtraction(extractedPuzzle);
+    }
+    else
+    {
+        return input;
+    }
+}
+
 /**
 
 PRIVATE !!!
@@ -541,37 +562,8 @@ extractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox)
     // perspective transform operation using transform matrix
     warpPerspective(input, outerBox, trans_mat33, input.size(), INTER_LINEAR);
 
+    extractInfo.transformation = trans_mat33;
     extractInfo.image = outerBox;
-    return extractInfo;
-}
-
-extractionInformation extractPuzzle(Mat original)
-{
-    extractionInformation extractInfo, extractInfo2;
-
-    Mat outerBox = Mat(original.size(), CV_8UC1);
-
-    Mat preprocessed = preprocess(original.clone());
-    vector<Point> biggestApprox = findBigestApprox(preprocessed);
-
-    extractInfo = extractPuzzle(original, biggestApprox);
-    outerBox = extractInfo.image;
-    // trick
-    // sometimes the biggest area found is not correct, our puzzle is inside the extract image
-    // so we do it a second time to extract the biggest blob which is this time our puzzle
-    // this is the case for s6.jpg and s9.jpg for example
-
-    Mat preprocessed2 = preprocess(outerBox.clone());
-    vector<Point> biggestApprox2 = findBigestApprox(preprocessed2);
-
-    if (!biggestApprox2.empty())
-    {
-        extractInfo2 = extractPuzzle(outerBox);
-        outerBox = extractInfo2.image;
-    }
-    // trick - end
-    extractInfo.image = outerBox;
-
     return extractInfo;
 }
 

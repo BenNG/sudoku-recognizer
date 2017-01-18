@@ -41,8 +41,11 @@ int main(int argc, char **argv)
         string fullName(ss.str());
 
         raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
-        extractInfo = extractPuzzle(raw);
-        Mat sudoku = extractInfo.image;
+        
+        vector<Point> biggestApprox = findBigestApprox(raw);
+        extractInfo = extractPuzzle(raw, biggestApprox);
+        Mat sudoku = recursiveExtraction(extractInfo.image);
+
 
         for (int k = 0; k < 81; k++)
         {
@@ -64,7 +67,6 @@ int main(int argc, char **argv)
 
     features.convertTo(features, CV_32F);
     labels.convertTo(labels, CV_32F);
-
 
     raw_features << "features" << features;
     raw_features << "labels" << labels;

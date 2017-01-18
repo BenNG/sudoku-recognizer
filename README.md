@@ -78,6 +78,9 @@ cmake .. && make && src/testKnn
 > You can iterate over each picture by setting debug=true in the `testKnn` fn  
 
 ## Tips
+* There are 2 extraction process
+  * the extraction of the puzzle
+  * the extraction of the grid within the puzzle (somethimes it is the same see s6.jpg)
 * If you want to play with `HOGDescriptor` add set(OpenCV_LIBS opencv_core opencv_objdetect) (this is not used in the project anymore)
 * The function `prepareData` creates `assets/raw-features.yml` and getKnn uses it
 * boost library
