@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
 
     Ptr<ml::KNearest> knn = getKnn(raw_features);
- 
+
     string filePath("./../assets/puzzles/s0.jpg"); // by default
     if (argc > 1)
     {
@@ -25,9 +25,19 @@ int main(int argc, char **argv)
 
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    string resp = grabNumbers(image, knn);
+    vector<Point> bigestApprox = findBigestApprox(image);
+    // showImage(image);
 
-    cout << resp << endl;
+    // showContour(image, bigestApprox);
+
+
+    Mat extractedPuzzle = extractPuzzle(image, bigestApprox);
+
+    showImage(extractedPuzzle);
+
+    // string resp = grabNumbers(image, knn);
+
+    // cout << resp << endl;
 
     return 0;
 }

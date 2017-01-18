@@ -362,13 +362,43 @@ struct str2
     }
 } sort_ys;
 
-bool isContourValid(vector<Point> contour, vector<Point> approx)
+bool isContourValid(vector<Point> contour)
 {
-    if (std::fabs(contourArea(contour)) > 10000 && isContourConvex(approx) && approx.size() == 4)
+    /* sometimes duplicate but no sense to give approx as a param*/
+    vector<Point> approx;
+    approxPolyDP(Mat(contour), approx, arcLength(Mat(contour), true) * 0.1, true);
+
+    if (std::fabs(contourArea(contour)) > 20000 && isContourConvex(approx) && approx.size() == 4)
     {
         return true;
     }
     return false;
+}
+
+int getDeeperValidContour(vector<vector<Point>> contours, vector<Vec4i> hierarchy, int index)
+{
+    vector<Point> contour = contours[index];
+
+    if (hierarchy[index][2] < 0)
+    {
+        cout << "has no child" << endl;
+        return index;
+    }
+    else
+    {
+        if (isContourValid(contours[hierarchy[index][2]]))
+        {
+            int newIndex = hierarchy[index][2];
+            return getDeeperValidContour(contours, hierarchy, newIndex);
+            // cout << "has child index: " << hierarchy[index][2] << endl;
+            // return hierarchy[index][2];
+            // showContour(input.clone(), contours[hierarchy[index][2]]);
+        }
+        else
+        {
+            return index;
+        }
+    }
 }
 
 /*
@@ -384,16 +414,28 @@ Recursivity here is not a good idea as we are waiting for the bigestApprox relat
   !!!
 
 * */
-vector<Point> findBigestApprox(Mat input)
+vector<Point> findBigestApprox(Mat original)
 {
+    Mat preprocessed = preprocess(original.clone());
+    vector<vector<Point>> contours;
+    findContours(preprocessed.clone(), contours, RETR_TREE, CHAIN_APPROX_SIMPLE);
+    int biggestApproxIndex = findBigestApproxIndex(original);
+
+    return contours[biggestApproxIndex];
+}
+
+int findBigestApproxIndex(Mat original)
+{
+    Mat preprocessed = preprocess(original.clone());
 
     int largest_area = 0;
     vector<vector<Point>> contours;
     vector<Point> contour;
     vector<Point> approx;
-    vector<Point> biggestApprox;
+    int biggestApproxIndex;
+    vector<Vec4i> hierarchy;
 
-    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
+    findContours(preprocessed.clone(), contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
 
     for (int i = 0; i < contours.size(); i++)
     {
@@ -401,18 +443,31 @@ vector<Point> findBigestApprox(Mat input)
         // Approximate contour with accuracy proportional to the contour perimeter
         approxPolyDP(Mat(contour), approx, arcLength(Mat(contour), true) * 0.1, true);
         // Skip small or non-convex objects
-        if (isContourValid(contour, approx))
+        if (isContourValid(contour))
         {
             double a = contourArea(contour);
             if (a > largest_area)
             {
-                // showContour(input.clone(), contours[i]);
+                // showContour(preprocessed.clone(), contours[i]);
                 largest_area = a;
-                biggestApprox = approx;
+                biggestApproxIndex = i;
             }
         }
     }
-    return biggestApprox;
+
+    // showContour(original, contours[biggestApproxIndex]);
+
+    cout << "[findBigestApprox] "
+         << "index before getDeeperValidContour : " << biggestApproxIndex << endl;
+
+    int finalIndex = getDeeperValidContour(contours, hierarchy, biggestApproxIndex);
+
+    cout << "[findBigestApprox] "
+         << "final index is: " << finalIndex << endl;
+
+    // showContour(original, contours[finalIndex]);
+
+    return finalIndex;
 }
 
 /**
@@ -475,10 +530,13 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox
 
     std::vector<Point2f> points(4), tops(2), bottoms(2), src_p(4), dst_p(4);
 
+    std::sort(biggestApprox.begin(), biggestApprox.end(), sort_xs);
     points[0] = biggestApprox[0];
-    points[1] = biggestApprox[1];
-    points[2] = biggestApprox[2];
-    points[3] = biggestApprox[3];
+    points[1] = biggestApprox[biggestApprox.size() - 1];
+
+    std::sort(biggestApprox.begin(), biggestApprox.end(), sort_ys);
+    points[2] = biggestApprox[0];
+    points[3] = biggestApprox[biggestApprox.size() - 1];
 
     // extract top 2 top points
     std::sort(points.begin(), points.end(), sort_ys);
@@ -504,6 +562,8 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox
     src_p[2] = br;
     src_p[3] = bl;
 
+    cout << biggestApprox << endl;
+
     return src_p;
 }
 
@@ -514,8 +574,11 @@ Do not call this function directly call
 extractPuzzle(Mat input) instaed !
 
 */
-Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
+Mat extractPuzzle(Mat original, vector<Point> biggestApprox)
 {
+
+    Mat input = preprocess(original.clone());
+
     Mat outerBox = Mat(input.size(), CV_8UC1);
     Mat dst_img;
 
@@ -538,32 +601,39 @@ Mat extractPuzzle(Mat input, vector<Point> biggestApprox)
     Mat trans_mat33 = getPerspectiveTransform(coordinates, dst_p); //CV_64F->double
 
     // perspective transform operation using transform matrix
-    warpPerspective(input, outerBox, trans_mat33, input.size(), INTER_LINEAR);
+    warpPerspective(original, outerBox, trans_mat33, input.size(), INTER_LINEAR);
 
     return outerBox;
 }
 
 Mat extractPuzzle(Mat original)
 {
+    showImage(original);
     Mat outerBox = Mat(original.size(), CV_8UC1);
 
-    Mat preprocessed = preprocess(original.clone());
-    vector<Point> biggestApprox = findBigestApprox(preprocessed);
+
+
+    // int biggestApproxIndex = findBigestApproxIndex(preprocessed);
+
+    vector<Point> biggestApprox = findBigestApprox(original);
 
     outerBox = extractPuzzle(original, biggestApprox);
+
+    // showImage(outerBox);
+
 
     // trick
     // sometimes the biggest area found is not correct, our puzzle is inside the extract image
     // so we do it a second time to extract the biggest blob which is this time our puzzle
     // this is the case for s6.jpg and s9.jpg for example
 
-    Mat preprocessed2 = preprocess(outerBox.clone());
-    vector<Point> biggestApprox2 = findBigestApprox(preprocessed2);
+    // Mat preprocessed2 = preprocess(outerBox.clone());
+    // vector<Point> biggestApprox2 = findBigestApprox(preprocessed2);
 
-    if (!biggestApprox2.empty())
-    {
-        outerBox = extractPuzzle(outerBox);
-    }
+    // if (!biggestApprox2.empty())
+    // {
+    //     outerBox = extractPuzzle(outerBox);
+    // }
     // trick - end
 
     return outerBox;
@@ -850,11 +920,11 @@ Mat drawGrid(Mat input)
     }
     return output;
 }
-void showContour(Mat img, vector<Point> contour)
+void showContour(Mat img, vector<Point> contourOrApprox)
 {
-    cout << "contourArea : " << contourArea(contour) << endl;
+    cout << "contourArea : " << contourArea(contourOrApprox) << endl;
     Scalar white(255, 255, 255);
-    vector<vector<Point>> contours = {contour};
+    vector<vector<Point>> contours = {contourOrApprox};
     drawContours(img, contours, 0, white, 2, 8);
     showImage(img);
 }
@@ -1610,6 +1680,8 @@ string grabNumbers(Mat raw, Ptr<ml::KNearest> knn)
 
     // raw = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
     sudoku = extractPuzzle(raw);
+
+    showImage(sudoku);
 
     for (int k = 0; k < 81; k++)
     {
