@@ -100,6 +100,7 @@ int getNumberOfFilesInFolder(string dir);
 int getdir(string dir, vector<string> &files);
 
 std::map<int, std::map<int,int> > cellValues();
+Mat solve(Mat original);
 
 // debug for android
 string hello();

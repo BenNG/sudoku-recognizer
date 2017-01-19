@@ -1739,3 +1739,32 @@ string hello()
 {
     return "hello";
 }
+
+Mat solve(Mat original)
+{
+    extractionInformation extractInfo, extractInfo2;
+
+    // prepare knn
+    string raw_features_path("./../assets/raw-features.yml"); // created by prepareData
+    cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
+    Ptr<ml::KNearest> knn = getKnn(raw_features);
+
+    vector<Point> bigestApprox = findBigestBlob(original);
+
+    extractInfo = extractPuzzle(original, bigestApprox);
+    Mat extractedPuzzle = extractInfo.image;
+    // showImage(extractedPuzzle);
+
+    Mat finalExtraction = recursiveExtraction(extractedPuzzle);
+    // showImage(finalExtraction);
+
+    string resp = grabNumbers(finalExtraction, knn);
+
+    string solution = "121193000079000841050001000003050408005806300108030500000100080514000920000340050";
+
+    Mat writen = writeOnPuzzle(finalExtraction, solution);
+
+    warpPerspective(writen, original, extractInfo.transformation, original.size(), WARP_INVERSE_MAP, BORDER_TRANSPARENT);
+
+    return original;
+}
