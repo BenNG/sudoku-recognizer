@@ -1,72 +1,72 @@
 # Sudoku-recognizer
-
+## Recognizer
 ![ddd.gif](https://bitbucket.org/repo/njp6xM/images/4266970602-ddd.gif)
 
-## Requirement
+### Requirement
 * [CMake](https://cmake.org/)  
 * [OpenCV 3.1.0](http://opencv.org/downloads.html) (This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful  )
 
-## Useful information
+### Useful information
 Note that all the commands have to be invoked in the `build` folder. The first time you have to create it.
 ```
 mkdir build && cd build
 ```
 
-## Tests
+### Tests
 Once you have installed all the requirements, execute the tests to see if everything is OK
 ```
 cmake .. && ctest -V
 ```
 
-## Parse one of the provided puzzle located in `assets/puzzles`
+### Parse one of the provided puzzle located in `assets/puzzles`
 ```
 cmake .. && make && src/sudokuRecognizer ./../assets/puzzles/s1.jpg
 ```
 
-## Tools that can help you during the development process
-### Show all extracted puzzles located in `assets/puzzles`
+### Tools that can help you during the development process
+#### Show all extracted puzzles located in `assets/puzzles`
 ```
 cmake .. && make && src/showExtracted
 ```
 
 ![eee.gif](https://bitbucket.org/repo/njp6xM/images/4118982265-eee.gif)
 
-### Show all extracted cells for `assets/puzzles/s33.jpg`
+#### Show all extracted cells for `assets/puzzles/s33.jpg`
 ```
 cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell
 ```
 
 ![fff.gif](https://bitbucket.org/repo/njp6xM/images/1253348601-fff.gif)
 
-### Other actions
+#### Other actions
 
-#### will show all extracted puzzles  
+##### will show all extracted puzzles  
 ```
 cmake .. && make && src/showExtracted  
 ```
 
-#### will show all extracted cells  
+##### will show all extracted cells  
 ```
 cmake .. && make && src/showExtracted --showCell  
 ```
 
-#### will show the extracted puzzle: `assets/puzzles/s33.jpg`  
+##### will show the extracted puzzle: `assets/puzzles/s33.jpg`  
 ```
 cmake .. && make && src/showExtracted --puzzleNumber 33  
 ```
 
-#### will show the cell index: 10 of `assets/puzzles/s33.jpg`  
+##### will show the cell index: 10 of `assets/puzzles/s33.jpg`  
 ```
-# useful in situation where only cell number 40 is wrong
+## useful in situation where only cell number 40 is wrong
 cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10  
 ```
 
-#### will show the cell index: 10 of `assets/puzzles/s33.jpg` plus the process of extraction  
+##### will show the cell index: 10 of `assets/puzzles/s33.jpg` plus the process of extraction  
 ```
 cmake .. && make && src/showExtracted --puzzleNumber 33 --showCell --cellNumber 10 --debug  
 ```
 
-## Create the `assets/raw-features.yml` yourself
+### Create the `assets/raw-features.yml` yourself
 ```
 cmake .. && make && src/prepareData # create training data from s0 --> s35
 ```
@@ -76,6 +76,11 @@ cmake .. && make && src/prepareData # create training data from s0 --> s35
 cmake .. && make && src/testKnn
 ```
 > You can iterate over each picture by setting debug=true in the `testKnn` fn  
+
+## Solver
+All the hard work was to recognize the number that's why this `Solver` part comes after the `Recognizer` even if obviously this is what people want to do. A solve function has been created that gather all other functions + one that ask the soltion to a server (what ???) and an other write the solution on the puzzle.
+
+
 
 ## Tips
 * There are 2 extraction process
