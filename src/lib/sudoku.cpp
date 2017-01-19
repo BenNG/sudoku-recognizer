@@ -393,7 +393,7 @@ vector<Point> findBigestBlob(Mat original)
     vector<vector<Point>> contours;
     vector<Point> contour;
     vector<Point> approx;
-    vector<Point> biggestApprox;
+    vector<Point> bigestApprox;
 
     findContours(input.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
 
@@ -410,11 +410,11 @@ vector<Point> findBigestBlob(Mat original)
             {
                 // showContour(input.clone(), contours[i]);
                 largest_area = a;
-                biggestApprox = approx;
+                bigestApprox = approx;
             }
         }
     }
-    return biggestApprox;
+    return bigestApprox;
 }
 
 /**
@@ -467,7 +467,7 @@ Mat writeOnPuzzle(Mat puzzle, string solution)
     2: bl
     3: br
 */
-std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox)
+std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> bigestApprox)
 {
 
     Point2f tl;
@@ -477,10 +477,10 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox
 
     std::vector<Point2f> points(4), tops(2), bottoms(2), src_p(4), dst_p(4);
 
-    points[0] = biggestApprox[0];
-    points[1] = biggestApprox[1];
-    points[2] = biggestApprox[2];
-    points[3] = biggestApprox[3];
+    points[0] = bigestApprox[0];
+    points[1] = bigestApprox[1];
+    points[2] = bigestApprox[2];
+    points[3] = bigestApprox[3];
 
     // extract top 2 top points
     std::sort(points.begin(), points.end(), sort_ys);
@@ -532,7 +532,7 @@ Mat recursiveExtraction(Mat input)
     }
 }
 
-extractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox)
+extractionInformation extractPuzzle(Mat input, vector<Point> bigestApprox)
 {
     extractionInformation extractInfo;
     Mat outerBox = Mat(input.size(), CV_8UC1);
@@ -540,7 +540,7 @@ extractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox)
 
     std::vector<Point2f> coordinates(4), dst_p(4);
 
-    coordinates = getSudokuCoordinates(input, biggestApprox);
+    coordinates = getSudokuCoordinates(input, bigestApprox);
 
     float w = (float)input.cols;
     float h = (float)input.rows;
@@ -814,14 +814,14 @@ Mat drawAllApprox(Mat preprocessed, Mat origial)
     return output;
 }
 
-void drawMarkers(Mat input, vector<Point> biggestApprox)
+void drawMarkers(Mat input, vector<Point> bigestApprox)
 {
     Scalar white(255, 255, 255);
 
-    drawMarker(input, biggestApprox.at(0), white);
-    drawMarker(input, biggestApprox.at(1), white);
-    drawMarker(input, biggestApprox.at(2), white);
-    drawMarker(input, biggestApprox.at(3), white);
+    drawMarker(input, bigestApprox.at(0), white);
+    drawMarker(input, bigestApprox.at(1), white);
+    drawMarker(input, bigestApprox.at(2), white);
+    drawMarker(input, bigestApprox.at(3), white);
 }
 
 Mat drawGrid(Mat input)
