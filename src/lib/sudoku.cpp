@@ -372,19 +372,19 @@ bool isContourValid(vector<Point> contour, vector<Point> approx)
 }
 
 /*
-* findBigestApprox
+* findBigestBlob
 *
 * Find the biggest contour in the image
 * note that it returns vector< vector<Point> > because it is more convenient to use drawContours after
 
 !!!
 Recursivity here is not a good idea as we are waiting for the bigestApprox relatively to the input
-  so if we call findBigestApprox again we will have the result to the first biggest approx found we will return it and apply it to the original
+  so if we call findBigestBlob again we will have the result to the first biggest approx found we will return it and apply it to the original
   which is not the good image
   !!!
 
 * */
-vector<Point> findBigestApprox(Mat original)
+vector<Point> findBigestBlob(Mat original)
 {
 
     Mat input = preprocess(original.clone());
@@ -508,14 +508,18 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox
 
     return src_p;
 }
-
+/**
+    Once we extract our puzzle from the original with the function extractPuzzle, the puzzle inside the extractedBlob could be more accuratly extracted 
+    so we extract again until there is no more blob found
+    This is true for s6 and s9 pictures
+*/
 Mat recursiveExtraction(Mat input)
 {
     extractionInformation extractInfo;
     vector<Point> bigestApprox;
     Mat extractedPuzzle;
 
-    bigestApprox = findBigestApprox(input);
+    bigestApprox = findBigestBlob(input);
     if (!bigestApprox.empty())
     {
         extractInfo = extractPuzzle(input, bigestApprox);
@@ -528,13 +532,6 @@ Mat recursiveExtraction(Mat input)
     }
 }
 
-/**
-
-PRIVATE !!!
-Do not call this function directly call 
-extractPuzzle(Mat input) instaed !
-
-*/
 extractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox)
 {
     extractionInformation extractInfo;

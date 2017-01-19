@@ -26,17 +26,24 @@ int main(int argc, char **argv)
 
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    vector<Point> bigestApprox = findBigestApprox(image);
+    vector<Point> bigestApprox = findBigestBlob(image);
+
     extractInfo = extractPuzzle(image, bigestApprox);
     Mat extractedPuzzle = extractInfo.image;
-    showImage(extractedPuzzle);
+    // showImage(extractedPuzzle);
 
     Mat finalExtraction = recursiveExtraction(extractedPuzzle);
-    showImage(finalExtraction);
-
+    // showImage(finalExtraction);
 
     string resp = grabNumbers(finalExtraction, knn);
+    
+    string solution = "121193000079000841050001000003050408005806300108030500000100080514000920000340050";
 
+    Mat writen = writeOnPuzzle(finalExtraction, solution);
+
+    warpPerspective(writen, image, extractInfo.transformation , image.size(), WARP_INVERSE_MAP, BORDER_TRANSPARENT);
+
+    showImage(image);
     cout << resp << endl;
 
     return 0;
