@@ -90,6 +90,14 @@ cmake .. && make && src/testKnn
   * height_threshold
 * Before the portage on android, I used a system for resolving the path of file that looked for the root of the project and join the path given but in a apk application
   there are no path so I had to rewrite all and use relative paths
+* adding curl to the project
+  * dl the source code [here](https://github.com/curl/curl/releases)
+  * in the source code there is a `CMakeLists.txt` so:
+    * cmake .
+    * make
+    * sudo make install
+  * [then](https://github.com/BenNG/sudoku-recognizer/blob/2f30e4dc54620b646df8a97a8ec5651a171c3e56/src/CMakeLists.txt#L1)
+  * [and](https://github.com/BenNG/sudoku-recognizer/blob/2f30e4dc54620b646df8a97a8ec5651a171c3e56/src/CMakeLists.txt#L31)
 
 ## Thank you for answering my questions
 * [Berak](http://answers.opencv.org/users/2130/berak/)
