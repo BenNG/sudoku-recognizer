@@ -13,6 +13,9 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
+#include <curl/curl.h>
+
+
 using namespace cv;
 using namespace cv::ml;
 using namespace std;
@@ -104,6 +107,7 @@ Mat solve(Mat original);
 
 // debug for android
 string hello();
+string askServerForSolution(string initialSudokuState);
 
 
 
