@@ -12,7 +12,7 @@ mkdir build && cd build
 
 
 ## Recognizer
-![ddd.gif](https://bitbucket.org/repo/njp6xM/images/4266970602-ddd.gif)
+![hhh.gif](https://bitbucket.org/repo/njp6xM/images/3411734402-hhh.gif)
 
 
 ### Tests
@@ -86,7 +86,7 @@ cmake .. && make && src/testKnn
 cmake .. && make && src/mouline ./../assets/puzzles/s0.jpg
 ```
 
-![ggg.gif](https://bitbucket.org/repo/njp6xM/images/1826022292-ggg.gif)
+![iii.gif](https://bitbucket.org/repo/njp6xM/images/1534426116-iii.gif)
 
 All the hard work was to recognize the numbers that's why this part comes after the `Recognizer` even if obviously this is what people want to do. 
 A [mouline](https://github.com/BenNG/sudoku-recognizer/blob/master/src/lib/sudoku.cpp#L1743) function has been created that gather all other functions.
