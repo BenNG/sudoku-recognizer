@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    Mat solved = solve(image);
+    Mat solved = mouline(image);
 
     showImage(image);
 

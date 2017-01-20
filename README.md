@@ -23,7 +23,7 @@ cmake .. && ctest -V
 
 ### Parse one of the provided puzzle located in `assets/puzzles`
 ```
-cmake .. && make && src/sudokuRecognizer ./../assets/puzzles/s1.jpg
+cmake .. && make && src/recognize ./../assets/puzzles/s1.jpg
 ```
 
 ### Tools that can help you during the development process
@@ -80,17 +80,27 @@ cmake .. && make && src/testKnn
 ```
 > You can iterate over each picture by setting debug=true in the `testKnn` fn  
 
-## Solver
-All the hard work was to recognize the number that's why this `Solver` part comes after the `Recognizer` even if obviously this is what people want to do. 
-A [solve](https://github.com/BenNG/sudoku-recognizer/blob/master/src/lib/sudoku.cpp#L1743) function has been created that gather all other functions + one that ask the soltion to a server (what ???) and an other one that write the solution on the puzzle.
+## The whole process
+
+```
+cmake .. && make && src/mouline ./../assets/puzzles/s0.jpg
+```
 
 ![ggg.gif](https://bitbucket.org/repo/njp6xM/images/1826022292-ggg.gif)
 
+All the hard work was to recognize the numbers that's why this part comes after the `Recognizer` even if obviously this is what people want to do. 
+A [mouline](https://github.com/BenNG/sudoku-recognizer/blob/master/src/lib/sudoku.cpp#L1743) function has been created that gather all other functions.
+So the process is:
+ * parse the original image that holds the sudoku puzzle and extract it
+ * parse the extracted puzzle and use a computer vision algorithm to grab the initial state.
+ * send the initial state to a server that solve the sudoku
+ * write the solution on the extracted puzzle
+ * merge the extracted puzzle on the original picture
+
+
 ## Auto questions
 ### Why do we need a server to solve the sudoku you might ask ? 
-This project started because I wanted to learn this [language](http://elixir-lang.org/) so I started this [project](https://github.com/BenNG/sudoku-solver).
-After I was wondering "who could send the initial state of a sudoku" so I created this [project](https://github.com/BenNG/sudoku-recognizer) that can recognize grid, numbers on an image
-
+This is because at the very begining all I wanted is learning this [language](http://elixir-lang.org/) so I started this [project](https://github.com/BenNG/sudoku-solver) and now I use it :)
 
 ## Tips
 * There are 2 extraction process

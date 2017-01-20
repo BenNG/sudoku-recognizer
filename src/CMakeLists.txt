@@ -18,9 +18,8 @@ add_library(sudoku lib/sudoku.cpp)
 add_library(whereami lib/whereami.c lib/whereami.h)
 add_library(hello lib/hello.cpp)
 
-set(SOURCES main.cpp )
-
-add_executable( ${PROJECT_NAME} ${SOURCES} )
+add_executable( recognize recognizer.cpp )
+add_executable( mouline main.cpp )
 add_executable( showExtracted bin/showExtracted.cpp)
 add_executable( prepareData bin/prepareData.cpp)
 add_executable( testKnn bin/testKnn.cpp)
@@ -41,4 +40,5 @@ target_link_libraries( testKnn sudoku )
 
 target_link_libraries( helloBin hello sudoku)
 
-target_link_libraries( ${PROJECT_NAME} ${OpenCV_LIBS} sudoku )
+target_link_libraries( mouline ${OpenCV_LIBS} sudoku )
+target_link_libraries( recognize ${OpenCV_LIBS} sudoku )

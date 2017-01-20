@@ -1740,7 +1740,7 @@ string hello()
     return "hello";
 }
 
-Mat solve(Mat original)
+Mat mouline(Mat original)
 {
     extractionInformation extractInfo, extractInfo2;
 
