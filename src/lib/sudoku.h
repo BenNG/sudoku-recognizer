@@ -70,7 +70,7 @@ void testKnn(Ptr<ml::KNearest> knn, cv::FileStorage raw_features);
 // debug
 int minuss(int i, int j);
 Mat drawAllContour(Mat preprocessed);
-bool isContourValid(vector<Point> contour, vector<Point> approx);
+bool isContourValid(int contourAreaValue, vector<Point> approx);
 vector<double> findBiggestComponent(Mat input);
 Mat drawAllApprox(Mat preprocessed);
 Mat drawAllApprox(Mat preprocessed, Mat original);

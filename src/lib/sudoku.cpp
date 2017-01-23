@@ -362,9 +362,9 @@ struct str2
     }
 } sort_ys;
 
-bool isContourValid(vector<Point> contour, vector<Point> approx)
+bool isContourValid(int contourAreaValue, vector<Point> approx)
 {
-    if (std::fabs(contourArea(contour)) > 10000 && isContourConvex(approx) && approx.size() == 4)
+    if (contourAreaValue > 10000 && isContourConvex(approx) && approx.size() == 4)
     {
         return true;
     }
@@ -389,7 +389,7 @@ vector<Point> findBigestBlob(Mat original)
 
     Mat input = preprocess(original.clone());
 
-    int largest_area = 0;
+    int largest_area, contourAreaValue = 0;
     vector<vector<Point>> contours;
     vector<Point> contour;
     vector<Point> approx;
@@ -400,16 +400,16 @@ vector<Point> findBigestBlob(Mat original)
     for (int i = 0; i < contours.size(); i++)
     {
         contour = contours[i];
+        contourAreaValue = std::fabs(contourArea(contour));
         // Approximate contour with accuracy proportional to the contour perimeter
         approxPolyDP(Mat(contour), approx, arcLength(Mat(contour), true) * 0.1, true);
         // Skip small or non-convex objects
-        if (isContourValid(contour, approx))
+        if (isContourValid(contourAreaValue, approx))
         {
-            double a = contourArea(contour);
-            if (a > largest_area)
+            if (contourAreaValue > largest_area)
             {
                 // showContour(input.clone(), contours[i]);
-                largest_area = a;
+                largest_area = contourAreaValue;
                 bigestApprox = approx;
             }
         }
