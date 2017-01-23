@@ -420,7 +420,7 @@ vector<Point> findBigestBlob(Mat original)
 /**
 Once the puzzle had been extracted, we wrote the solution on it
 */
-Mat writeOnPuzzle(Mat puzzle, string solution)
+Mat writeOnPuzzle(Mat puzzle, string initialState, string solution)
 {
     Mat sudoku = puzzle.clone();
     cv::String sol(solution);
@@ -429,25 +429,17 @@ Mat writeOnPuzzle(Mat puzzle, string solution)
     // cout << "width: " << width << endl;
     // cout << "height: " << height << endl;
 
+    int cell_width = width / 9;
+    int cell_height = height / 9;
+
     for (int k = 0; k < 81; k++)
     {
-        Mat roi = extractRoiFromCell(sudoku, k);
-        if (roi.empty())
+        // Mat roi = extractRoiFromCell(sudoku, k);
+        if (initialState[k] == '0')
         {
 
-            int cell_width = width / 9;
-            int cell_height = height / 9;
             int x_center = (k % 9) * cell_width + ((cell_width) / 4);
             int y_center = (k / 9) * cell_height + ((cell_height * 6) / 7);
-
-            // cout << "(" << (k % 9) * cell_width + (cell_width / 2) << "," << (k / 9) * cell_height + (cell_height / 2) << ")" << endl;
-            // cout << "x_center: " << x_center << endl;
-            // cout << "y_center: " << y_center << endl;
-            // cout << "--------------------------------------------: " << endl;
-            // cout << sol[k] << endl;
-
-            // circle(sudoku, Point(x_center, y_center), 3, Scalar(0, 0, 255), FILLED, LINE_AA);
-
             cv::putText(sudoku,
                         sol.substr(k, 1),
                         cv::Point(x_center, y_center),  // Coordinates
@@ -1760,22 +1752,20 @@ Mat mouline(Mat original)
 
     string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);
 
-
     string solution = askServerForSolution(initialStateOfTheSudoku);
 
-    Mat writen = writeOnPuzzle(finalExtraction, solution);
+    Mat writen = writeOnPuzzle(finalExtraction, initialStateOfTheSudoku, solution);
 
     warpPerspective(writen, original, extractInfo.transformation, original.size(), WARP_INVERSE_MAP, BORDER_TRANSPARENT);
 
     return original;
 }
 
-
-struct MemoryStruct {
+struct MemoryStruct
+{
     char *memory;
     size_t size;
 };
-
 
 static size_t
 WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
@@ -1783,8 +1773,9 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
     size_t realsize = size * nmemb;
     struct MemoryStruct *mem = (struct MemoryStruct *)userp;
 
-    mem->memory = (char*)realloc(mem->memory, mem->size + realsize + 1);
-    if(mem->memory == NULL) {
+    mem->memory = (char *)realloc(mem->memory, mem->size + realsize + 1);
+    if (mem->memory == NULL)
+    {
         /* out of memory! */
         printf("not enough memory (realloc returned NULL)\n");
         return 0;
@@ -1796,9 +1787,8 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 
     return realsize;
 }
-string askServerForSolution(string initialStateOfTheSudoku){
-
-
+string askServerForSolution(string initialStateOfTheSudoku)
+{
 
     // request the server for solution --------------------------------
 
@@ -1812,8 +1802,8 @@ string askServerForSolution(string initialStateOfTheSudoku){
 
     struct MemoryStruct chunk;
 
-    chunk.memory = (char*)malloc(1);  /* will be grown as needed by the realloc above */
-    chunk.size = 0;    /* no data at this point */
+    chunk.memory = (char *)malloc(1); /* will be grown as needed by the realloc above */
+    chunk.size = 0;                   /* no data at this point */
 
     curl_global_init(CURL_GLOBAL_ALL);
 
@@ -1837,11 +1827,13 @@ string askServerForSolution(string initialStateOfTheSudoku){
     res = curl_easy_perform(curl_handle);
 
     /* check for errors */
-    if(res != CURLE_OK) {
+    if (res != CURLE_OK)
+    {
         fprintf(stderr, "curl_easy_perform() failed: %s\n",
                 curl_easy_strerror(res));
     }
-    else {
+    else
+    {
         /*
          * Now, our chunk.memory points to a memory block that is chunk.size
          * bytes big and contains the remote file.
@@ -1864,5 +1856,4 @@ string askServerForSolution(string initialStateOfTheSudoku){
 
     // request the server for solution - end --------------------------------
     return solution;
-
 }
