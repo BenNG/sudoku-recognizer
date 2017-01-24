@@ -7,6 +7,9 @@
 
 #include "whereami.h"
 
+#include <chrono>
+#include <memory>
+
 #include <string>
 #include <limits.h>
 #include <unistd.h>
@@ -19,6 +22,10 @@
 using namespace cv;
 using namespace cv::ml;
 using namespace std;
+
+
+
+
 
 struct extractionInformation {
   Mat image;
@@ -105,12 +112,59 @@ int getdir(string dir, vector<string> &files);
 std::map<int, std::map<int,int> > cellValues();
 Mat mouline(Mat original);
 
-// debug for android
+// debug
 string hello();
 string askServerForSolution(string initialSudokuState);
 
 
 
+
+
+
+
 #endif //UTILS_OPENCV_LIB
 
+
+
+
+
+class Possible {
+   vector<bool> _b;
+public:
+   Possible() : _b(9, true) {}
+   bool   is_on(int i) const { return _b[i-1]; }
+   int    count()      const { return std::count(_b.begin(), _b.end(), true); }
+   void   eliminate(int i)   { _b[i-1] = false; }
+   int    val()        const {
+      auto it = find(_b.begin(), _b.end(), true);
+      return (it != _b.end() ? 1 + (it - _b.begin()) : -1);
+   }
+   string str(int wth) const;
+};
+
+
+
+
+
+
+
+class Sudoku {
+   vector<Possible> _cells;
+   static vector< vector<int> > _group, _neighbors, _groups_of;
+
+   bool     eliminate(int k, int val);
+public:
+   Sudoku(string s);
+   static void init();
+
+   Possible possible(int k) const { return _cells[k]; }
+   bool     is_solved() const;
+   bool     assign(int k, int val);
+   int      least_count() const;
+   void     write(ostream& o) const;
+   string   getSolution() const;
+};
+
+
+unique_ptr<Sudoku> solve(unique_ptr<Sudoku> S);
 
