@@ -1,5 +1,11 @@
 #include "sudoku.h"
 
+int sudokuCols = 0;
+int sudokuRows = 0;
+
+int sudokuCol = 0;
+int sudokuRow = 0;
+
 /**
 * You will handle cells here a cell is a square that hold a number or not. A puzle has 81 cells
 - you will first preprocess the cell using prepareCell
@@ -325,16 +331,7 @@ int readFlippedInteger(FILE *fp)
 
 Mat extractCell(Mat sudoku, int numCell)
 {
-    Mat output = sudoku.clone();
-    int y = sudoku.cols;
-    int x = sudoku.rows;
-    int cx = x / 9;
-    int cy = y / 9;
-
-    //    cout << "cell size is :" << cx << " * " << cy << " = " << cx * cy << endl;
-
-    Rect rect = Rect((numCell % 9) * cy, (numCell / 9) * cx, cy, cx);
-    return output(rect);
+    return sudoku(Rect((numCell % 9) * sudokuCol, (numCell / 9) * sudokuRow, sudokuCol, sudokuRow));
 }
 
 // ------------------------------------------------------------------------
@@ -527,6 +524,10 @@ Mat recursiveExtraction(Mat input)
     }
     else
     {
+        sudokuCols = input.cols;
+        sudokuRows = input.rows;
+        sudokuCol = sudokuCols / 9;
+        sudokuRow = sudokuRows / 9;
         return input;
     }
 }
