@@ -426,25 +426,16 @@ Once the puzzle had been extracted, we wrote the solution on it
 */
 Mat writeOnPuzzle(Mat puzzle, string initialState, string solution)
 {
-    Mat sudoku = puzzle.clone();
     cv::String sol(solution);
-    int width = sudoku.cols;
-    int height = sudoku.rows;
-    // cout << "width: " << width << endl;
-    // cout << "height: " << height << endl;
-
-    int cell_width = width / 9;
-    int cell_height = height / 9;
-
     for (int k = 0; k < 81; k++)
     {
         // Mat roi = extractRoiFromCell(sudoku, k);
         if (initialState[k] == '0')
         {
 
-            int x_center = (k % 9) * cell_width + ((cell_width) / 4);
-            int y_center = (k / 9) * cell_height + ((cell_height * 6) / 7);
-            cv::putText(sudoku,
+            int x_center = (k % 9) * sudokuCol + ((sudokuCol) / 4);
+            int y_center = (k / 9) * sudokuRow + ((sudokuRow * 6) / 7);
+            cv::putText(puzzle,
                         sol.substr(k, 1),
                         cv::Point(x_center, y_center),  // Coordinates
                         cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
@@ -453,7 +444,7 @@ Mat writeOnPuzzle(Mat puzzle, string initialState, string solution)
                         2);                             // thickness
         }
     }
-    return sudoku;
+    return puzzle;
 }
 
 /**
