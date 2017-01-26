@@ -84,7 +84,7 @@ Mat extractNumber(Mat input)
 {
 
     Mat cell = prepareCell(input);
-    Mat temp = removeTinyVolume(cell.clone(), 75, Scalar(0, 0, 0));
+    Mat temp = removeTinyVolume(cell, 75, Scalar(0, 0, 0));
 
     // showImage(temp);
 
