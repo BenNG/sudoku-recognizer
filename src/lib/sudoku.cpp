@@ -261,7 +261,14 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
         // fin 8bits (CV_8U)
         // showImage(thresholded);
         // be careful here the 2nd param can delete tiny number like 1
-        cleaned = removeTinyVolume(thresholded.clone(), 75, Scalar(0, 0, 0));
+        if (debug)
+        {
+            cleaned = removeTinyVolume(thresholded.clone(), 75, Scalar(0, 0, 0));
+        }
+        else
+        {
+            cleaned = removeTinyVolume(thresholded, 75, Scalar(0, 0, 0));
+        }
         // fin2 8bits
         // showImage(cleaned);
         vector<double> v = findBiggestComponent(cleaned);
@@ -1790,7 +1797,6 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 string askServerForSolution(string initialStateOfTheSudoku)
 {
 
-
     // string solution = askServerForSolution(initialStateOfTheSudoku);
     Sudoku::init();
 
@@ -1799,77 +1805,74 @@ string askServerForSolution(string initialStateOfTheSudoku)
 
     return solution;
 
+    // // we are not using server because it is too slow
+    //     // request the server for solution --------------------------------
 
+    //     stringstream ss, url;
 
-// // we are not using server because it is too slow
-//     // request the server for solution --------------------------------
+    //     url << "http://moulinet.tech/sudokus?input=";
+    //     url << initialStateOfTheSudoku;
 
-//     stringstream ss, url;
+    //     CURL *curl_handle;
+    //     CURLcode res;
 
-//     url << "http://moulinet.tech/sudokus?input=";
-//     url << initialStateOfTheSudoku;
+    //     struct MemoryStruct chunk;
 
-//     CURL *curl_handle;
-//     CURLcode res;
+    //     chunk.memory = (char *)malloc(1); /* will be grown as needed by the realloc above */
+    //     chunk.size = 0;                   /* no data at this point */
 
-//     struct MemoryStruct chunk;
+    //     curl_global_init(CURL_GLOBAL_ALL);
 
-//     chunk.memory = (char *)malloc(1); /* will be grown as needed by the realloc above */
-//     chunk.size = 0;                   /* no data at this point */
+    //     /* init the curl session */
+    //     curl_handle = curl_easy_init();
 
-//     curl_global_init(CURL_GLOBAL_ALL);
+    //     /* specify URL to get */
+    //     curl_easy_setopt(curl_handle, CURLOPT_URL, url.str().c_str());
 
-//     /* init the curl session */
-//     curl_handle = curl_easy_init();
+    //     /* send all data to this function  */
+    //     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 
-//     /* specify URL to get */
-//     curl_easy_setopt(curl_handle, CURLOPT_URL, url.str().c_str());
+    //     /* we pass our 'chunk' struct to the callback function */
+    //     curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
 
-//     /* send all data to this function  */
-//     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+    //     /* some servers don't like requests that are made without a user-agent
+    //        field, so we provide one */
+    //     curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 
-//     /* we pass our 'chunk' struct to the callback function */
-//     curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
+    //     /* get it! */
+    //     res = curl_easy_perform(curl_handle);
 
-//     /* some servers don't like requests that are made without a user-agent
-//        field, so we provide one */
-//     curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+    //     /* check for errors */
+    //     if (res != CURLE_OK)
+    //     {
+    //         fprintf(stderr, "curl_easy_perform() failed: %s\n",
+    //                 curl_easy_strerror(res));
+    //     }
+    //     else
+    //     {
+    //         /*
+    //          * Now, our chunk.memory points to a memory block that is chunk.size
+    //          * bytes big and contains the remote file.
+    //          *
+    //          * Do something nice with it!
+    //          */
 
-//     /* get it! */
-//     res = curl_easy_perform(curl_handle);
+    //         ss << chunk.memory;
 
-//     /* check for errors */
-//     if (res != CURLE_OK)
-//     {
-//         fprintf(stderr, "curl_easy_perform() failed: %s\n",
-//                 curl_easy_strerror(res));
-//     }
-//     else
-//     {
-//         /*
-//          * Now, our chunk.memory points to a memory block that is chunk.size
-//          * bytes big and contains the remote file.
-//          *
-//          * Do something nice with it!
-//          */
+    //         printf("%lu bytes retrieved\n", (long)chunk.size);
+    //     }
 
-//         ss << chunk.memory;
+    //     curl_easy_cleanup(curl_handle);
 
-//         printf("%lu bytes retrieved\n", (long)chunk.size);
-//     }
+    //     free(chunk.memory);
 
-//     curl_easy_cleanup(curl_handle);
+    //     curl_global_cleanup();
 
-//     free(chunk.memory);
+    //     string solution = ss.str();
 
-//     curl_global_cleanup();
-
-//     string solution = ss.str();
-
-//     // request the server for solution - end --------------------------------
+    //     // request the server for solution - end --------------------------------
     // return solution;
 }
-
 
 string Possible::str(int width) const
 {
@@ -2054,7 +2057,6 @@ string Sudoku::getSolution() const
     for (int k = 0; k < _cells.size(); k++)
     {
         ss << _cells[k].str(1);
-        
     }
     return ss.str();
 }
