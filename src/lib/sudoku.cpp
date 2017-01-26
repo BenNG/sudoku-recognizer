@@ -342,7 +342,7 @@ Mat preprocess(Mat input)
     Mat outerBox = Mat(input.size(), CV_8UC1);
     GaussianBlur(input, input, Size(11, 11), 0);
     adaptiveThreshold(input, outerBox, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 2);
-    outerBox = removeTinyVolume(outerBox.clone(), 400, Scalar(255, 255, 255));
+    outerBox = removeTinyVolume(outerBox, 400, Scalar(255, 255, 255));
     bitwise_not(outerBox, outerBox);
     dilate(outerBox, outerBox, Mat());
     return outerBox;
