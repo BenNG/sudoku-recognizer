@@ -23,6 +23,7 @@ add_library(hello lib/hello.cpp)
 add_executable( recognize recognizer.cpp )
 add_executable( mouline main.cpp )
 add_executable( showExtracted bin/showExtracted.cpp)
+add_executable( showNumberOfCells bin/showNumberOfCells.cpp)
 add_executable( prepareData bin/prepareData.cpp)
 add_executable( grabNumbers bin/grabNumbers.cpp)
 add_executable( testKnn bin/testKnn.cpp)
@@ -32,6 +33,9 @@ target_link_libraries(grabNumbers sudoku)
 target_link_libraries(prepareData sudoku)
 
 target_link_libraries( sudoku ${OpenCV_LIBS} curl)
+
+target_link_libraries( showNumberOfCells ${OpenCV_LIBS} )
+target_link_libraries( showNumberOfCells sudoku )
 
 target_link_libraries( showExtracted ${OpenCV_LIBS} )
 target_link_libraries( showExtracted sudoku )
