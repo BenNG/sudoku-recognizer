@@ -1,3 +1,4 @@
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14")
 set(Boost_ADDITIONAL_VERSIONS "1.58" "1.58.0")
 
 find_package(Boost 1.58 REQUIRED COMPONENTS unit_test_framework)
