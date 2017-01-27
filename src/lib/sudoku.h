@@ -50,6 +50,7 @@ static const double percent = 0.9;
 static const int normalizedSizeForCell = 32;
 Mat normalizeSize(Mat in, int size);
 Mat extractNumber(Mat cell);
+Mat extractNumber(Mat cell, bool debug);
 Mat prepareCell(Mat cell);
 Mat removeLight(Mat img, Mat pattern, int method);
 Mat calculateLightPattern(Mat img);

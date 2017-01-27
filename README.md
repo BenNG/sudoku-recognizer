@@ -110,7 +110,9 @@ This is because at the very begining all I wanted is learning this [language](ht
 * The function `prepareData` creates `assets/raw-features.yml` and getKnn uses it
 * boost library
  * check is the /FindBoost.cmake the supported version (the lib is not used anymore because it is not possible to use it on android)
-* unrecognize cell ? play with:
+* If you ask for a cell and you have an error chances are that your cell is a 1 and it is too tiny go to extractNumber and play with (and do not forget to run prepareData && test after)
+  * area
+  * boundingArea
   * width_threshold
   * height_threshold
 * Before the portage on android, I used a system for resolving the path of file that looked for the root of the project and join the path given but in a apk application

@@ -88,11 +88,19 @@ Mat normalizeSize(Mat in, int size)
 * */
 Mat extractNumber(Mat input)
 {
+    extractNumber(input, false);
+}
+
+Mat extractNumber(Mat input, bool debug)
+{
 
     Mat cell = prepareCell(input);
-    Mat temp = removeTinyVolume(cell, 75, Scalar(0, 0, 0));
-
-    // showImage(temp);
+    if (debug)
+    {
+        cout << "<<< extractNumber with:" << endl;
+        cout << "showing_0_" << endl;
+        showImage(cell);
+    }
 
     int cell_height = cell.rows;
     int cell_width = cell.cols;
@@ -102,7 +110,7 @@ Mat extractNumber(Mat input)
     float percent = 0.27;
     float width_threshold = cell_width - cell_width * percent;
     float height_threshold = cell_height - cell_height * percent;
-
+    int area_threshold = 97;
     // Use connected components with stats
     Mat labels, stats, centroids;
     int num_objects = connectedComponentsWithStats(cell, labels, stats, centroids);
@@ -111,12 +119,20 @@ Mat extractNumber(Mat input)
 
     if (num_objects < 2)
     {
-        //        cout << "No objects detected" << endl;
+        if (debug)
+        {
+            cout << "num_objects < 2 --> No objects detected" << endl;
+        }
         return output;
     }
     else
     {
-        //        cout << "Number of objects detected: " << num_objects - 1 << endl;
+        {
+            if (debug)
+            {
+                cout << "Number of objects detected: " << num_objects - 1 << endl;
+            }
+        }
     }
     Scalar white(255, 255, 255);
 
@@ -129,44 +145,51 @@ Mat extractNumber(Mat input)
         int left = stats.at<int>(i, CC_STAT_LEFT);
         int top = stats.at<int>(i, CC_STAT_TOP);
 
+        if (debug)
+        {
+            cout << "area: " << area << endl;
+            cout << "width: " << width << endl;
+            cout << "height: " << height << endl;
+            cout << "left: " << left << endl;
+            cout << "top: " << top << endl;
+        }
+
         // filtering
         int boundingArea = width * height;
         if (width > width_threshold)
         {
-            // cout << "width > to width_threshold -> skip " << width << endl;
-
-            continue; // drop long horizontal line
-        }
-        else
-        {
-            // cout << "width: " << width << endl;
+            if (debug)
+            {
+                cout << "width_threshold: " << width << ">" << width_threshold << "--> DROP !!!" << endl;
+            }
+            continue; // drop !!! long horizontal line
         }
         if (height < 8 || height > height_threshold)
         {
-            // cout << "height > height_threshold -> skip " << width << endl;
-
-            continue; // drop long vetical line
-        }
-        else
-        {
-            // cout << "height: " << height << endl;
-            // cout << "height_threshold: " << height_threshold << endl;
+            if (debug)
+            {
+                cout << "height_threshold: " << height << ">" << height_threshold << "--> DROP !!!" << endl;
+            }
+            continue; // drop !!! long vetical line
         }
         if (boundingArea < 220 || boundingArea > 900)
         {
+            if (debug)
+            {
+                cout << "boundingArea: "
+                     << "220<" << boundingArea << "<900 not true --> DROP !!!" << endl;
+            }
+
             continue;
         }
-        else
+        if (area < area_threshold)
         {
-            // cout << "boundingArea: " << boundingArea << endl;
-        }
-        if (area < 105)
-        {
+
+            if (debug)
+            {
+                cout << "area_threshold: " << area << "<" << area_threshold << " --> DROP !!!" << endl;
+            }
             continue; // area of the connected object
-        }
-        else
-        {
-            // cout << "area: " << area << endl;
         }
 
         // should be the number here
@@ -252,10 +275,12 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
     Mat rawCell, rawRoi, output, thresholded, cleaned;
 
     rawCell = extractCell(sudoku, k);
-    rawRoi = extractNumber(rawCell);
+    rawRoi = extractNumber(rawCell, debug);
 
     if (debug)
     {
+        cout << ">>> extractNumber with:" << endl;
+
         showImage(rawCell);
         showImage(rawRoi);
     }
@@ -269,11 +294,13 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
         // be careful here the 2nd param can delete tiny number like 1
         if (debug)
         {
-            cleaned = removeTinyVolume(thresholded.clone(), 75, Scalar(0, 0, 0));
+            cleaned = removeTinyVolume(thresholded.clone(), 74, Scalar(0, 0, 0));
+            cout << "showing_2_" << endl;
+            showImage(cleaned);
         }
         else
         {
-            cleaned = removeTinyVolume(thresholded, 75, Scalar(0, 0, 0));
+            cleaned = removeTinyVolume(thresholded, 74, Scalar(0, 0, 0));
         }
         // fin2 8bits
         // showImage(cleaned);
@@ -551,6 +578,10 @@ extractionInformation extractPuzzle(Mat input, vector<Point> bigestApprox)
     warpPerspective(input, outerBox, trans_mat33, input.size(), INTER_LINEAR);
 
     extractInfo.transformation = trans_mat33;
+    if (outerBox.cols > 640 && outerBox.rows > 360)
+    {
+        resize(outerBox, outerBox, Size(640, 360));
+    }
     extractInfo.image = outerBox;
     return extractInfo;
 }

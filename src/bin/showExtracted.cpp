@@ -161,7 +161,7 @@ int main(int argc, char **argv)
         {
             showImage(sudoku);
         }
-        // one file - all cell
+        // one file - one cell
         if (showCell || cellNumber != -1)
         {
             if (cellNumber != -1)
