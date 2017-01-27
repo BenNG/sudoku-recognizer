@@ -426,7 +426,7 @@ vector<Point> findBigestBlob(Mat original)
     vector<Point> approx;
     vector<Point> bigestApprox;
 
-    findContours(input, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
+    findContours(input.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
 
     for (int i = 0; i < contours.size(); i++)
     {
