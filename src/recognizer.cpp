@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 
 
 
-    extractionInformation extractInfo, extractInfo2;
+    ExtractionInformation extractInfo, extractInfo2;
 
     // prepare knn
     string raw_features_path("./../assets/raw-features.yml"); // created by prepareData

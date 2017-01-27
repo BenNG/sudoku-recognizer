@@ -529,7 +529,7 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> bigestApprox)
 */
 Mat recursiveExtraction(Mat input)
 {
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> bigestApprox;
     Mat extractedPuzzle;
 
@@ -550,9 +550,9 @@ Mat recursiveExtraction(Mat input)
     }
 }
 
-extractionInformation extractPuzzle(Mat input, vector<Point> bigestApprox)
+ExtractionInformation extractPuzzle(Mat input, vector<Point> bigestApprox)
 {
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     Mat outerBox = Mat(input.size(), CV_8UC1);
     Mat dst_img;
 
@@ -1764,7 +1764,7 @@ string hello()
 
 Mat mouline(Mat original)
 {
-    extractionInformation extractInfo, extractInfo2;
+    ExtractionInformation extractInfo, extractInfo2;
 
     // prepare knn
     string raw_features_path("./../assets/raw-features.yml"); // created by prepareData

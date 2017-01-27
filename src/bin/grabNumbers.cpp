@@ -14,7 +14,7 @@ using namespace std; // Or using std::string;
 int main(int argc, char **argv)
 {
 
-    extractionInformation extractInfo, extractInfo2;
+    ExtractionInformation extractInfo, extractInfo2;
 
     string filePath("./../assets/puzzles/s0.jpg"); // by default
     if (argc > 1)

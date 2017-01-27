@@ -27,7 +27,8 @@ using namespace std;
 
 
 
-struct extractionInformation {
+class ExtractionInformation {
+  public:
   Mat image;
   Mat transformation;
 };
@@ -70,7 +71,7 @@ Mat writeOnPuzzle(Mat puzzle, string initialState,  string solution);
 std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox);
 
 Mat recursiveExtraction(Mat input);
-extractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox);
+ExtractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox);
 // knn
 int readFlippedInteger(FILE *fp);
 Ptr<ml::KNearest> getKnn(FileStorage raw_features);

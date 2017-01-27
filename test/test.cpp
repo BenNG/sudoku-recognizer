@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s0)
     string filePath("../../assets/puzzles/s0.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s1)
     string filePath("../../assets/puzzles/s1.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s2)
     string filePath("../../assets/puzzles/s2.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -123,7 +123,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s3)
     string filePath("../../assets/puzzles/s3.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s4)
     string filePath("../../assets/puzzles/s4.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -169,7 +169,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s5)
     string filePath("../../assets/puzzles/s5.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -192,7 +192,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s6)
     string filePath("../../assets/puzzles/s6.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -215,7 +215,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s7)
     string filePath("../../assets/puzzles/s7.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -238,7 +238,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s8)
     string filePath("../../assets/puzzles/s8.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -261,7 +261,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s9)
     string filePath("../../assets/puzzles/s9.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -284,7 +284,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s10)
     string filePath("../../assets/puzzles/s10.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -307,7 +307,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s11)
     string filePath("../../assets/puzzles/s11.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -330,7 +330,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s12)
     string filePath("../../assets/puzzles/s12.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -353,7 +353,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s13)
     string filePath("../../assets/puzzles/s13.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -376,7 +376,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s14)
     string filePath("../../assets/puzzles/s14.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -399,7 +399,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s15)
     string filePath("../../assets/puzzles/s15.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -422,7 +422,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s16)
     string filePath("../../assets/puzzles/s16.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -445,7 +445,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s17)
     string filePath("../../assets/puzzles/s17.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -468,7 +468,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s18)
     string filePath("../../assets/puzzles/s18.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -491,7 +491,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s19)
     string filePath("../../assets/puzzles/s19.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -514,7 +514,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s20)
     string filePath("../../assets/puzzles/s20.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -537,7 +537,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s21)
     string filePath("../../assets/puzzles/s21.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -560,7 +560,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s22)
     string filePath("../../assets/puzzles/s22.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -583,7 +583,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s23)
     string filePath("../../assets/puzzles/s23.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -606,7 +606,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s24)
     string filePath("../../assets/puzzles/s24.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -629,7 +629,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s25)
     string filePath("../../assets/puzzles/s25.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -652,7 +652,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s26)
     string filePath("../../assets/puzzles/s26.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -675,7 +675,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s27)
     string filePath("../../assets/puzzles/s27.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -698,7 +698,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s28)
     string filePath("../../assets/puzzles/s28.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -721,7 +721,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s29)
     string filePath("../../assets/puzzles/s29.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -744,7 +744,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s30)
     string filePath("../../assets/puzzles/s30.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -767,7 +767,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s31)
     string filePath("../../assets/puzzles/s31.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -790,7 +790,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s32)
     string filePath("../../assets/puzzles/s32.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -813,7 +813,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s33)
     string filePath("../../assets/puzzles/s33.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -836,7 +836,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s34)
     string filePath("../../assets/puzzles/s34.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -859,7 +859,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s35)
     string filePath("../../assets/puzzles/s35.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -882,7 +882,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s36)
     string filePath("../../assets/puzzles/s36.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -905,7 +905,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s37)
     string filePath("../../assets/puzzles/s37.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
@@ -928,7 +928,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s38)
     string filePath("../../assets/puzzles/s38.jpg");
     Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
     vector<Point> biggestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);

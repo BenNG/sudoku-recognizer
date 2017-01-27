@@ -54,7 +54,7 @@ int main(int argc, char **argv)
     int puzzleNumber = -1, cellNumber = -1;
     stringstream ss;
     ss << "./../assets/puzzles/";
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
 
     for (int i = 1; i < argc; i++)
     {

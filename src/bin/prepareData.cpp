@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 
     string fullName;
     Mat raw, sudoku;
-    extractionInformation extractInfo;
+    ExtractionInformation extractInfo;
 
     string raw_features_path("./../../assets/raw-features.yml");
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::WRITE); // open the classifications file
