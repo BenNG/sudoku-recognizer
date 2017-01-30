@@ -136,14 +136,15 @@ Mat extractNumber(Mat input, bool debug)
     }
     Scalar white(255, 255, 255);
 
+    int area, width, height, left, top;
     // Create output image coloring the objects and show area
     for (int i = 1; i < num_objects; i++)
     {
-        int area = stats.at<int>(i, CC_STAT_AREA);
-        int width = stats.at<int>(i, CC_STAT_WIDTH);
-        int height = stats.at<int>(i, CC_STAT_HEIGHT);
-        int left = stats.at<int>(i, CC_STAT_LEFT);
-        int top = stats.at<int>(i, CC_STAT_TOP);
+        area = stats.at<int>(i, CC_STAT_AREA);
+        width = stats.at<int>(i, CC_STAT_WIDTH);
+        height = stats.at<int>(i, CC_STAT_HEIGHT);
+        left = stats.at<int>(i, CC_STAT_LEFT);
+        top = stats.at<int>(i, CC_STAT_TOP);
 
         if (debug)
         {
@@ -453,21 +454,22 @@ Once the puzzle had been extracted, we wrote the solution on it
 */
 Mat writeOnPuzzle(Mat puzzle, string initialState, string solution)
 {
+    cv::Point center;
     cv::String sol(solution);
+    cv::Scalar black(0, 0, 0);
     for (int k = 0; k < 81; k++)
     {
         // Mat roi = extractRoiFromCell(sudoku, k);
         if (initialState[k] == '0')
         {
-
-            int x_center = (k % 9) * sudokuCol + ((sudokuCol) / 4);
-            int y_center = (k / 9) * sudokuRow + ((sudokuRow * 6) / 7);
+            center.x = (k % 9) * sudokuCol + ((sudokuCol) / 4);
+            center.y = (k / 9) * sudokuRow + ((sudokuRow * 6) / 7);
             cv::putText(puzzle,
                         sol.substr(k, 1),
-                        cv::Point(x_center, y_center),  // Coordinates
+                        center,                         // Coordinates
                         cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
                         2.0,                            // Scale. 2.0 = 2x bigger
-                        cv::Scalar(0, 0, 0),            // Color
+                        black,                          // Color
                         2);                             // thickness
         }
     }
@@ -742,8 +744,14 @@ vector<double> findBiggestComponent(Mat input)
 
     Mat labels, stats, centroids;
     int num_objects = connectedComponentsWithStats(input, labels, stats, centroids);
+    
+    
+    int area;
+    int width;
+    int height;
+    int left;
+    int top;
     // Check the number of objects detected
-
     if (num_objects < 2)
     {
         throw std::logic_error("No objects detected");
@@ -758,11 +766,11 @@ vector<double> findBiggestComponent(Mat input)
     // Create output image coloring the objects and show area
     for (int i = 1; i < num_objects; i++)
     {
-        int area = stats.at<int>(i, CC_STAT_AREA);
-        int width = stats.at<int>(i, CC_STAT_WIDTH);
-        int height = stats.at<int>(i, CC_STAT_HEIGHT);
-        int left = stats.at<int>(i, CC_STAT_LEFT);
-        int top = stats.at<int>(i, CC_STAT_TOP);
+        area = stats.at<int>(i, CC_STAT_AREA);
+        width = stats.at<int>(i, CC_STAT_WIDTH);
+        height = stats.at<int>(i, CC_STAT_HEIGHT);
+        left = stats.at<int>(i, CC_STAT_LEFT);
+        top = stats.at<int>(i, CC_STAT_TOP);
 
         if (biggestArea < area)
         {
@@ -772,15 +780,13 @@ vector<double> findBiggestComponent(Mat input)
     }
 
     // cout << "area: " << stats.at<int>(index, CC_STAT_AREA) << endl;
-    int area = stats.at<int>(index, CC_STAT_AREA);
-    int width = stats.at<int>(index, CC_STAT_WIDTH);
-    int height = stats.at<int>(index, CC_STAT_HEIGHT);
-    int left = stats.at<int>(index, CC_STAT_LEFT);
-    int top = stats.at<int>(index, CC_STAT_TOP);
+    area = stats.at<int>(index, CC_STAT_AREA);
+    width = stats.at<int>(index, CC_STAT_WIDTH);
+    height = stats.at<int>(index, CC_STAT_HEIGHT);
+    left = stats.at<int>(index, CC_STAT_LEFT);
+    top = stats.at<int>(index, CC_STAT_TOP);
 
-    vector<double> v = {(double)left, (double)top, (double)width, (double)height, centroids.at<double>(index, 0), centroids.at<double>(index, 1)};
-
-    return v;
+    return  {(double)left, (double)top, (double)width, (double)height, centroids.at<double>(index, 0), centroids.at<double>(index, 1)};
 }
 
 Mat drawAllApprox(Mat preprocessed)
