@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
     Ptr<ml::KNearest> knn = getKnn(raw_features);
 
-    vector<Point> bigestApprox = findBigestBlob(image);
+    vector<Point> bigestApprox = findBiggestBlob(image);
 
     extractInfo = extractPuzzle(image, bigestApprox);
     Mat extractedPuzzle = extractInfo.image;

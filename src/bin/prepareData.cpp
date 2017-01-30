@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 
         raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
         
-        vector<Point> biggestApprox = findBigestBlob(raw);
+        vector<Point> biggestApprox = findBiggestBlob(raw);
         extractInfo = extractPuzzle(raw, biggestApprox);
         Mat sudoku = recursiveExtraction(extractInfo.image);
 

@@ -31,15 +31,17 @@ int main(int argc, char **argv)
 
 
 
-    vector<Point> bigestApprox = findBigestBlob(image);
-    extractInfo = extractPuzzle(image, bigestApprox);
-    Mat extractedPuzzle = extractInfo.image;
-    Mat finalExtraction = recursiveExtraction(extractedPuzzle);
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+    vector<Point> bigestApprox = findBiggestBlob(image);
+    extractInfo = extractPuzzle(image, bigestApprox);
+    Mat extractedPuzzle = extractInfo.image;
+    Mat finalExtraction = recursiveExtraction(extractedPuzzle);
     string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,11 +50,13 @@ int main(int argc, char **argv)
     cout << duration << endl;
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
     // showImage(extractedPuzzle);
 
     // mouline: 697
     // getknn 162
-    // findBigestBlob 35 -> 23
+    // findBiggestBlob 35 -> 23
 
     // recursiveExtraction 91
     // grabNumbers 128

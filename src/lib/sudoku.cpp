@@ -405,19 +405,19 @@ bool isContourValid(int contourAreaValue, vector<Point> approx)
 }
 
 /*
-* findBigestBlob
+* findBiggestBlob
 *
 * Find the biggest contour in the image
 * note that it returns vector< vector<Point> > because it is more convenient to use drawContours after
 
 !!!
-Recursivity here is not a good idea as we are waiting for the bigestApprox relatively to the input
-  so if we call findBigestBlob again we will have the result to the first biggest approx found we will return it and apply it to the original
+Recursivity here is not a good idea as we are waiting for the biggestApprox relatively to the input
+  so if we call findBiggestBlob again we will have the result to the first biggest approx found we will return it and apply it to the original
   which is not the good image
   !!!
 
 * */
-vector<Point> findBigestBlob(Mat original)
+vector<Point> findBiggestBlob(Mat original)
 {
 
     Mat input = preprocess(original.clone());
@@ -426,7 +426,7 @@ vector<Point> findBigestBlob(Mat original)
     vector<vector<Point>> contours;
     vector<Point> contour;
     vector<Point> approx;
-    vector<Point> bigestApprox;
+    vector<Point> biggestApprox;
 
     findContours(input.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
 
@@ -443,11 +443,11 @@ vector<Point> findBigestBlob(Mat original)
             {
                 // showContour(input.clone(), contours[i]);
                 largest_area = contourAreaValue;
-                bigestApprox = approx;
+                biggestApprox = approx;
             }
         }
     }
-    return bigestApprox;
+    return biggestApprox;
 }
 
 /**
@@ -484,7 +484,7 @@ Mat writeOnPuzzle(Mat puzzle, string initialState, string solution)
     2: bl
     3: br
 */
-std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> bigestApprox)
+std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox)
 {
 
     Point2f tl;
@@ -494,10 +494,10 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> bigestApprox)
 
     std::vector<Point2f> points(4), tops(2), bottoms(2), src_p(4), dst_p(4);
 
-    points[0] = bigestApprox[0];
-    points[1] = bigestApprox[1];
-    points[2] = bigestApprox[2];
-    points[3] = bigestApprox[3];
+    points[0] = biggestApprox[0];
+    points[1] = biggestApprox[1];
+    points[2] = biggestApprox[2];
+    points[3] = biggestApprox[3];
 
     // extract top 2 top points
     std::sort(points.begin(), points.end(), sort_ys);
@@ -533,13 +533,13 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> bigestApprox)
 Mat recursiveExtraction(Mat input)
 {
     ExtractionInformation extractInfo;
-    vector<Point> bigestApprox;
+    vector<Point> biggestApprox;
     Mat extractedPuzzle;
 
-    bigestApprox = findBigestBlob(input);
-    if (!bigestApprox.empty())
+    biggestApprox = findBiggestBlob(input);
+    if (!biggestApprox.empty())
     {
-        extractInfo = extractPuzzle(input, bigestApprox);
+        extractInfo = extractPuzzle(input, biggestApprox);
         extractedPuzzle = extractInfo.image;
         return recursiveExtraction(extractedPuzzle);
     }
@@ -553,7 +553,7 @@ Mat recursiveExtraction(Mat input)
     }
 }
 
-ExtractionInformation extractPuzzle(Mat input, vector<Point> bigestApprox)
+ExtractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox)
 {
     ExtractionInformation extractInfo;
     Mat outerBox = Mat(input.size(), CV_8UC1);
@@ -561,7 +561,7 @@ ExtractionInformation extractPuzzle(Mat input, vector<Point> bigestApprox)
 
     std::vector<Point2f> coordinates(4), dst_p(4);
 
-    coordinates = getSudokuCoordinates(input, bigestApprox);
+    coordinates = getSudokuCoordinates(input, biggestApprox);
 
     float w = (float)input.cols;
     float h = (float)input.rows;
@@ -843,14 +843,14 @@ Mat drawAllApprox(Mat preprocessed, Mat origial)
     return output;
 }
 
-void drawMarkers(Mat input, vector<Point> bigestApprox)
+void drawMarkers(Mat input, vector<Point> biggestApprox)
 {
     Scalar white(255, 255, 255);
 
-    drawMarker(input, bigestApprox.at(0), white);
-    drawMarker(input, bigestApprox.at(1), white);
-    drawMarker(input, bigestApprox.at(2), white);
-    drawMarker(input, bigestApprox.at(3), white);
+    drawMarker(input, biggestApprox.at(0), white);
+    drawMarker(input, biggestApprox.at(1), white);
+    drawMarker(input, biggestApprox.at(2), white);
+    drawMarker(input, biggestApprox.at(3), white);
 }
 
 Mat drawGrid(Mat input)
@@ -1778,9 +1778,9 @@ Mat mouline(Mat original)
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
     Ptr<ml::KNearest> knn = getKnn(raw_features);
 
-    vector<Point> bigestApprox = findBigestBlob(original);
+    vector<Point> biggestApprox = findBiggestBlob(original);
 
-    extractInfo = extractPuzzle(original, bigestApprox);
+    extractInfo = extractPuzzle(original, biggestApprox);
     Mat extractedPuzzle = extractInfo.image;
     // showImage(extractedPuzzle);
 
