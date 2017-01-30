@@ -145,6 +145,7 @@ Mat extractNumber(Mat input, bool debug)
         height = stats.at<int>(i, CC_STAT_HEIGHT);
         left = stats.at<int>(i, CC_STAT_LEFT);
         top = stats.at<int>(i, CC_STAT_TOP);
+        int boundingArea;
 
         if (debug)
         {
@@ -156,7 +157,7 @@ Mat extractNumber(Mat input, bool debug)
         }
 
         // filtering
-        int boundingArea = width * height;
+        boundingArea = width * height;
         if (width > width_threshold)
         {
             if (debug)
@@ -744,8 +745,8 @@ vector<double> findBiggestComponent(Mat input)
 
     Mat labels, stats, centroids;
     int num_objects = connectedComponentsWithStats(input, labels, stats, centroids);
-    
-    
+
+
     int area;
     int width;
     int height;
@@ -786,7 +787,7 @@ vector<double> findBiggestComponent(Mat input)
     left = stats.at<int>(index, CC_STAT_LEFT);
     top = stats.at<int>(index, CC_STAT_TOP);
 
-    return  {(double)left, (double)top, (double)width, (double)height, centroids.at<double>(index, 0), centroids.at<double>(index, 1)};
+    return {(double)left, (double)top, (double)width, (double)height, centroids.at<double>(index, 0), centroids.at<double>(index, 1)};
 }
 
 Mat drawAllApprox(Mat preprocessed)
@@ -927,8 +928,6 @@ Mat removeTinyVolume(Mat input, int area, Scalar color)
 {
     // we draw to the color of the background
     Mat output = input.clone();
-    Scalar black(0, 0, 0);
-    Scalar white(255, 255, 255);
     vector<vector<Point>> contours;
     findContours(input, contours, RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 
@@ -1631,6 +1630,8 @@ string grabNumbers(Mat extractedPuzzle, Ptr<ml::KNearest> knn)
     stringstream ss;
     int K = 1;
 
+    InputOutputArray noArr = noArray();
+
     // raw = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
     for (int k = 0; k < 81; k++)
@@ -1640,7 +1641,7 @@ string grabNumbers(Mat extractedPuzzle, Ptr<ml::KNearest> knn)
         {
             // showImage(roi);
             roi.convertTo(roi, CV_32F);
-            knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
+            knn->findNearest(roi.reshape(1, 1), K, noArr, response, dist);
             ss << response.at<float>(0);
         }
         else

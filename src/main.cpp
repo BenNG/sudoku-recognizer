@@ -29,24 +29,36 @@ int main(int argc, char **argv)
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
     Ptr<ml::KNearest> knn = getKnn(raw_features);
 
-    vector<Point> bigestApprox = findBigestBlob(image);
 
+
+    vector<Point> bigestApprox = findBigestBlob(image);
     extractInfo = extractPuzzle(image, bigestApprox);
     Mat extractedPuzzle = extractInfo.image;
+    Mat finalExtraction = recursiveExtraction(extractedPuzzle);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+    cout << duration << endl;
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // showImage(extractedPuzzle);
 
     // mouline: 697
     // getknn 162
-    // findBigestBlob 35
+    // findBigestBlob 35 -> 23
+
     // recursiveExtraction 91
     // grabNumbers 128
 
-    Mat finalExtraction = recursiveExtraction(extractedPuzzle);
-    string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);
 
     string solution;
-
-    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
     Sudoku::init();
     if (auto S = solve(unique_ptr<Sudoku>(new Sudoku(initialStateOfTheSudoku))))
@@ -60,18 +72,9 @@ int main(int argc, char **argv)
     }
     cout << endl;
 
-    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
-
-    cout << duration << endl;
-
-
-
     Mat writen = writeOnPuzzle(finalExtraction, initialStateOfTheSudoku, solution);
 
     warpPerspective(writen, image, extractInfo.transformation, image.size(), WARP_INVERSE_MAP, BORDER_TRANSPARENT);
-
 
     showImage(image);
 
