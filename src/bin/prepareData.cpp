@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     std::map<int, std::map<int, int>> cellV(cellValues());
     int value;
 
-    string fullName;
+    string fileName;
     Mat raw, sudoku;
     ExtractionInformation extractInfo;
 
@@ -38,9 +38,9 @@ int main(int argc, char **argv)
         ss << "./../assets/puzzles/s";
         ss << i;
         ss << ".jpg";
-        string fullName(ss.str());
+        string fileName(ss.str());
 
-        raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
+        raw = imread(fileName, CV_LOAD_IMAGE_GRAYSCALE);
         
         vector<Point> biggestApprox = findBiggestBlob(raw);
         extractInfo = extractPuzzle(raw, biggestApprox);
