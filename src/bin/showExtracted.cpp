@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 
     Ptr<ml::KNearest> knn = getKnn(raw_features);
     // get cells values manually grabbed
-    std::map<int, std::map<int, int>> cellV(cellValues());
+    std::map<int, std::map<int, int>> knownCellValues(cellValues());
 
     bool showCell = false, showPuzzle = false, debug = false;
     int puzzleNumber = -1, cellNumber = -1;
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
                         roi.convertTo(roi, CV_32F);
 
                         knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
-                        cout << "resp: " << response << " expected: " << cellV[fileNumber][cellNumber] << endl;
+                        cout << "resp: " << response << " expected: " << knownCellValues[fileNumber][cellNumber] << endl;
                         showImage(roi);
                     }
                 }
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
                             cout << "cell index: " << k << endl;
                             roi.convertTo(roi, CV_32F);
                             knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
-                            cout << "resp: " << response << " expected: " << cellV[fileNumber][k] << endl;
+                            cout << "resp: " << response << " expected: " << knownCellValues[fileNumber][k] << endl;
                             showImage(roi);
                         }
                     }
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
                     roi.convertTo(roi, CV_32F);
 
                     knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
-                    cout << "resp: " << response << " expected: " << cellV[puzzleNumber][cellNumber] << endl;
+                    cout << "resp: " << response << " expected: " << knownCellValues[puzzleNumber][cellNumber] << endl;
                     showImage(roi);
                 }
             }
@@ -189,7 +189,7 @@ int main(int argc, char **argv)
                         roi.convertTo(roi, CV_32F);
 
                         knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
-                        cout << "resp: " << response << " expected: " << cellV[puzzleNumber][k] << endl;
+                        cout << "resp: " << response << " expected: " << knownCellValues[puzzleNumber][k] << endl;
                         showImage(roi);
                     }
                 }

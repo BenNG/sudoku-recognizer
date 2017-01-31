@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     Mat labels(1, nbrOfCells, CV_8UC1);
 
     // Ptr<ml::KNearest> knn(ml::KNearest::create());
-    std::map<int, std::map<int, int>> cellV(cellValues());
+    std::map<int, std::map<int, int>> knownCellValues(cellValues());
     int value;
 
     string fileName;
@@ -52,9 +52,7 @@ int main(int argc, char **argv)
             roi = extractRoiFromCell(sudoku, k);
             if (!roi.empty())
             {
-                value = cellV[i][k];
-                // cout << k << ":" << value << endl;
-                // featurize
+                value = knownCellValues[i][k];
                 Mat feat = roi.reshape(1, 1);
 
                 feat.copyTo(features.row(incrCell));
