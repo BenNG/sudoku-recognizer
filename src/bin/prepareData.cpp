@@ -17,6 +17,8 @@ int main(int argc, char **argv)
     // data to return
     Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_8UC1);
     Mat labels(1, nbrOfCells, CV_8UC1);
+    Mat svm_labels(nbrOfCells, 1, CV_32S);
+    
 
     // Ptr<ml::KNearest> knn(ml::KNearest::create());
     std::map<int, std::map<int, int>> knownCellValues(cellValues());
@@ -57,17 +59,20 @@ int main(int argc, char **argv)
 
                 feat.copyTo(features.row(incrCell));
                 labels.at<unsigned char>(0, incrCell) = value;
+                svm_labels.at<int>(incrCell, 0) = value;
+                
 
                 incrCell++;
             }
         }
     }
 
-    features.convertTo(features, CV_32F);
+    features.convertTo(features, CV_32F);   
     labels.convertTo(labels, CV_32F);
 
     raw_features << "features" << features;
     raw_features << "labels" << labels;
+    raw_features << "svm_labels" << svm_labels;
     raw_features.release();
 
     return 0;

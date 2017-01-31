@@ -28,30 +28,26 @@ int main(int argc, char **argv)
     string raw_features_path("./../assets/raw-features.yml"); // created by prepareData
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
     Ptr<ml::KNearest> knn = getKnn(raw_features);
-
-
-
-
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    Ptr<ml::SVM> svm = getSvm(raw_features);
 
     vector<Point> bigestApprox = findBiggestBlob(image);
     extractInfo = extractPuzzle(image, bigestApprox);
     Mat extractedPuzzle = extractInfo.image;
     Mat finalExtraction = recursiveExtraction(extractedPuzzle);
-    string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    string initialStateOfTheSudoku = grabNumbers(finalExtraction, svm);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
-    cout << duration << endl;
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+    cout << duration/1000 << " ms" <<  endl;
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
+    cout << (initialStateOfTheSudoku == "006400750005082060007306089050130900093000840002048070580209600070860200029003400") << endl;
     // showImage(extractedPuzzle);
 
     // mouline: 697
@@ -60,7 +56,6 @@ int main(int argc, char **argv)
 
     // recursiveExtraction 91
     // grabNumbers 128
-
 
     string solution;
 

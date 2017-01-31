@@ -75,6 +75,7 @@ ExtractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox);
 // knn
 int readFlippedInteger(FILE *fp);
 Ptr<ml::KNearest> getKnn(FileStorage raw_features);
+Ptr<ml::SVM>  getSvm(FileStorage raw_features);
 void testKnn(Ptr<ml::KNearest> knn, cv::FileStorage raw_features);
 // debug
 int minuss(int i, int j);
@@ -102,7 +103,8 @@ static void test_and_save_classifier(const Ptr<StatModel>& model,
                                      const string& filename_to_save);
 
 // sudoku
-string grabNumbers(Mat image, Ptr<ml::KNearest> knn);
+string grabNumbers(Mat extractedPuzzle, Ptr<ml::KNearest> knn);
+string grabNumbers(Mat extractedPuzzle, Ptr<ml::SVM> svm);
 // file system
 // std::string getexepath();
 string joinPath(vector<string> strs);

@@ -600,15 +600,9 @@ Ptr<ml::KNearest> getKnn(cv::FileStorage raw_features)
     Mat labels(1, nbrOfCells, CV_8UC1);
     Ptr<ml::KNearest> knn(ml::KNearest::create());
 
-    // vector<Mat> v = readTrainingMNIST();
-    // Mat trainFeatures = v[0];
-    // Mat trainLabels = v[1];
-
     if (raw_features.isOpened() == false)
     {
-        throw std::logic_error("error, unable to open training classifications file, exiting program\n\n"); // if the file was not opened successfully
-        // std::cout << "error, unable to open training classifications file, exiting program\n\n"; // show error message
-        // return (0);                                                                              // and exit program
+        throw std::logic_error("error, unable to open training classifications file, exiting program\n\n");
     }
 
     raw_features["features"] >> features;
@@ -621,6 +615,25 @@ Ptr<ml::KNearest> getKnn(cv::FileStorage raw_features)
     knn->train(sub_features, ml::ROW_SAMPLE, sub_labels);
 
     return knn;
+}
+
+Ptr<ml::SVM> getSvm(FileStorage raw_features)
+{
+    Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_32F);
+    Mat svm_labels(nbrOfCells, 1, CV_32S);
+    raw_features["features"] >> features;
+    raw_features["svm_labels"] >> svm_labels;
+    raw_features.release();
+
+    Ptr<ml::SVM> svm = ml::SVM::create();
+    svm->setType(ml::SVM::C_SVC);
+    svm->setKernel(ml::SVM::POLY);
+    svm->setDegree(3); // I had to put it if not it fails
+    svm->setGamma(3);
+
+    Ptr<ml::TrainData> tData = ml::TrainData::create(features, ml::SampleTypes::ROW_SAMPLE, svm_labels);
+    svm->train(tData);
+    return svm;
 }
 
 void testKnn(Ptr<ml::KNearest> knn, cv::FileStorage raw_features)
@@ -745,7 +758,6 @@ vector<double> findBiggestComponent(Mat input)
 
     Mat labels, stats, centroids;
     int num_objects = connectedComponentsWithStats(input, labels, stats, centroids);
-
 
     int area;
     int width;
@@ -1620,7 +1632,27 @@ std::map<int, std::map<int, int>> cellValues()
 
 // ---------------------------------------------------------------------------------------
 // sudoku
+string grabNumbers(Mat extractedPuzzle, Ptr<ml::SVM> svm)
+{
+    Mat roi;
+    stringstream ss;
 
+    for (int k = 0; k < 81; k++)
+    {
+        roi = extractRoiFromCell(extractedPuzzle, k);
+        if (!roi.empty())
+        {
+            roi.convertTo(roi, CV_32F);
+            ss << svm->predict(roi.reshape(1, 1));
+        }
+        else
+        {
+            ss << "0";
+        }
+    }
+
+    return ss.str();
+}
 // give file path from the root of the project
 string grabNumbers(Mat extractedPuzzle, Ptr<ml::KNearest> knn)
 {
