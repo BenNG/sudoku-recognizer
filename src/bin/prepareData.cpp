@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     Mat raw, sudoku;
     ExtractionInformation extractInfo;
 
-    string raw_features_path("./../../assets/raw-features.yml");
+    string raw_features_path("./../assets/raw-features.yml");
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::WRITE); // open the classifications file
 
     int incrCell = 0; // --> 1184
