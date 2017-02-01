@@ -305,7 +305,6 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
             cleaned = removeTinyVolume(thresholded, 74, Scalar(0, 0, 0));
         }
         // fin2 8bits
-        // showImage(cleaned);
         vector<double> v = findBiggestComponent(cleaned);
 
         if (debug)
@@ -314,20 +313,15 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
             showImage(cleaned);
         }
 
-        double left = v[0];
-        double top = v[1];
-        double width = v[2];
-        double height = v[3];
-        double x = v[4];
-        double y = v[5];
-        Rect rect(left, top, width, height);
-        Mat almostReady = cleaned(rect);
+        // double left = v[0];
+        // double top = v[1];
+        // double width = v[2];
+        // double height = v[3];
+        // double x = v[4];
+        // double y = v[5];
 
-        // threshold(almostReady, output, 125, 255, almostReady.type());
-
-        return normalizeSize(almostReady, normalizedSizeForCell);
-
-        // return cleaned(rect);
+        Rect rect(v[0], v[1], v[2], v[3]);
+        return normalizeSize(cleaned(rect), normalizedSizeForCell);
     }
     return output;
 }
@@ -580,10 +574,6 @@ ExtractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox)
     warpPerspective(input, outerBox, trans_mat33, input.size(), INTER_LINEAR);
 
     extractInfo.transformation = trans_mat33;
-    if (outerBox.cols > 640 && outerBox.rows > 360)
-    {
-        resize(outerBox, outerBox, Size(640, 360));
-    }
     extractInfo.image = outerBox;
     return extractInfo;
 }
