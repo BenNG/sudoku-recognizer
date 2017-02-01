@@ -18,7 +18,6 @@ int main(int argc, char **argv)
     Mat features(nbrOfCells, normalizedSizeForCell * normalizedSizeForCell, CV_8UC1);
     Mat labels(1, nbrOfCells, CV_8UC1);
     Mat svm_labels(nbrOfCells, 1, CV_32S);
-    
 
     // Ptr<ml::KNearest> knn(ml::KNearest::create());
     std::map<int, std::map<int, int>> knownCellValues(cellValues());
@@ -43,11 +42,11 @@ int main(int argc, char **argv)
         string fileName(ss.str());
 
         raw = imread(fileName, CV_LOAD_IMAGE_GRAYSCALE);
-        
-        vector<Point> biggestApprox = findBiggestBlob(raw);
+
+        Mat preprocessed = preprocess(raw.clone());
+        vector<Point> biggestApprox = findBiggestBlob(preprocessed);
         extractInfo = extractPuzzle(raw, biggestApprox);
         Mat sudoku = recursiveExtraction(extractInfo.image);
-
 
         for (int k = 0; k < 81; k++)
         {
@@ -60,14 +59,13 @@ int main(int argc, char **argv)
                 feat.copyTo(features.row(incrCell));
                 labels.at<unsigned char>(0, incrCell) = value;
                 svm_labels.at<int>(incrCell, 0) = value;
-                
 
                 incrCell++;
             }
         }
     }
 
-    features.convertTo(features, CV_32F);   
+    features.convertTo(features, CV_32F);
     labels.convertTo(labels, CV_32F);
 
     raw_features << "features" << features;

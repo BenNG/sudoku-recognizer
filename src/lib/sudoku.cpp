@@ -417,18 +417,15 @@ Recursivity here is not a good idea as we are waiting for the biggestApprox rela
   !!!
 
 * */
-vector<Point> findBiggestBlob(Mat original)
+vector<Point> findBiggestBlob(Mat preprocessed)
 {
-
-    Mat input = preprocess(original.clone());
-
     int largest_area, contourAreaValue = 0;
     vector<vector<Point>> contours;
     vector<Point> contour;
     vector<Point> approx;
     vector<Point> biggestApprox;
 
-    findContours(input.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
+    findContours(preprocessed.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
 
     for (int i = 0; i < contours.size(); i++)
     {
@@ -441,7 +438,7 @@ vector<Point> findBiggestBlob(Mat original)
         {
             if (contourAreaValue > largest_area)
             {
-                // showContour(input.clone(), contours[i]);
+                // showContour(preprocessed.clone(), contours[i]);
                 largest_area = contourAreaValue;
                 biggestApprox = approx;
             }
@@ -536,7 +533,9 @@ Mat recursiveExtraction(Mat input)
     vector<Point> biggestApprox;
     Mat extractedPuzzle;
 
-    biggestApprox = findBiggestBlob(input);
+    Mat preprocessed = preprocess(input.clone());
+
+    biggestApprox = findBiggestBlob(preprocessed);
     if (!biggestApprox.empty())
     {
         extractInfo = extractPuzzle(input, biggestApprox);
@@ -1810,7 +1809,9 @@ Mat mouline(Mat original)
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
     Ptr<ml::KNearest> knn = getKnn(raw_features);
 
-    vector<Point> biggestApprox = findBiggestBlob(original);
+    Mat preprocessed = preprocess(original.clone());
+
+    vector<Point> biggestApprox = findBiggestBlob(preprocessed);
 
     extractInfo = extractPuzzle(original, biggestApprox);
     Mat extractedPuzzle = extractInfo.image;

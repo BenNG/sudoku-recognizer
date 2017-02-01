@@ -22,7 +22,7 @@ int main(int argc, char **argv)
         filePath = argv[1];
     }
 
-    Mat image = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat original = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
 
     // prepare knn
     string raw_features_path("./../assets/raw-features.yml"); // created by prepareData
@@ -30,8 +30,10 @@ int main(int argc, char **argv)
     Ptr<ml::KNearest> knn = getKnn(raw_features);
     Ptr<ml::SVM> svm = getSvm(raw_features);
 
-    vector<Point> bigestApprox = findBiggestBlob(image);
-    extractInfo = extractPuzzle(image, bigestApprox);
+    Mat preprocessed = preprocess(original.clone());
+
+    vector<Point> bigestApprox = findBiggestBlob(preprocessed);
+    extractInfo = extractPuzzle(original, bigestApprox);
     Mat extractedPuzzle = extractInfo.image;
     Mat finalExtraction = recursiveExtraction(extractedPuzzle);
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,9 +75,9 @@ int main(int argc, char **argv)
 
     Mat writen = writeOnPuzzle(finalExtraction, initialStateOfTheSudoku, solution);
 
-    warpPerspective(writen, image, extractInfo.transformation, image.size(), WARP_INVERSE_MAP, BORDER_TRANSPARENT);
+    warpPerspective(writen, original, extractInfo.transformation, original.size(), WARP_INVERSE_MAP, BORDER_TRANSPARENT);
 
-    showImage(image);
+    showImage(original);
 
     return 0;
 }

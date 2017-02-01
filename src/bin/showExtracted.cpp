@@ -104,7 +104,8 @@ int main(int argc, char **argv)
 
             raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
 
-            vector<Point> biggestApprox = findBiggestBlob(raw);
+            Mat preprocessed = preprocess(raw.clone());
+            vector<Point> biggestApprox = findBiggestBlob(preprocessed);
             extractInfo = extractPuzzle(raw, biggestApprox);
             Mat sudoku = recursiveExtraction(extractInfo.image);
 
@@ -153,7 +154,9 @@ int main(int argc, char **argv)
         // cout << p << endl;
         raw = imread(p, CV_LOAD_IMAGE_GRAYSCALE);
 
-        vector<Point> biggestApprox = findBiggestBlob(raw);
+        Mat preprocessed = preprocess(raw.clone());
+
+        vector<Point> biggestApprox = findBiggestBlob(preprocessed);
         extractInfo = extractPuzzle(raw, biggestApprox);
         Mat sudoku = recursiveExtraction(extractInfo.image);
 
