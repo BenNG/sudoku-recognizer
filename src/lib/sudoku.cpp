@@ -6,11 +6,11 @@ int sudokuRows = 0;
 int sudokuCol = 0;
 int sudokuRow = 0;
 
-float removeTinyVolumeBeforeExtractingPuzzle = 2.0/1000;
-float removeTinyVolumeBeforeExtractingNumber = 2.0/1000;
-float removeAreaBeforeExtractingNumber = 3.6/100;
-float removeMinBoundingAreaBeforeExtractingNumber = 7.2/100;
-float removeMaxBoundingAreaBeforeExtractingNumber = 7.2/100 * 5.52;
+float removeTinyVolumeBeforeExtractingPuzzle = 2.0 / 1000;
+float removeTinyVolumeBeforeExtractingNumber = 2.0 / 1000;
+float removeAreaBeforeExtractingNumber = 3.6 / 100;
+float removeMinBoundingAreaBeforeExtractingNumber = 7.2 / 100;
+float removeMaxBoundingAreaBeforeExtractingNumber = 7.2 / 100 * 5.52;
 
 /**
 * You will handle cells here a cell is a square that hold a number or not. A puzle has 81 cells
@@ -117,9 +117,9 @@ Mat extractNumber(Mat input, bool debug)
     float width_threshold = cell_width - cell_width * percent;
     float height_threshold = cell_height - cell_height * percent;
 
-    int area_threshold = cell.rows * cell.cols *removeAreaBeforeExtractingNumber;
-    int min_boundingArea_threshold = cell.rows * cell.cols *removeMinBoundingAreaBeforeExtractingNumber;
-    int max_boundingArea_threshold = cell.rows * cell.cols *removeMaxBoundingAreaBeforeExtractingNumber;
+    int area_threshold = cell.rows * cell.cols * removeAreaBeforeExtractingNumber;
+    int min_boundingArea_threshold = cell.rows * cell.cols * removeMinBoundingAreaBeforeExtractingNumber;
+    int max_boundingArea_threshold = cell.rows * cell.cols * removeMaxBoundingAreaBeforeExtractingNumber;
     // cout << max_boundingArea_threshold << endl;
     // Use connected components with stats
     Mat labels, stats, centroids;
@@ -189,7 +189,7 @@ Mat extractNumber(Mat input, bool debug)
             if (debug)
             {
                 cout << "boundingArea: "
-                     << min_boundingArea_threshold <<  "<" << boundingArea << "<" << max_boundingArea_threshold <<"not true --> DROP !!!" << endl;
+                     << min_boundingArea_threshold << "<" << boundingArea << "<" << max_boundingArea_threshold << "not true --> DROP !!!" << endl;
             }
 
             continue;
@@ -428,7 +428,7 @@ vector<Point> findBiggestBlob(Mat preprocessed, Mat original)
     vector<Point> contour;
     vector<Point> approx;
     vector<Point> biggestApprox;
-    
+
     findContours(preprocessed.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
 
     for (int i = 0; i < contours.size(); i++)
@@ -456,6 +456,7 @@ Once the puzzle had been extracted, we wrote the solution on it
 */
 Mat writeOnPuzzle(Mat puzzle, string initialState, string solution)
 {
+    cout << puzzle.cols << endl;
     cv::Point center;
     cv::String sol(solution);
     cv::Scalar black(0, 0, 0);
@@ -468,11 +469,11 @@ Mat writeOnPuzzle(Mat puzzle, string initialState, string solution)
             center.y = (k / 9) * sudokuRow + ((sudokuRow * 6) / 7);
             cv::putText(puzzle,
                         sol.substr(k, 1),
-                        center,                         // Coordinates
-                        cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
-                        2.0,                            // Scale. 2.0 = 2x bigger
-                        black,                          // Color
-                        2);                             // thickness
+                        center,                              // Coordinates
+                        cv::FONT_HERSHEY_COMPLEX_SMALL,      // Font
+                        float((puzzle.cols / 1000 + 1) * 2), // Scale. 2.0 = 2x bigger
+                        black,                               // Color
+                        ((puzzle.cols / 1000 + 1) * 2));     // thickness
         }
     }
     return puzzle;
@@ -762,12 +763,10 @@ Mat drawAllContour(Mat preprocessed, vector<vector<Point>> contours)
         drawContours(preprocessed, contours, i, white, 2, 8);
     }
 
-
-    if(preprocessed.cols > 1200){
+    if (preprocessed.cols > 1200)
+    {
         resize(preprocessed, preprocessed, Size(), 0.4, 0.4);
     }
-
-
 
     return preprocessed;
 }
@@ -913,17 +912,18 @@ void showContour(Mat img, vector<Point> contour)
     vector<vector<Point>> contours = {contour};
     drawContours(img, contours, 0, white, 2, 8);
 
-    if(img.cols > 1200){
+    if (img.cols > 1200)
+    {
         resize(img, img, Size(), 0.4, 0.4);
     }
-
 
     showImage(img);
 }
 void showImage(Mat img)
 {
 
-    if(img.cols > 1200){
+    if (img.cols > 1200)
+    {
         resize(img, img, Size(), 0.4, 0.4);
     }
     namedWindow("Display Image", WINDOW_AUTOSIZE);
