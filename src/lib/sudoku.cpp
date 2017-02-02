@@ -8,6 +8,9 @@ int sudokuRow = 0;
 
 float removeTinyVolumeBeforeExtractingPuzzle = 2.0/1000;
 float removeTinyVolumeBeforeExtractingNumber = 2.0/1000;
+float removeAreaBeforeExtractingNumber = 3.6/100;
+float removeMinBoundingAreaBeforeExtractingNumber = 7.2/100;
+float removeMaxBoundingAreaBeforeExtractingNumber = 7.2/100 * 5.52;
 
 /**
 * You will handle cells here a cell is a square that hold a number or not. A puzle has 81 cells
@@ -113,7 +116,11 @@ Mat extractNumber(Mat input, bool debug)
     float percent = 0.27;
     float width_threshold = cell_width - cell_width * percent;
     float height_threshold = cell_height - cell_height * percent;
-    int area_threshold = 97;
+
+    int area_threshold = cell.rows * cell.cols *removeAreaBeforeExtractingNumber;
+    int min_boundingArea_threshold = cell.rows * cell.cols *removeMinBoundingAreaBeforeExtractingNumber;
+    int max_boundingArea_threshold = cell.rows * cell.cols *removeMaxBoundingAreaBeforeExtractingNumber;
+    // cout << max_boundingArea_threshold << endl;
     // Use connected components with stats
     Mat labels, stats, centroids;
     int num_objects = connectedComponentsWithStats(cell, labels, stats, centroids);
@@ -177,12 +184,12 @@ Mat extractNumber(Mat input, bool debug)
             }
             continue; // drop !!! long vetical line
         }
-        if (boundingArea < 220 || boundingArea > 900)
+        if (boundingArea < min_boundingArea_threshold || boundingArea > max_boundingArea_threshold)
         {
             if (debug)
             {
                 cout << "boundingArea: "
-                     << "220<" << boundingArea << "<900 not true --> DROP !!!" << endl;
+                     << min_boundingArea_threshold <<  "<" << boundingArea << "<" << max_boundingArea_threshold <<"not true --> DROP !!!" << endl;
             }
 
             continue;
@@ -312,8 +319,8 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
 
         if (debug)
         {
-            showImage(thresholded);
             showImage(cleaned);
+            showImage(thresholded);
         }
 
         // double left = v[0];
