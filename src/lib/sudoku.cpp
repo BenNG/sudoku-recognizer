@@ -922,6 +922,10 @@ void showContour(Mat img, vector<Point> contour)
 }
 void showImage(Mat img)
 {
+
+    if(img.cols > 1200){
+        resize(img, img, Size(), 0.4, 0.4);
+    }
     namedWindow("Display Image", WINDOW_AUTOSIZE);
     imshow("Display Image", img);
     waitKey(0);
