@@ -6,6 +6,8 @@ int sudokuRows = 0;
 int sudokuCol = 0;
 int sudokuRow = 0;
 
+float removeTinyVolumeBeforeExtractingPuzzle = 2.0/1000;
+
 /**
 * You will handle cells here a cell is a square that hold a number or not. A puzle has 81 cells
 - you will first preprocess the cell using prepareCell
@@ -365,7 +367,7 @@ Mat preprocess(Mat input)
     Mat outerBox = Mat(input.size(), CV_8UC1);
     GaussianBlur(input, input, Size(11, 11), 0);
     adaptiveThreshold(input, outerBox, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 2);
-    outerBox = removeTinyVolume(outerBox, 400, Scalar(255, 255, 255));
+    outerBox = removeTinyVolume(outerBox, input.cols * input.rows * removeTinyVolumeBeforeExtractingPuzzle, Scalar(255, 255, 255));
     bitwise_not(outerBox, outerBox);
     dilate(outerBox, outerBox, Mat());
     return outerBox;
