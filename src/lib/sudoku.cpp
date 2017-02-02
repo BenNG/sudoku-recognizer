@@ -7,6 +7,7 @@ int sudokuCol = 0;
 int sudokuRow = 0;
 
 float removeTinyVolumeBeforeExtractingPuzzle = 2.0/1000;
+float removeTinyVolumeBeforeExtractingNumber = 2.0/1000;
 
 /**
 * You will handle cells here a cell is a square that hold a number or not. A puzle has 81 cells
@@ -298,13 +299,13 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
         // be careful here the 2nd param can delete tiny number like 1
         if (debug)
         {
-            cleaned = removeTinyVolume(thresholded.clone(), 74, Scalar(0, 0, 0));
+            cleaned = removeTinyVolume(thresholded.clone(), rawCell.cols * rawCell.rows * removeTinyVolumeBeforeExtractingNumber, Scalar(0, 0, 0));
             cout << "showing_2_" << endl;
             showImage(cleaned);
         }
         else
         {
-            cleaned = removeTinyVolume(thresholded, 74, Scalar(0, 0, 0));
+            cleaned = removeTinyVolume(thresholded, rawCell.cols * rawCell.rows * removeTinyVolumeBeforeExtractingNumber, Scalar(0, 0, 0));
         }
         // fin2 8bits
         vector<double> v = findBiggestComponent(cleaned);
