@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 
     Mat preprocessed = preprocess(original.clone());
 
-    vector<Point> bigestApprox = findBiggestBlob(preprocessed);
+    vector<Point> bigestApprox = findBiggestBlob(preprocessed, original);
     extractInfo = extractPuzzle(original, bigestApprox);
     Mat extractedPuzzle = extractInfo.image;
     Mat finalExtraction = recursiveExtraction(extractedPuzzle);

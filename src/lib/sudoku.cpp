@@ -411,7 +411,7 @@ Recursivity here is not a good idea as we are waiting for the biggestApprox rela
   !!!
 
 * */
-vector<Point> findBiggestBlob(Mat preprocessed)
+vector<Point> findBiggestBlob(Mat preprocessed, Mat original)
 {
     int largest_area, contourAreaValue = 0;
     vector<vector<Point>> contours;
@@ -529,7 +529,7 @@ Mat recursiveExtraction(Mat input)
 
     Mat preprocessed = preprocess(input.clone());
 
-    biggestApprox = findBiggestBlob(preprocessed);
+    biggestApprox = findBiggestBlob(preprocessed, input);
     if (!biggestApprox.empty())
     {
         extractInfo = extractPuzzle(input, biggestApprox);
@@ -1828,7 +1828,7 @@ Mat mouline(Mat original)
 
     Mat preprocessed = preprocess(original.clone());
 
-    vector<Point> biggestApprox = findBiggestBlob(preprocessed);
+    vector<Point> biggestApprox = findBiggestBlob(preprocessed, original);
 
     extractInfo = extractPuzzle(original, biggestApprox);
     Mat extractedPuzzle = extractInfo.image;

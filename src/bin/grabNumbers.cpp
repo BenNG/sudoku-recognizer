@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     Ptr<ml::KNearest> knn = getKnn(raw_features);
 
     Mat preprocessed = preprocess(image.clone());
-    vector<Point> bigestApprox = findBiggestBlob(preprocessed);
+    vector<Point> bigestApprox = findBiggestBlob(preprocessed, image);
 
     extractInfo = extractPuzzle(image, bigestApprox);
     Mat extractedPuzzle = extractInfo.image;
