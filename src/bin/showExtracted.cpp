@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     string raw_features_path("./../assets/raw-features.yml"); // created by prepareData
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
 
-    Ptr<ml::KNearest> knn = getKnn(raw_features);
+    // Ptr<ml::KNearest> knn = getKnn(raw_features);
     // get cells values manually grabbed
     std::map<int, std::map<int, int>> knownCellValues(cellValues());
 
@@ -55,6 +55,8 @@ int main(int argc, char **argv)
     stringstream ss;
     ss << "./../assets/puzzles/";
     ExtractionInformation extractInfo;
+    int kmin = 0, kmax = 81;
+
 
     for (int i = 1; i < argc; i++)
     {
@@ -66,6 +68,8 @@ int main(int argc, char **argv)
         if (arg == "--cellNumber")
         {
             cellNumber = stoi(argv[i + 1]);
+            kmin = cellNumber;
+            kmax = cellNumber + 1;
         }
         if (arg == "--showPuzzle")
         {
@@ -92,6 +96,7 @@ int main(int argc, char **argv)
     string fullName;
     Mat raw, sudoku, roi;
 
+    vector<string> files;
     if (isDirectory(p.c_str()))
     {
         int num = getNumberOfFilesInFolder(p);
@@ -100,104 +105,43 @@ int main(int argc, char **argv)
             stringstream ss;
             ss << "./../assets/puzzles/";
             ss << "s" << fileNumber << ".jpg";
-            fullName = ss.str();
-
-            raw = imread(fullName, CV_LOAD_IMAGE_GRAYSCALE);
-
-            Mat preprocessed = preprocess(raw.clone());
-            vector<Point> biggestApprox = findBiggestBlob(preprocessed, raw);
-            extractInfo = extractPuzzle(raw, biggestApprox);
-            Mat sudoku = recursiveExtraction(extractInfo.image);
-
-            if (showPuzzle)
-            {
-                showImage(sudoku);
-            }
-            // all files - one cell
-            if (showCell || cellNumber != -1)
-            {
-                if (cellNumber != -1)
-                {
-                    roi = extractRoiFromCell(sudoku, cellNumber, debug);
-                    if (!roi.empty())
-                    {
-
-                        cout << "cell index: " << cellNumber << endl;
-                        roi.convertTo(roi, CV_32F);
-
-                        knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
-                        cout << "resp: " << response << " expected: " << knownCellValues[fileNumber][cellNumber] << endl;
-                        showImage(roi);
-                    }
-                }
-                // all files - all cell
-                else
-                {
-                    for (int k = 0; k < 81; k++)
-                    {
-                        roi = extractRoiFromCell(sudoku, k, debug);
-                        if (!roi.empty())
-                        {
-                            cout << "cell index: " << k << endl;
-                            roi.convertTo(roi, CV_32F);
-                            knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
-                            cout << "resp: " << response << " expected: " << knownCellValues[fileNumber][k] << endl;
-                            showImage(roi);
-                        }
-                    }
-                }
-            }
+            files.push_back(ss.str().c_str());
         }
     }
     else
     {
-        // cout << p << endl;
-        raw = imread(p, CV_LOAD_IMAGE_GRAYSCALE);
+        files.push_back(p);
+    }
+
+    for (int fileNumber = 0; fileNumber < files.size(); fileNumber++)
+    {
+        cout << files[fileNumber] << endl;
+        string fileName = files[fileNumber];
+
+        raw = imread(fileName, CV_LOAD_IMAGE_GRAYSCALE);
 
         Mat preprocessed = preprocess(raw.clone());
-
         vector<Point> biggestApprox = findBiggestBlob(preprocessed, raw);
         extractInfo = extractPuzzle(raw, biggestApprox);
         Mat sudoku = recursiveExtraction(extractInfo.image);
 
-        if (showPuzzle)
+        if (showCell)
         {
-            showImage(sudoku);
-        }
-        // one file - one cell
-        if (showCell || cellNumber != -1)
-        {
-            if (cellNumber != -1)
+            for (int k = kmin; k < kmax; k++)
             {
-                roi = extractRoiFromCell(sudoku, cellNumber, debug);
+                roi = extractRoiFromCell(sudoku, k, debug);
                 if (!roi.empty())
                 {
-                    cout << "cell index: " << cellNumber << endl;
-                    roi.convertTo(roi, CV_32F);
-
-                    knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
-                    cout << "resp: " << response << " expected: " << knownCellValues[puzzleNumber][cellNumber] << endl;
+                    // cout << "cell index: " << k << endl;
+                    // roi.convertTo(roi, CV_32F);
+                    // knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
+                    // cout << "resp: " << response << " expected: " << knownCellValues[fileNumber][k] << endl;
                     showImage(roi);
                 }
             }
-            // one file - all cell
-            else
-            {
-                for (int k = 0; k < 81; k++)
-                {
-                    roi = extractRoiFromCell(sudoku, k, debug);
-                    if (!roi.empty())
-                    {
-                        cout << "cell index: " << k << endl;
-                        roi.convertTo(roi, CV_32F);
-
-                        knn->findNearest(roi.reshape(1, 1), K, noArray(), response, dist);
-                        cout << "resp: " << response << " expected: " << knownCellValues[puzzleNumber][k] << endl;
-                        showImage(roi);
-                    }
-                }
-            }
         }
+
+        showImage(sudoku);
     }
 
     return 0;
