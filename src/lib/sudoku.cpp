@@ -418,7 +418,7 @@ vector<Point> findBiggestBlob(Mat preprocessed)
     vector<Point> contour;
     vector<Point> approx;
     vector<Point> biggestApprox;
-
+    
     findContours(preprocessed.clone(), contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
 
     for (int i = 0; i < contours.size(); i++)
@@ -741,6 +741,27 @@ Mat drawAllContour(Mat preprocessed)
     return output;
 }
 
+Mat drawAllContour(Mat preprocessed, vector<vector<Point>> contours)
+{
+    Scalar white(255, 255, 255);
+
+    cout << "contours : " << contours.size() << endl;
+
+    for (int i = 0; i < contours.size(); i++)
+    {
+        drawContours(preprocessed, contours, i, white, 2, 8);
+    }
+
+
+    if(preprocessed.cols > 1200){
+        resize(preprocessed, preprocessed, Size(), 0.4, 0.4);
+    }
+
+
+
+    return preprocessed;
+}
+
 vector<double> findBiggestComponent(Mat input)
 {
     Mat output = Mat::zeros(input.rows, input.cols, input.type());
@@ -881,6 +902,12 @@ void showContour(Mat img, vector<Point> contour)
     Scalar white(255, 255, 255);
     vector<vector<Point>> contours = {contour};
     drawContours(img, contours, 0, white, 2, 8);
+
+    if(img.cols > 1200){
+        resize(img, img, Size(), 0.4, 0.4);
+    }
+
+
     showImage(img);
 }
 void showImage(Mat img)
