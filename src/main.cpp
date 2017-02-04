@@ -40,13 +40,12 @@ int main(int argc, char **argv)
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
     string initialStateOfTheSudoku = grabNumbers(finalExtraction, svm);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-    cout << duration/1000 << " ms" <<  endl;
+    cout << duration / 1000 << " ms" << endl;
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     cout << (initialStateOfTheSudoku == "006400750005082060007306089050130900093000840002048070580209600070860200029003400") << endl;
@@ -59,21 +58,20 @@ int main(int argc, char **argv)
     // recursiveExtraction 91
     // grabNumbers 128
 
-    string solution;
+    stringstream solution;
 
-    Sudoku::init();
-    if (auto S = solve(unique_ptr<Sudoku>(new Sudoku(initialStateOfTheSudoku))))
-    {
-        solution = S->getSolution();
-        cout << solution;
-    }
-    else
-    {
-        cout << "No solution";
-    }
-    cout << endl;
+    std::pair<bool, std::array<int, 81>> pair = solve(initialStateOfTheSudoku.c_str());
 
-    Mat writen = writeOnPuzzle(finalExtraction, initialStateOfTheSudoku, solution);
+    if (pair.first)
+    {
+        std::array<int, 81> ans = pair.second;
+        for (int i = 0; i < 81; i++)
+        {
+            solution << ans[i];
+        }
+    }
+
+    Mat writen = writeOnPuzzle(finalExtraction, initialStateOfTheSudoku, solution.str());
 
     warpPerspective(writen, original, extractInfo.transformation, original.size(), WARP_INVERSE_MAP, BORDER_TRANSPARENT);
 
