@@ -125,6 +125,10 @@ This is because at the very begining all I wanted is learning this [language](ht
     * sudo make install
   * [then](https://github.com/BenNG/sudoku-recognizer/blob/2f30e4dc54620b646df8a97a8ec5651a171c3e56/src/CMakeLists.txt#L1)
   * [and](https://github.com/BenNG/sudoku-recognizer/blob/2f30e4dc54620b646df8a97a8ec5651a171c3e56/src/CMakeLists.txt#L31)
+* When you do a project using computer vision think about the resolution you will use for:
+  * the camera
+  * the image being processed by the algorithm   
+
 
 ## Thank you for answering my questions
 * [Berak](http://answers.opencv.org/users/2130/berak/)
