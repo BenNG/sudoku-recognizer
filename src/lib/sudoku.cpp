@@ -303,25 +303,9 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
         adaptiveThreshold(rawRoi, thresholded, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 11, 1);
         // fin 8bits (CV_8U)
         // showImage(thresholded);
-        // be careful here the 2nd param can delete tiny number like 1
-        if (debug)
-        {
-            cleaned = removeTinyVolume(thresholded.clone(), rawCell.cols * rawCell.rows * removeTinyVolumeBeforeExtractingNumber, Scalar(0, 0, 0));
-            cout << "showing_2_" << endl;
-            showImage(cleaned);
-        }
-        else
-        {
-            cleaned = removeTinyVolume(thresholded, rawCell.cols * rawCell.rows * removeTinyVolumeBeforeExtractingNumber, Scalar(0, 0, 0));
-        }
+        
         // fin2 8bits
-        vector<double> v = findBiggestComponent(cleaned);
-
-        if (debug)
-        {
-            showImage(cleaned);
-            showImage(thresholded);
-        }
+        vector<double> v = findBiggestComponent(thresholded);
 
         // double left = v[0];
         // double top = v[1];
@@ -331,7 +315,7 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
         // double y = v[5];
 
         Rect rect(v[0], v[1], v[2], v[3]);
-        return normalizeSize(cleaned(rect), normalizedSizeForCell);
+        return normalizeSize(thresholded(rect), normalizedSizeForCell);
     }
     return output;
 }
@@ -459,7 +443,7 @@ Once the puzzle had been extracted, we wrote the solution on it
 */
 Mat writeOnPuzzle(Mat puzzle, string initialState, string solution)
 {
-    cout << puzzle.cols << endl;
+    // cout << puzzle.cols << endl;
     cv::Point center;
     cv::String sol(solution);
     cv::Scalar black(0, 0, 0);
