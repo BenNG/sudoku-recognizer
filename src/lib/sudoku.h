@@ -174,3 +174,5 @@ public:
 unique_ptr<Sudoku> solve(unique_ptr<Sudoku> S);
 
 std::pair<bool, std::array<int, 81>> solve(const char* input);
+
+bool areSameNonZeroValues(string init, string sol);

@@ -48,7 +48,6 @@ int main(int argc, char **argv)
     cout << duration / 1000 << " ms" << endl;
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    cout << (initialStateOfTheSudoku == "006400750005082060007306089050130900093000840002048070580209600070860200029003400") << endl;
     // showImage(extractedPuzzle);
 
     // mouline: 697
@@ -71,9 +70,11 @@ int main(int argc, char **argv)
         }
     }
 
-    Mat writen = writeOnPuzzle(finalExtraction, initialStateOfTheSudoku, solution.str());
-
-    warpPerspective(writen, original, extractInfo.transformation, original.size(), WARP_INVERSE_MAP, BORDER_TRANSPARENT);
+    if (areSameNonZeroValues(initialStateOfTheSudoku, solution.str()))
+    {
+        Mat writen = writeOnPuzzle(finalExtraction, initialStateOfTheSudoku, solution.str());
+        warpPerspective(writen, original, extractInfo.transformation, original.size(), WARP_INVERSE_MAP, BORDER_TRANSPARENT);
+    }
 
     showImage(original);
 

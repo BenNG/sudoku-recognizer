@@ -2272,3 +2272,17 @@ std::pair<bool, std::array<int, 81>> solve(const char *input)
     }
     return std::pair<bool, std::array<int, 81>>(true, ans);
 }
+
+bool areSameNonZeroValues(string init, string sol)
+{
+    int s = init.size();
+    bool result = true;
+    for (int i = 0; i < s; i++)
+    {
+        if (init[i] != '0' && init[i] != sol[i])
+        {
+            return false;
+        }
+    }
+    return result;
+}
