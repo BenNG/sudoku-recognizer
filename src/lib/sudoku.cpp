@@ -541,7 +541,7 @@ Mat recursiveExtraction(Mat input)
     vector<Point> biggestApprox;
     Mat extractedPuzzle;
 
-    Mat preprocessed = preprocess(input.clone(), true);
+    Mat preprocessed = preprocess(input.clone(), false);
 
     biggestApprox = findBiggestBlob(preprocessed, input);
     if (!biggestApprox.empty())
