@@ -1838,8 +1838,9 @@ Mat mouline(Mat original)
     // prepare knn
     string raw_features_path("./../assets/raw-features.yml"); // created by prepareData
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
-    Ptr<ml::KNearest> knn = getKnn(raw_features);
 
+    Ptr<ml::SVM> svm = getSvm(raw_features);
+    
     Mat preprocessed = preprocess(original.clone());
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, original);
@@ -1851,10 +1852,9 @@ Mat mouline(Mat original)
     Mat finalExtraction = recursiveExtraction(extractedPuzzle);
     // showImage(finalExtraction);
 
-    string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);
+    string initialStateOfTheSudoku = grabNumbers(finalExtraction, svm);
 
     stringstream solution;
-
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     // std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
