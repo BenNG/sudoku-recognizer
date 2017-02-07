@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
     Ptr<ml::KNearest> knn = getKnn(raw_features);
 
-    Mat preprocessed = preprocess(image.clone());
+    Mat preprocessed = preprocess(image.clone(), true);
 
     vector<Point> bigestApprox = findBiggestBlob(preprocessed, image);
 

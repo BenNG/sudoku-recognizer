@@ -370,12 +370,15 @@ Mat extractCell(Mat sudoku, int numCell)
 // ------------------------------------------------------------------------
 // PICTURE
 
-Mat preprocess(Mat input)
+Mat preprocess(Mat input, bool tiny)
 {
     Mat outerBox = Mat(input.size(), CV_8UC1);
     GaussianBlur(input, input, Size(11, 11), 0);
     adaptiveThreshold(input, outerBox, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 2);
-    outerBox = removeTinyVolume(outerBox, input.cols * input.rows * removeTinyVolumeBeforeExtractingPuzzle, Scalar(255, 255, 255));
+    if (tiny)
+    {
+        outerBox = removeTinyVolume(outerBox, input.cols * input.rows * removeTinyVolumeBeforeExtractingPuzzle, Scalar(255, 255, 255));
+    }
     bitwise_not(outerBox, outerBox);
     dilate(outerBox, outerBox, Mat());
     return outerBox;
@@ -538,7 +541,7 @@ Mat recursiveExtraction(Mat input)
     vector<Point> biggestApprox;
     Mat extractedPuzzle;
 
-    Mat preprocessed = preprocess(input.clone());
+    Mat preprocessed = preprocess(input.clone(), true);
 
     biggestApprox = findBiggestBlob(preprocessed, input);
     if (!biggestApprox.empty())
@@ -1840,8 +1843,8 @@ Mat mouline(Mat original)
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
 
     Ptr<ml::SVM> svm = getSvm(raw_features);
-    
-    Mat preprocessed = preprocess(original.clone());
+
+    Mat preprocessed = preprocess(original.clone(), true);
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, original);
 
@@ -1867,9 +1870,6 @@ Mat mouline(Mat original)
     // auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
     // cout << duration / 1000 << " ms" << endl;
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
     if (pair.first)
     {

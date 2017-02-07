@@ -58,7 +58,7 @@ int readFlippedInteger(FILE *fp);
 // puzzle
 Mat extractCell(Mat sudoku, int numCell);
 // picture
-Mat preprocess(Mat input);
+Mat preprocess(Mat input, bool tiny);
 vector<Point> findBiggestBlob(Mat preprocessed, Mat original /* debug purpose*/);
 Mat writeOnPuzzle(Mat puzzle, string initialState,  string solution);
 std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox);
