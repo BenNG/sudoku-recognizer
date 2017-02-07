@@ -16,16 +16,9 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
-#include <curl/curl.h>
-
-
 using namespace cv;
 using namespace cv::ml;
 using namespace std;
-
-
-
-
 
 class ExtractionInformation {
   public:
@@ -119,60 +112,10 @@ Mat mouline(Mat original);
 
 // debug
 string hello();
-string askServerForSolution(string initialSudokuState);
-
-
-
-
-
-
-
-#endif //UTILS_OPENCV_LIB
-
-
-
-
-
-class Possible {
-   vector<bool> _b;
-public:
-   Possible() : _b(9, true) {}
-   bool   is_on(int i) const { return _b[i-1]; }
-   int    count()      const { return std::count(_b.begin(), _b.end(), true); }
-   void   eliminate(int i)   { _b[i-1] = false; }
-   int    val()        const {
-      auto it = find(_b.begin(), _b.end(), true);
-      return (it != _b.end() ? 1 + (it - _b.begin()) : -1);
-   }
-   string str(int wth) const;
-};
-
-
-
-
-
-
-
-class Sudoku {
-   vector<Possible> _cells;
-   static vector< vector<int> > _group, _neighbors, _groups_of;
-
-   bool     eliminate(int k, int val);
-public:
-   Sudoku(string s);
-   static void init();
-
-   Possible possible(int k) const { return _cells[k]; }
-   bool     is_solved() const;
-   bool     assign(int k, int val);
-   int      least_count() const;
-   void     write(ostream& o) const;
-   string   getSolution() const;
-};
-
-
-unique_ptr<Sudoku> solve(unique_ptr<Sudoku> S);
+// string askServerForSolution(string initialSudokuState);
 
 std::pair<bool, std::array<int, 81>> solve(const char* input);
 
 bool areSameNonZeroValues(string init, string sol);
+
+#endif //UTILS_OPENCV_LIB
