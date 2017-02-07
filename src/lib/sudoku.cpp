@@ -2180,16 +2180,16 @@ unique_ptr<Sudoku> solve(unique_ptr<Sudoku> S)
     return {};
 }
 
-std::pair<bool, std::array<int, 81>> solve(const char* input)
+std::pair<bool, std::array<int, 81>> solve(const char *input)
 {
     std::array<int, 81> ans;
-    int* map = ans.data(); // The map of numbers with 0 for empty
-    int empty[81]; // The index of each empty gird
-    int c = 0;  // The current index we accessed
-    int i, j, k; // The current row, column, region index we accessed
-    int b; // The temporary bit set
-    int empty_count = 0; // The count of empty gird
-    int filled = 0; // The count of filled empty gird
+    int *map = ans.data();         // The map of numbers with 0 for empty
+    int empty[81];                 // The index of each empty gird
+    int c = 0;                     // The current index we accessed
+    int i, j, k;                   // The current row, column, region index we accessed
+    int b;                         // The temporary bit set
+    int empty_count = 0;           // The count of empty gird
+    int filled = 0;                // The count of filled empty gird
     int col[9], row[9], region[9]; //Bit set of each column, row and region
     for (i = 0; i < 9; i++)
     {
@@ -2201,7 +2201,6 @@ std::pair<bool, std::array<int, 81>> solve(const char* input)
         {
             empty[empty_count++] = c;
             map[c] = 0;
-
         }
         else if ((*input) <= '9' && (*input) >= '1') // Non empty gird
         {
@@ -2210,7 +2209,8 @@ std::pair<bool, std::array<int, 81>> solve(const char* input)
             k = (c / 27) * 3 + ((c % 9) / 3);
             map[c] = (*input) - '0';
             b = (1 << map[c]); // Check if the gird is wrong
-            if ((b & row[i] & col[j] & region[k]) == 0) {
+            if ((b & row[i] & col[j] & region[k]) == 0)
+            {
                 return std::pair<bool, std::array<int, 81>>(false, ans);
             }
             // Fill the bit to 0 for the row, column and region
@@ -2236,7 +2236,7 @@ std::pair<bool, std::array<int, 81>> solve(const char* input)
         i = c / 9;
         j = c % 9;
         k = (c / 27) * 3 + ((c % 9) / 3);
-        if (map[c] > 0)  //If this gird has been filled before, then reset it
+        if (map[c] > 0) //If this gird has been filled before, then reset it
         {
             b = (1 << map[c]); //Reset the bit to 1
             row[i] |= b;
@@ -2245,7 +2245,7 @@ std::pair<bool, std::array<int, 81>> solve(const char* input)
         }
         while (map[c] <= 9) //Fill current gird if the number was not appeared in current row, col or region
         {
-            map[c] ++;
+            map[c]++;
             b = (1 << map[c]); //Get the bit of the number and check if it has alerdy existed.
             if (row[i] & col[j] & region[k] & b)
             {
