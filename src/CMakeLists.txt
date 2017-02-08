@@ -1,13 +1,5 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14")
 
-FIND_PACKAGE(CURL)
-IF(CURL_FOUND)
-  INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
-  SET(requiredlibs ${requiredlibs} ${CURL_LIBRARIES} )
-ELSE(CURL_FOUND)
-  MESSAGE(FATAL_ERROR "Could not find the CURL library and development files.")
-ENDIF(CURL_FOUND)
-
 find_package( OpenCV 3.1.0 REQUIRED core text)
 
 include_directories( ${OpenCV_INCLUDE_DIRS})
@@ -32,7 +24,7 @@ add_executable( helloBin bin/hello.cpp)
 target_link_libraries(grabNumbers sudoku)
 target_link_libraries(prepareData sudoku)
 
-target_link_libraries( sudoku ${OpenCV_LIBS} curl)
+target_link_libraries( sudoku ${OpenCV_LIBS})
 
 target_link_libraries( showNumberOfCells ${OpenCV_LIBS} )
 target_link_libraries( showNumberOfCells sudoku )
