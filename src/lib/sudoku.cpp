@@ -12,6 +12,44 @@ float removeAreaBeforeExtractingNumber = 3.6 / 100;
 float removeMinBoundingAreaBeforeExtractingNumber = 7.2 / 100;
 float removeMaxBoundingAreaBeforeExtractingNumber = 7.2 / 100 * 5.52;
 
+Mat preprocess(Mat input, bool tiny)
+{
+    Mat outerBox = Mat(input.size(), CV_8UC1);
+    GaussianBlur(input, input, Size(11, 11), 0);
+    adaptiveThreshold(input, outerBox, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 2);
+    if (tiny)
+    {
+        outerBox = removeTinyVolume(outerBox, input.cols * input.rows * removeTinyVolumeBeforeExtractingPuzzle, Scalar(255, 255, 255));
+    }
+    bitwise_not(outerBox, outerBox);
+    dilate(outerBox, outerBox, Mat());
+    return outerBox;
+}
+
+
+/**
+* from time to time there are some tiny text around the puzzle and it kills the detection
+* this function remove the tiny contour
+*/
+Mat removeTinyVolume(Mat input, int area, Scalar color)
+{
+    // we draw to the color of the background
+    Mat output = input.clone();
+    vector<vector<Point>> contours;
+    findContours(input, contours, RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+
+    // cout << "contours : " << contours.size() << endl;
+
+    for (int i = 0; i < contours.size(); i++)
+    {
+        if (contourArea(contours[i]) < area)
+        {
+            drawContours(output, contours, i, color, -1, 8);
+        }
+    }
+    return output;
+}
+
 /**
 * You will handle cells here a cell is a square that hold a number or not. A puzle has 81 cells
 - you will first preprocess the cell using prepareCell
@@ -353,20 +391,6 @@ Mat extractCell(Mat sudoku, int numCell)
 
 // ------------------------------------------------------------------------
 // PICTURE
-
-Mat preprocess(Mat input, bool tiny)
-{
-    Mat outerBox = Mat(input.size(), CV_8UC1);
-    GaussianBlur(input, input, Size(11, 11), 0);
-    adaptiveThreshold(input, outerBox, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 2);
-    if (tiny)
-    {
-        outerBox = removeTinyVolume(outerBox, input.cols * input.rows * removeTinyVolumeBeforeExtractingPuzzle, Scalar(255, 255, 255));
-    }
-    bitwise_not(outerBox, outerBox);
-    dilate(outerBox, outerBox, Mat());
-    return outerBox;
-}
 
 // sort using a custom function object
 struct str
@@ -949,28 +973,6 @@ string getMyProjectRoot(string path, string projectRootName)
 //     return ss.str();
 // }
 
-/**
-* from time to time there are some tiny text around the puzzle and it kills the detection
-* this function remove the tiny contour
-*/
-Mat removeTinyVolume(Mat input, int area, Scalar color)
-{
-    // we draw to the color of the background
-    Mat output = input.clone();
-    vector<vector<Point>> contours;
-    findContours(input, contours, RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
-
-    // cout << "contours : " << contours.size() << endl;
-
-    for (int i = 0; i < contours.size(); i++)
-    {
-        if (contourArea(contours[i]) < area)
-        {
-            drawContours(output, contours, i, color, -1, 8);
-        }
-    }
-    return output;
-}
 
 Mat deskew(Mat t)
 {
