@@ -61,12 +61,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s0)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+
+    cout << initialStateOfTheSudoku.str() << endl;
     const string expected = "000604700706000009000005080070020093800000005430010070050200000300000208002301000";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -86,12 +93,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s1)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "007620058014090006006003002008300705070000040309004600700400100100080260890067500";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -111,12 +125,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s2)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "007620058014090006006003002008300705070000040309004600700400100100080260890067500";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -136,12 +157,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s3)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "600004100000900508580000740090710800000040000005098030078000021402007000006800005";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -161,12 +189,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s4)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "600004100000900508580000740090710800000040000005098030078000021402007000006800005";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -186,12 +221,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s5)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "600004100000900508580000740090710800000040000005098030078000021402007000006800005";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -211,12 +253,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s6)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "006400750005082060007306089050130900093000840002048070580209600070860200029003400";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -236,12 +285,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s7)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "006400750005082060007306089050130900093000840002048070580209600070860200029003400";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -261,12 +317,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s8)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "006400750005082060007306089050130900093000840002048070580209600070860200029003400";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -286,12 +349,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s9)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "080010040002083001060200003000094350809000704015370000300002070200730600090060030";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -311,12 +381,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s10)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "080010040002083001060200003000094350809000704015370000300002070200730600090060030";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -336,12 +413,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s11)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "080010040002083001060200003000094350809000704015370000300002070200730600090060030";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -361,12 +445,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s12)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "000652090640070501000030780908040000104207908000090605039020000806010059010984000";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -386,12 +477,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s13)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "000652090640070501000030780908040000104207908000090605039020000806010059010984000";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -411,12 +509,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s14)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "000652090640070501000030780908040000104207908000090605039020000806010059010984000";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -436,12 +541,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s15)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "009100056000060003005300904030750000520806097000012080601003500800070000740008600";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -461,12 +573,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s16)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "009100056000060003005300904030750000520806097000012080601003500800070000740008600";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -486,12 +605,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s17)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "009100056000060003005300904030750000520806097000012080601003500800070000740008600";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -511,12 +637,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s18)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "100974080970006000300005027007602000000050000000803100690500008000200095020498006";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -536,12 +669,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s19)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "100974080970006000300005027007602000000050000000803100690500008000200095020498006";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -561,12 +701,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s20)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "100974080970006000300005027007602000000050000000803100690500008000200095020498006";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -586,12 +733,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s21)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "020093000079000841050001000003050408005806300108030500000100080514000920000340050";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -611,12 +765,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s22)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "020093000079000841050001000003050408005806300108030500000100080514000920000340050";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -636,12 +797,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s23)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "020093000079000841050001000003050408005806300108030500000100080514000920000340050";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -661,12 +829,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s24)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "000000805960005700030709400412603000050000040000401372001907060006800057208000000";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -686,12 +861,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s25)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "000000805960005700030709400412603000050000040000401372001907060006800057208000000";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -711,12 +893,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s26)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "000000805960005700030709400412603000050000040000401372001907060006800057208000000";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -736,12 +925,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s27)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "900680710607049020000003900000304568000000000315806000009400000030790201078065004";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -761,12 +957,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s28)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "900680710607049020000003900000304568000000000315806000009400000030790201078065004";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -786,12 +989,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s29)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "900680710607049020000003900000304568000000000315806000009400000030790201078065004";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -811,12 +1021,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s30)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "000080057700915003030007910000072600310000025006450000095100070600539004180060000";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -836,12 +1053,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s31)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "000080057700915003030007910000072600310000025006450000095100070600539004180060000";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -861,12 +1085,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s32)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "000080057700915003030007910000072600310000025006450000095100070600539004180060000";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -886,12 +1117,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s33)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "008007290430100600600083005324000000001406300000000478800920006006005019073800500";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -911,12 +1149,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s34)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "008007290430100600600083005324000000001406300000000478800920006006005019073800500";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -936,12 +1181,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s35)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "008007290430100600600083005324000000001406300000000478800920006006005019073800500";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -961,12 +1213,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s36)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "020093000079000841050001000003050408005806300108030500000100080514000920000340050";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -986,12 +1245,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s37)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "020093000079000841050001000003050408005806300108030500000100080514000920000340050";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
@@ -1011,12 +1277,19 @@ BOOST_AUTO_TEST_CASE(sudoku_s38)
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
     Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    string result[81];
+    grabNumbers(extractedPuzzle, svm, result);
+            stringstream initialStateOfTheSudoku;
 
-    const string actual = grabNumbers(extractedPuzzle, svm);
-    cout << actual << endl;
+    for (int k = 0; k < 81; k++)
+    {
+        initialStateOfTheSudoku << result[k];
+    }
+    cout << initialStateOfTheSudoku.str() << endl;
+
     const string expected = "020093000079000841050001000003050408005806300108030500000100080514000920000340050";
     cout << expected << endl;
-    bool b = compare(actual, expected);
+    bool b = compare(initialStateOfTheSudoku.str(), expected);
     if (b)
     {
         cout << "---------- OK ----------" << endl;
