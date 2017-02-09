@@ -24,8 +24,8 @@ int main(int argc, char **argv)
     int numberOfCells = 0;
 
     Mat response, dist, m;
-    // load knn with "assets/raw-features.yml"
-    string raw_features_path("./../assets/raw-features.yml"); // created by prepareData
+    // load knn with "assets/config/raw-features.yml"
+    string raw_features_path("./../assets/config/raw-features.yml"); // created by prepareData
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
 
     Ptr<ml::KNearest> knn = getKnn(raw_features);

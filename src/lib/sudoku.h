@@ -28,7 +28,7 @@ class ExtractionInformation {
 
 
 // Training
-static const int lastTrainingPuzzle = 35; // change this if you added some new pictures and you want to generate a new assets/raw-features.yml
+static const int lastTrainingPuzzle = 35; // change this if you added some new pictures and you want to generate a new assets/config/raw-features.yml
 
 
 // HOG parameters for training that for some reason are not included in the HOG class
