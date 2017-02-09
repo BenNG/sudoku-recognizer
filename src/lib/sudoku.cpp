@@ -12,18 +12,20 @@ float removeAreaBeforeExtractingNumber = 3.6 / 100;
 float removeMinBoundingAreaBeforeExtractingNumber = 7.2 / 100;
 float removeMaxBoundingAreaBeforeExtractingNumber = 7.2 / 100 * 5.52;
 
+Mat m1 = Mat();
+Size s1(11,11);
+
 Mat preprocess(Mat input, bool tiny)
 {
-    Mat outerBox = Mat(input.size(), CV_8UC1);
-    GaussianBlur(input, input, Size(11, 11), 0);
-    adaptiveThreshold(input, outerBox, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 2);
+    GaussianBlur(input, input, s1, 0);
+    adaptiveThreshold(input, input, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 2);
     if (tiny)
     {
-        outerBox = removeTinyVolume(outerBox, input.cols * input.rows * removeTinyVolumeBeforeExtractingPuzzle, Scalar(255, 255, 255));
+        input = removeTinyVolume(input, input.cols * input.rows * removeTinyVolumeBeforeExtractingPuzzle, Scalar(255, 255, 255));
     }
-    bitwise_not(outerBox, outerBox);
-    dilate(outerBox, outerBox, Mat());
-    return outerBox;
+    bitwise_not(input, input);
+    dilate(input, input, m1);
+    return input;
 }
 
 /**
@@ -433,20 +435,25 @@ Recursivity here is not a good idea as we are waiting for the biggestApprox rela
 * */
 vector<Point> findBiggestBlob(Mat preprocessed, Mat original)
 {
+    cout << ">>> findBiggestBlob" << endl;
     int largest_area, contourAreaValue = 0;
     vector<vector<Point>> contours;
     vector<Point> contour;
     vector<Point> approx;
     vector<Point> biggestApprox;
+    Mat m;
 
     findContours(preprocessed, contours, RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); // RETR_TREE
+
+    // cout << contours.size() << endl;
 
     for (int i = 0; i < contours.size(); i++)
     {
         contour = contours[i];
+        m = Mat(contour);
         contourAreaValue = std::fabs(contourArea(contour));
         // Approximate contour with accuracy proportional to the contour perimeter
-        approxPolyDP(Mat(contour), approx, arcLength(Mat(contour), true) * 0.1, true);
+        approxPolyDP(m, approx, arcLength(m, true) * 0.1, true);
         // Skip small or non-convex objects
         if (isContourValid(contourAreaValue, approx))
         {
@@ -458,6 +465,7 @@ vector<Point> findBiggestBlob(Mat preprocessed, Mat original)
             }
         }
     }
+    cout << "<<< findBiggestBlob" << endl;
     return biggestApprox;
 }
 
@@ -544,6 +552,8 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox
 */
 Mat recursiveExtraction(Mat input)
 {
+    cout << ">>> recursiveExtraction" << endl;
+    
     ExtractionInformation extractInfo;
     vector<Point> biggestApprox;
     Mat extractedPuzzle;
@@ -563,6 +573,7 @@ Mat recursiveExtraction(Mat input)
         sudokuRows = input.rows;
         sudokuCol = sudokuCols / 9;
         sudokuRow = sudokuRows / 9;
+    cout << "<<< recursiveExtraction" << endl;
         return input;
     }
 }
@@ -1840,6 +1851,8 @@ Mat mouline(Mat original)
 
     Ptr<ml::SVM> svm = getSvm(raw_features);
 
+
+
     Mat preprocessed = preprocess(original.clone(), true);
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, original);
@@ -1847,9 +1860,17 @@ Mat mouline(Mat original)
     extractInfo = extractPuzzle(original, biggestApprox);
     Mat extractedPuzzle = extractInfo.image;
     // showImage(extractedPuzzle);
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Mat finalExtraction = recursiveExtraction(extractedPuzzle);
     // showImage(finalExtraction);
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+    cout << duration / 1000 << " ms" << endl;
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     string resultTab[81], initialStateOfTheSudoku;
 
@@ -1864,18 +1885,8 @@ Mat mouline(Mat original)
 
     initialStateOfTheSudoku = ss.str();
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    // std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::pair<bool, std::array<int, 81>> pair = solve(initialStateOfTheSudoku.c_str());
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    // std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-    // auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-    // cout << duration / 1000 << " ms" << endl;
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
     if (pair.first)
     {
         std::array<int, 81> ans = pair.second;
