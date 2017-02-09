@@ -1835,7 +1835,7 @@ Mat mouline(Mat original)
     ExtractionInformation extractInfo, extractInfo2;
 
     // prepare knn
-    string raw_features_path("./../assets/raw-features.yml"); // created by prepareData
+    string raw_features_path("./../assets/config/raw-features.yml"); // created by prepareData
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
 
     Ptr<ml::SVM> svm = getSvm(raw_features);
