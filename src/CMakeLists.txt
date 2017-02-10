@@ -8,6 +8,9 @@ set(OpenCV_LIBS opencv_core opencv_objdetect)
 
 MESSAGE("OpenCV version : ${OpenCV_VERSION}")
 
+find_package(OpenCL REQUIRED)
+
+
 add_library(sudoku lib/sudoku.cpp)
 add_library(whereami lib/whereami.c lib/whereami.h)
 add_library(hello lib/hello.cpp)

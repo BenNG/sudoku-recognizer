@@ -1,15 +1,30 @@
 # Sudoku-recognizer
 
 ## Requirement
-* [CMake](https://cmake.org/)  
-* [OpenCV 3.1.0](http://opencv.org/downloads.html) (This [link](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html) might be useful  )
+* CMake [[sources](https://cmake.org/)]  
+* OpenCV 3.1.0 [[sources](http://opencv.org/downloads.html)] [[more info](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html)]
+  - build for desktop application
+    - Download, extract and get yourself inside the sources of OpenCV 3.1.0 and create a `build` folder. Then:
+    ```
+    cd build
+    # CMAKE_BUILD_TYPE could either "Release" or "Debug".
+    # WITH_OPENCL The usage of OpenCL is a big improvement in terms of performance but you don't have to worry about it if you system has support you got it for free. On ubuntu I had to install
+    sudo apt-get install opencl-headers beignet beignet-dev  
+    cmake -DCMAKE_BUILD_TYPE=Release -DWITH_OPENCL=ON ..
+    make -j4
+    sudo make install
+    ```
+  - build for android application
+  ```
+  apt-get install ninja-build
+  ```
+
 
 ## Useful information
 Note that all the commands have to be invoked in the `build` folder. The first time you have to create it.
 ```
 mkdir build && cd build
 ```
-
 
 ## Recognizer
 ![hhh.gif](https://bitbucket.org/repo/njp6xM/images/3411734402-hhh.gif)

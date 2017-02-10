@@ -1,10 +1,11 @@
 #include "lib/sudoku.h"
 #include <opencv2/opencv.hpp>
 #include <memory>
+#include <opencv2/core/ocl.hpp>
+
 
 using namespace cv;
-using namespace cv::ml;
-using namespace std;
+using namespace std; 
 
 /**
  *
@@ -13,6 +14,18 @@ using namespace std;
  * */
 int main(int argc, char **argv)
 {
+
+    if (!cv::ocl::haveOpenCL())
+    {
+        cout << "OpenCL is not avaiable..." << endl;
+        return 1;
+    }
+    cv::ocl::Context context;
+    if (!context.create(cv::ocl::Device::TYPE_GPU))
+    {
+        cout << "Failed creating the context..." << endl;
+        return 1;
+    }
 
     ExtractionInformation extractInfo, extractInfo2;
 
