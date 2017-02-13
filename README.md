@@ -14,10 +14,7 @@
     make -j4
     sudo make install
     ```
-  - build for android application
-  ```
-  apt-get install ninja-build
-  ```
+  - build for android application [here](http://answers.opencv.org/question/126795/build-opencv-31-for-android-with-opencl-support/)
 
 
 ## Useful information
