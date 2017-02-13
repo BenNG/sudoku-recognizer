@@ -29,17 +29,23 @@ int main(int argc, char **argv)
     cv::FileStorage raw_features(raw_features_path, cv::FileStorage::READ);
     Ptr<ml::KNearest> knn = getKnn(raw_features);
 
-    // Mat preprocessed = preprocess(image.clone(), true);
-    // vector<Point> bigestApprox = findBiggestBlob(preprocessed, image);
+    Mat preprocessed = preprocess(image.clone(), true);
+    vector<Point> bigestApprox = findBiggestBlob(preprocessed, image);
 
-    // extractInfo = extractPuzzle(image, bigestApprox);
-    // Mat extractedPuzzle = extractInfo.image;
-    // // showImage(extractedPuzzle);
+    extractInfo = extractPuzzle(image, bigestApprox);
+    Mat extractedPuzzle = extractInfo.image;
+    // showImage(extractedPuzzle);
 
-    // Mat finalExtraction = recursiveExtraction(extractedPuzzle);
-    // string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);
+    // mouline: 697
+    // getknn 162
+    // findBiggestBlob 35
+    // recursiveExtraction 91
+    // grabNumbers 128
 
-    // cout << "initialStateOfTheSudoku: " << initialStateOfTheSudoku << endl;
+    Mat finalExtraction = recursiveExtraction(extractedPuzzle);
+    string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);
+
+    cout << "initialStateOfTheSudoku: " << initialStateOfTheSudoku << endl;
 
     return 0;
 }

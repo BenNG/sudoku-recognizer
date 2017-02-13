@@ -26,6 +26,7 @@ Mat preprocess(Mat input, bool tiny)
     return outerBox;
 }
 
+
 /**
 * from time to time there are some tiny text around the puzzle and it kills the detection
 * this function remove the tiny contour
@@ -340,7 +341,7 @@ Mat extractRoiFromCell(Mat sudoku, int k, bool debug)
         adaptiveThreshold(rawRoi, thresholded, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY_INV, 11, 1);
         // fin 8bits (CV_8U)
         // showImage(thresholded);
-
+        
         // fin2 8bits
         vector<double> v = findBiggestComponent(thresholded);
 
@@ -971,6 +972,7 @@ string getMyProjectRoot(string path, string projectRootName)
 //     ss << p;
 //     return ss.str();
 // }
+
 
 Mat deskew(Mat t)
 {
@@ -1649,69 +1651,57 @@ std::map<int, std::map<int, int>> cellValues()
 
 // ---------------------------------------------------------------------------------------
 // sudoku
-void grabNumbers(Mat extractedPuzzle, Ptr<ml::SVM> svm, string *result)
-{
-    unsigned int n = std::thread::hardware_concurrency() - 1;
-    if (n == 0)
-    {
-        n = 1;
-    }
-    // std::cout << n << " concurrent threads are supported.\n";
-
-    vector<vector<int>> indexes(n);
-    vector<std::thread> threads(n);
-
-    for (int i = 0; i < 81; i++)
-    {
-        indexes[i % n].push_back(i);
-    }
-
-    // for(int i = 0 ; i < indexes[3].size(); i++){
-    //     cout << indexes[3][i] << endl;
-    // }
-
-    _grabNumbers(extractedPuzzle, svm, result, indexes[0]);
-
-    for (int k = 1; k < n; k++)
-    {
-        threads[k] = std::thread(_grabNumbers, extractedPuzzle, svm, result, indexes[k]);
-    }
-
-    for (int k = 1; k < n; k++)
-    {
-        threads[k].join();
-    }
-
-    // cout << ">>> grabNumbers" << endl;
-}
-
-void _grabNumbers(Mat extractedPuzzle, Ptr<ml::SVM> svm, string *result, vector<int> tab)
+string grabNumbers(Mat extractedPuzzle, Ptr<ml::SVM> svm)
 {
     Mat roi;
     stringstream ss;
-    for (int k = 0; k < tab.size(); k++)
-    {
-        // cout << tab[k] << endl;
 
-        _grabNumber(extractedPuzzle, tab[k], svm, result);
+    for (int k = 0; k < 81; k++)
+    {
+        roi = extractRoiFromCell(extractedPuzzle, k);
+        if (!roi.empty())
+        {
+            roi.convertTo(roi, CV_32F);
+            ss << svm->predict(roi.reshape(1, 1));
+        }
+        else
+        {
+            ss << "0";
+        }
     }
+
+    return ss.str();
 }
-
-void _grabNumber(Mat extractedPuzzle, int cellNumber, Ptr<ml::SVM> svm, string *pResult)
+// give file path from the root of the project
+string grabNumbers(Mat extractedPuzzle, Ptr<ml::KNearest> knn)
 {
+    // Ptr<ml::KNearest> knn = getKnn();
+    // string filePath(getPath(filePath_str));
+    Mat roi, response, dist;
     stringstream ss;
+    int K = 1;
 
-    Mat roi = extractRoiFromCell(extractedPuzzle, cellNumber);
-    if (!roi.empty())
+    InputOutputArray noArr = noArray();
+
+    // raw = imread(filePath, CV_LOAD_IMAGE_GRAYSCALE);
+
+    for (int k = 0; k < 81; k++)
     {
-        roi.convertTo(roi, CV_32F);
-        ss << svm->predict(roi.reshape(1, 1));
+        roi = extractRoiFromCell(extractedPuzzle, k);
+        if (!roi.empty())
+        {
+            // showImage(roi);
+            roi.convertTo(roi, CV_32F);
+            knn->findNearest(roi.reshape(1, 1), K, noArr, response, dist);
+            ss << response.at<float>(0);
+        }
+        else
+        {
+            ss << "0";
+        }
     }
-    else
-    {
-        ss << "0";
-    }
-    *(pResult + cellNumber) = ss.str();
+
+    return ss.str();
 }
 
 // string getexepath()
@@ -1851,18 +1841,9 @@ Mat mouline(Mat original)
     Mat finalExtraction = recursiveExtraction(extractedPuzzle);
     // showImage(finalExtraction);
 
-    string resultTab[81], initialStateOfTheSudoku;
+    string initialStateOfTheSudoku = grabNumbers(finalExtraction, svm);
 
-    grabNumbers(finalExtraction, svm, resultTab);
-
-    stringstream solution, ss;
-
-    for (int k = 0; k < 81; k++)
-    {
-        ss << resultTab[k];
-    }
-
-    initialStateOfTheSudoku = ss.str();
+    stringstream solution;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     // std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();

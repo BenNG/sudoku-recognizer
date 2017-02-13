@@ -40,9 +40,9 @@ int main(int argc, char **argv)
     Mat finalExtraction = recursiveExtraction(extractedPuzzle);
     // showImage(finalExtraction);
 
-    // string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);
+    string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);
 
-    // cout << "initialStateOfTheSudoku: " << initialStateOfTheSudoku << endl;
+    cout << "initialStateOfTheSudoku: " << initialStateOfTheSudoku << endl;
 
     return 0;
 }

@@ -27,7 +27,7 @@ add_executable( helloBin bin/hello.cpp)
 target_link_libraries(grabNumbers sudoku)
 target_link_libraries(prepareData sudoku)
 
-target_link_libraries( sudoku ${OpenCV_LIBS} pthread)
+target_link_libraries( sudoku ${OpenCV_LIBS})
 
 target_link_libraries( showNumberOfCells ${OpenCV_LIBS} )
 target_link_libraries( showNumberOfCells sudoku )
