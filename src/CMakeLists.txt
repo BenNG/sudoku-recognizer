@@ -1,6 +1,6 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14")
 
-find_package( OpenCV 3.1.0 REQUIRED core text)
+find_package( OpenCV 3.1.0 REQUIRED core)
 
 include_directories( ${OpenCV_INCLUDE_DIRS})
 
