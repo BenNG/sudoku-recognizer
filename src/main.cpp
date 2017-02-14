@@ -18,13 +18,13 @@ int main(int argc, char **argv)
     if (!cv::ocl::haveOpenCL())
     {
         cout << "OpenCL is not avaiable..." << endl;
-        return 1;
+        // return 1;
     }
     cv::ocl::Context context;
     if (!context.create(cv::ocl::Device::TYPE_GPU))
     {
         cout << "Failed creating the context..." << endl;
-        return 1;
+        // return 1;
     }
 
     ExtractionInformation extractInfo, extractInfo2;
