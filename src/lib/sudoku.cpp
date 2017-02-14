@@ -14,9 +14,10 @@ float removeMaxBoundingAreaBeforeExtractingNumber = 7.2 / 100 * 5.52;
 
 Mat preprocess(Mat input, bool tiny)
 {
-    Mat outerBox = Mat(input.size(), CV_8UC1);
-    GaussianBlur(input, input, Size(11, 11), 0);
-    adaptiveThreshold(input, outerBox, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 2);
+    Mat outerBox, gaussianBlurred;
+    outerBox = Mat(input.size(), CV_8UC1);
+    GaussianBlur(input, gaussianBlurred, Size(11, 11), 0);
+    adaptiveThreshold(gaussianBlurred, outerBox, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 2);
     if (tiny)
     {
         outerBox = removeTinyVolume(outerBox, input.cols * input.rows * removeTinyVolumeBeforeExtractingPuzzle, Scalar(255, 255, 255));
