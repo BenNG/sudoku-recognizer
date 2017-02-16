@@ -4,6 +4,7 @@
 * CMake [[sources](https://cmake.org/)]  
 * Boost v.1.58.0 (test only) [[sources]](http://www.boost.org/users/history/version_1_58_0.html)
   * ./bootstrap --with-libraries=test
+  * ./b2
   * sudo ./b2 install
 * OpenCV 3.1.0 [[sources](http://opencv.org/downloads.html)] [[more info](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html)]
   - build for desktop application
