@@ -28,7 +28,7 @@ mkdir build && cd build
 ```
 
 ## Recognizer
-![hhh.gif](https://bitbucket.org/repo/njp6xM/images/3411734402-hhh.gif)
+![hhh.gif](https://bitbucket.org/repo/zpnRyB/images/276570042-sudoku4.gif)
 
 
 ### Tests
