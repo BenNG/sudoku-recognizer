@@ -109,14 +109,9 @@ A [mouline](https://github.com/BenNG/sudoku-recognizer/blob/master/src/lib/sudok
 So the process is:
  * parse the original image that holds the sudoku puzzle and extract it
  * parse the extracted puzzle and use a computer vision algorithm to grab the initial state.
- * send the initial state to a server that solve the sudoku
+ * Solve the sudoku
  * write the solution on the extracted puzzle
  * merge the extracted puzzle on the original picture
-
-
-## Auto questions
-### Why do we need a server to solve the sudoku you might ask ? 
-This is because at the very begining all I wanted is learning this [language](http://elixir-lang.org/) so I started this [project](https://github.com/BenNG/sudoku-solver) and now I use it :)
 
 ## Tips
 * There are 2 extraction process
