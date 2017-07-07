@@ -119,7 +119,7 @@ So the process is:
   * the extraction of the grid within the puzzle (somethimes it is the same see s6.jpg)
 * If you want to play with `HOGDescriptor` add set(OpenCV_LIBS opencv_core opencv_objdetect) (this is not used in the project anymore)
 * The function `prepareData` creates `assets/raw-features.yml` and getKnn uses it
-* boost library
+* boost library (used only for test)
  * check is the /FindBoost.cmake the supported version (the lib is not used anymore because it is not possible to use it on android)
 * If you ask for a cell and you have an error chances are that your cell is a 1 and it is too tiny go to extractNumber and play with (and do not forget to run prepareData && test after)
   * area
@@ -128,7 +128,7 @@ So the process is:
   * height_threshold
 * Before the portage on android, I used a system for resolving the path of file that looked for the root of the project and join the path given but in a apk application
   there are no path so I had to rewrite all and use relative paths
-* adding curl to the project
+* adding curl to the project (not use anymore)
   * dl the source code [here](https://github.com/curl/curl/releases)
   * in the source code there is a `CMakeLists.txt` so:
     * cmake .
