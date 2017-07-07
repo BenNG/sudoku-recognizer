@@ -113,7 +113,7 @@ So the process is:
  * write the solution on the extracted puzzle
  * merge the extracted puzzle on the original picture
 
-## Tips
+## Tips (Personal memo)
 * There are 2 extraction process
   * the extraction of the puzzle
   * the extraction of the grid within the puzzle (somethimes it is the same see s6.jpg)
