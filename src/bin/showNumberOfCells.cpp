@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 
             vector<Point> biggestApprox = findBiggestBlob(preprocessed, raw);
             extractInfo = extractPuzzle(raw, biggestApprox);
-            Mat sudoku = recursiveExtraction(extractInfo.image);
+            Mat sudoku = recursiveExtraction(extractInfo.image, 0);
 
             for (int k = 0; k < 81; k++)
             {

@@ -7,7 +7,7 @@
   - ./bootstrap.sh --with-libraries=test
   - ./b2
   - sudo ./b2 install
-- OpenCV 3.1.0 [[install](https://docs.opencv.org/3.1.0/d7/d9f/tutorial_linux_install.html)] [[more info](http://docs.opencv.org/3.1.0/df/d65/tutorial_table_of_content_introduction.html)]
+- OpenCV 3.2.0 [[install](https://docs.opencv.org/3.2.0/d7/d9f/tutorial_linux_install.html)] [[more info](https://docs.opencv.org/3.2.0/df/d65/tutorial_table_of_content_introduction.html)]
   - build for desktop application
     - Download, extract and get yourself inside the sources of OpenCV 3.1.0 and create a `build` folder. Then:
     ```

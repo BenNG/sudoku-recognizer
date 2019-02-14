@@ -63,7 +63,7 @@ vector<Point> findBiggestBlob(Mat preprocessed, Mat original /* debug purpose*/)
 Mat writeOnPuzzle(Mat puzzle, string initialState,  string solution);
 std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox);
 
-Mat recursiveExtraction(Mat input);
+Mat recursiveExtraction(Mat input, int interaction);
 ExtractionInformation extractPuzzle(Mat input, vector<Point> biggestApprox);
 // knn
 int readFlippedInteger(FILE *fp);

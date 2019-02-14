@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s0)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s1)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -110,7 +110,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s2)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -135,7 +135,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s3)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -160,7 +160,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s4)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -185,7 +185,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s5)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -210,7 +210,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s6)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -235,7 +235,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s7)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -260,7 +260,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s8)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -285,7 +285,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s9)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -310,7 +310,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s10)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -335,7 +335,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s11)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -360,7 +360,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s12)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -385,7 +385,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s13)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -410,7 +410,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s14)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -435,7 +435,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s15)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -460,7 +460,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s16)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -485,7 +485,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s17)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -510,7 +510,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s18)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -535,7 +535,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s19)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -560,7 +560,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s20)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -585,7 +585,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s21)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -610,7 +610,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s22)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -635,7 +635,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s23)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -660,7 +660,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s24)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -685,7 +685,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s25)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -710,7 +710,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s26)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -735,7 +735,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s27)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -760,7 +760,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s28)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -785,7 +785,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s29)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -810,7 +810,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s30)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -835,7 +835,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s31)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -860,7 +860,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s32)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -885,7 +885,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s33)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -910,7 +910,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s34)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -935,7 +935,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s35)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -960,7 +960,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s36)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -985,7 +985,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s37)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;
@@ -1010,7 +1010,7 @@ BOOST_AUTO_TEST_CASE(sudoku_s38)
 
     vector<Point> biggestApprox = findBiggestBlob(preprocessed, image);
     extractInfo = extractPuzzle(image, biggestApprox);
-    Mat extractedPuzzle = recursiveExtraction(extractInfo.image);
+    Mat extractedPuzzle = recursiveExtraction(extractInfo.image, 0);
 
     const string actual = grabNumbers(extractedPuzzle, svm);
     cout << actual << endl;

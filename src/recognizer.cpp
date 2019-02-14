@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     Mat extractedPuzzle = extractInfo.image;
     // showImage(extractedPuzzle);
 
-    Mat finalExtraction = recursiveExtraction(extractedPuzzle);
+    Mat finalExtraction = recursiveExtraction(extractedPuzzle, 0);
     // showImage(finalExtraction);
 
     string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);

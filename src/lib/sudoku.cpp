@@ -544,7 +544,7 @@ std::vector<Point2f> getSudokuCoordinates(Mat input, vector<Point> biggestApprox
     so we extract again until there is no more blob found
     This is true for s6 and s9 pictures
 */
-Mat recursiveExtraction(Mat input)
+Mat recursiveExtraction(Mat input, int interation)
 {
     ExtractionInformation extractInfo;
     vector<Point> biggestApprox;
@@ -553,11 +553,11 @@ Mat recursiveExtraction(Mat input)
     Mat preprocessed = preprocess(input.clone(), false);
 
     biggestApprox = findBiggestBlob(preprocessed, input);
-    if (!biggestApprox.empty())
+    if (!biggestApprox.empty() && interation < 5)
     {
         extractInfo = extractPuzzle(input, biggestApprox);
         extractedPuzzle = extractInfo.image;
-        return recursiveExtraction(extractedPuzzle);
+        return recursiveExtraction(extractedPuzzle, interation + 1);
     }
     else
     {
@@ -1839,8 +1839,8 @@ Mat mouline(Mat original)
     Mat extractedPuzzle = extractInfo.image;
     // showImage(extractedPuzzle);
 
-    Mat finalExtraction = recursiveExtraction(extractedPuzzle);
-    // showImage(finalExtraction);
+    Mat finalExtraction = recursiveExtraction(extractedPuzzle, 0);
+    showImage(finalExtraction);
 
     string initialStateOfTheSudoku = grabNumbers(finalExtraction, svm);
 

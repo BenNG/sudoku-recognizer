@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     // recursiveExtraction 91
     // grabNumbers 128
 
-    Mat finalExtraction = recursiveExtraction(extractedPuzzle);
+    Mat finalExtraction = recursiveExtraction(extractedPuzzle, 0);
     string initialStateOfTheSudoku = grabNumbers(finalExtraction, knn);
 
     cout << "initialStateOfTheSudoku: " << initialStateOfTheSudoku << endl;
